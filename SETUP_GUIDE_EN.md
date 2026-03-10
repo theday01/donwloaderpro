@@ -21,11 +21,17 @@ To run this application, you need:
   ```
 - **For High Quality (4K):** It is recommended to download and install `ffmpeg` and add it to your PATH.
 
-### 2. Prepare Application Files
-- Ensure `downloader.py` is in the same directory as the executable `VideoDownloaderUI.exe`.
+### 2. Build the Application and Prepare Files
+- Open the project directory in your terminal.
+- Build the project to generate the executable:
+  ```bash
+  dotnet build src/VideoDownloaderUI/VideoDownloaderUI.csproj -c Release
+  ```
+- The executable will be generated in: `src/VideoDownloaderUI/bin/Release/net6.0-windows/`.
+- Ensure `downloader.py` is copied to the same directory as `VideoDownloaderUI.exe`.
 
 ### 3. Run the Application
-- Launch `VideoDownloaderUI.exe`.
+- Navigate to the output directory and launch `VideoDownloaderUI.exe`.
 - Paste the video URL.
 - Click "Download".
 - Monitor progress via the progress bar and log window.
