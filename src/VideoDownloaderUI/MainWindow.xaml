@@ -1,0 +1,37 @@
+<Window x:Class="VideoDownloaderUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VideoDownloaderUI"
+        mc:Ignorable="d"
+        Title="Jules Pro Video Downloader" Height="450" Width="800" Background="#121212">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Video Downloader Pro" FontSize="32" FontWeight="Bold" Foreground="#BB86FC" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="UrlTextBox" Height="40" Padding="10,5" FontSize="16" Background="#2C2C2C" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Margin="0,0,10,0" Tag="Enter video URL here..."/>
+            <Button x:Name="DownloadButton" Grid.Column="1" Content="Download" Width="120" Height="40" Background="#03DAC6" Foreground="Black" FontWeight="Bold" Click="DownloadButton_Click"/>
+        </Grid>
+
+        <ProgressBar x:Name="DownloadProgressBar" Grid.Row="2" Height="20" Minimum="0" Maximum="100" Margin="0,0,0,10" Foreground="#BB86FC" Background="#2C2C2C" BorderThickness="0"/>
+
+        <ScrollViewer Grid.Row="3" Margin="0,10,0,10" Background="#1E1E1E">
+            <TextBlock x:Name="LogTextBlock" TextWrapping="Wrap" Foreground="#03DAC6" Padding="10" FontFamily="Consolas"/>
+        </ScrollViewer>
+
+        <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Text="Ready" Foreground="Gray" HorizontalAlignment="Left"/>
+    </Grid>
+</Window>
