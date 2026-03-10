@@ -41,5 +41,14 @@ To run this application, you need:
 - Backend: Python with `yt-dlp` engine.
 - Communication: Standard I/O redirection for real-time updates.
 
+## Troubleshooting
+
+### "Python was not found" Error
+If you see a message saying Python was not found even after installing it, please follow these steps:
+1.  Open the Start Menu and search for "Manage app execution aliases".
+2.  Turn OFF the aliases for `python.exe` and `python3.exe`.
+3.  Restart the application.
+4.  If the issue persists, reinstall Python and make sure to check "Add Python to PATH".
+
 ---
 Developed by Jules.

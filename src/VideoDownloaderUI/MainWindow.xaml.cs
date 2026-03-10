@@ -43,10 +43,37 @@ namespace VideoDownloaderUI
             }
         }
 
+        private string GetPythonExecutable()
+        {
+            // Try common python names
+            string[] names = { "python", "python3", "py" };
+            foreach (var name in names)
+            {
+                try
+                {
+                    using (Process p = new Process())
+                    {
+                        p.StartInfo.FileName = name;
+                        p.StartInfo.Arguments = "--version";
+                        p.StartInfo.UseShellExecute = false;
+                        p.StartInfo.RedirectStandardOutput = true;
+                        p.StartInfo.CreateNoWindow = true;
+                        p.Start();
+                        p.WaitForExit();
+                        if (p.ExitCode == 0) return name;
+                    }
+                }
+                catch { }
+            }
+            return "python"; // Default fallback
+        }
+
         private void RunDownloader(string url)
         {
+            string pythonExe = GetPythonExecutable();
+
             ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = "python3"; // Use python3 for consistency
+            start.FileName = pythonExe;
             start.Arguments = $"downloader.py \"{url}\"";
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
