@@ -1,20 +1,68 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace VideoDownloaderUI
 {
     public partial class MainWindow : Window
     {
+        // Current progress 0–100
+        private double _currentProgress = 0;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        // Called when the track Grid changes size (window resize etc.)
+        // Re-applies current progress so the fill width stays correct.
+        private void ProgressTrack_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetProgressFillWidth(_currentProgress, animate: false);
+        }
+
+        /// <summary>
+        /// Updates the custom progress bar fill width.
+        /// trackWidth * (percent / 100) = fill pixel width.
+        /// </summary>
+        private void SetProgressFillWidth(double percent, bool animate = true)
+        {
+            _currentProgress = Math.Max(0, Math.Min(100, percent));
+
+            double trackWidth = ProgressTrack.ActualWidth;
+            if (trackWidth <= 0) return;
+
+            double targetWidth = trackWidth * (_currentProgress / 100.0);
+
+            // Show/hide the fill
+            ProgressFill.Visibility = _currentProgress > 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            if (animate && _currentProgress > 0)
+            {
+                var anim = new DoubleAnimation
+                {
+                    To       = targetWidth,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                };
+                ProgressFill.BeginAnimation(WidthProperty, anim);
+            }
+            else
+            {
+                ProgressFill.BeginAnimation(WidthProperty, null); // stop running anim
+                ProgressFill.Width = targetWidth;
+            }
+
+            PercentageTextBlock.Text =
+                _currentProgress.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%";
+        }
+
+        // ─────────────────────────────────────────────
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             string url = UrlTextBox.Text.Trim();
@@ -25,12 +73,12 @@ namespace VideoDownloaderUI
             }
 
             string quality = (QualityComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
-            string format = (FormatComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "mp4";
+            string format  = (FormatComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString()  ?? "mp4";
 
             DownloadButton.IsEnabled = false;
-            LogTextBlock.Text = "";
-            DownloadProgressBar.Value = 0;
-            StatusTextBlock.Text = "Starting...";
+            LogTextBlock.Text        = "";
+            StatusTextBlock.Text     = "Starting...";
+            SetProgressFillWidth(0, animate: false);
 
             try
             {
@@ -43,124 +91,102 @@ namespace VideoDownloaderUI
             finally
             {
                 DownloadButton.IsEnabled = true;
-                StatusTextBlock.Text = "Ready";
+                StatusTextBlock.Text     = "Ready";
             }
         }
 
         private string GetPythonExecutable()
         {
-            // Try common python names
-            string[] names = { "python", "python3", "py" };
-            foreach (var name in names)
+            foreach (var name in new[] { "python", "python3", "py" })
             {
                 try
                 {
-                    using (Process p = new Process())
-                    {
-                        p.StartInfo.FileName = name;
-                        p.StartInfo.Arguments = "--version";
-                        p.StartInfo.UseShellExecute = false;
-                        p.StartInfo.RedirectStandardOutput = true;
-                        p.StartInfo.CreateNoWindow = true;
-                        p.Start();
-                        p.WaitForExit();
-                        if (p.ExitCode == 0) return name;
-                    }
+                    using var p = new Process();
+                    p.StartInfo.FileName               = name;
+                    p.StartInfo.Arguments              = "--version";
+                    p.StartInfo.UseShellExecute        = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.CreateNoWindow         = true;
+                    p.Start();
+                    p.WaitForExit();
+                    if (p.ExitCode == 0) return name;
                 }
                 catch { }
             }
-            return "python"; // Default fallback
+            return "python";
         }
 
         private void RunDownloader(string url, string quality, string format)
         {
             string pythonExe = GetPythonExecutable();
-            
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = pythonExe;
+
+            var start = new ProcessStartInfo
+            {
+                FileName               = pythonExe,
+                UseShellExecute        = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError  = true,
+                CreateNoWindow         = true
+            };
             start.ArgumentList.Add("downloader.py");
             start.ArgumentList.Add(url);
             start.ArgumentList.Add("--quality");
             start.ArgumentList.Add(quality);
             start.ArgumentList.Add("--format");
             start.ArgumentList.Add(format);
-            start.UseShellExecute = false;
-            start.RedirectStandardOutput = true;
-            start.RedirectStandardError = true;
-            start.CreateNoWindow = true;
 
-            using (Process? process = Process.Start(start))
+            using var process = Process.Start(start);
+            if (process == null) return;
+
+            process.OutputDataReceived += (_, e) =>
             {
-                if (process != null)
-                {
-                    process.OutputDataReceived += (sender, e) =>
-                    {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            Dispatcher.Invoke(() =>
-                            {
-                                ProcessOutput(e.Data);
-                            });
-                        }
-                    };
-                    process.ErrorDataReceived += (sender, e) =>
-                    {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            Dispatcher.Invoke(() =>
-                            {
-                                LogTextBlock.Text += "[ERR] " + e.Data + "\n";
-                            });
-                        }
-                    };
+                if (!string.IsNullOrEmpty(e.Data))
+                    Dispatcher.Invoke(() => ProcessOutput(e.Data));
+            };
+            process.ErrorDataReceived += (_, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                    Dispatcher.Invoke(() => AppendLog("[ERR] " + e.Data));
+            };
 
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.WaitForExit();
-                }
-            }
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
         }
 
         private void ProcessOutput(string data)
         {
+            // ── Progress update ──────────────────────────────────────────
             if (data.Contains("[PROGRESS]"))
             {
-                int index = data.IndexOf("[PROGRESS]");
-                string percentStr = data.Substring(index + "[PROGRESS]".Length).Trim();
-                // Replace comma with dot to handle different locales
-                percentStr = percentStr.Replace(",", ".");
-                
-                // Try to extract only the numeric part
+                int    idx        = data.IndexOf("[PROGRESS]") + "[PROGRESS]".Length;
+                string percentStr = data.Substring(idx).Trim().Replace(",", ".");
+
                 var match = System.Text.RegularExpressions.Regex.Match(percentStr, @"\d+(\.\d+)?");
-                if (match.Success && double.TryParse(match.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double percent))
+                if (match.Success &&
+                    double.TryParse(match.Value,
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out double pct))
                 {
-                    // Clamp value between 0 and 100
-                    percent = Math.Max(0, Math.Min(100, percent));
-                    DownloadProgressBar.Value = percent;
-                    PercentageTextBlock.Text = percent.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%";
+                    SetProgressFillWidth(pct);
                 }
-                
-                // If the line only contained progress info, don't log it
-                if (data.Trim().StartsWith("[PROGRESS]")) return;
+
+                // Don't echo pure progress lines to the log
+                if (data.TrimStart().StartsWith("[PROGRESS]")) return;
             }
 
+            // ── Status / warning / error ──────────────────────────────────
             if (data.StartsWith("[STATUS]"))
-            {
                 StatusTextBlock.Text = data.Replace("[STATUS]", "").Trim();
-                LogTextBlock.Text += data + "\n";
-            }
-            else if (data.StartsWith("[WARNING]"))
-            {
-                LogTextBlock.Text += data + "\n";
-            }
-            else if (data.StartsWith("[ERROR]"))
-            {
-                LogTextBlock.Text += data + "\n";
-            }
-            else
-            {
-                LogTextBlock.Text += data + "\n";
-            }
+
+            AppendLog(data);
+        }
+
+        private void AppendLog(string line)
+        {
+            LogTextBlock.Text += line + "\n";
+            LogScrollViewer.ScrollToEnd();
         }
     }
 }
