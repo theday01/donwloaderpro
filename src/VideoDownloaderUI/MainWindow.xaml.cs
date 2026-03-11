@@ -123,16 +123,23 @@ namespace VideoDownloaderUI
 
         private void ProcessOutput(string data)
         {
-            if (data.StartsWith("[PROGRESS]"))
+            if (data.Contains("[PROGRESS]"))
             {
-                string percentStr = data.Replace("[PROGRESS]", "").Trim();
-                if (double.TryParse(percentStr, out double percent))
+                int index = data.IndexOf("[PROGRESS]");
+                string percentStr = data.Substring(index + "[PROGRESS]".Length).Trim();
+                // Try to extract only the numeric part
+                var match = System.Text.RegularExpressions.Regex.Match(percentStr, @"\d+(\.\d+)?");
+                if (match.Success && double.TryParse(match.Value, out double percent))
                 {
                     DownloadProgressBar.Value = percent;
                     PercentageTextBlock.Text = $"{percent:F1}%";
                 }
+
+                // If the line only contained progress info, don't log it
+                if (data.Trim().StartsWith("[PROGRESS]")) return;
             }
-            else if (data.StartsWith("[STATUS]"))
+
+            if (data.StartsWith("[STATUS]"))
             {
                 StatusTextBlock.Text = data.Replace("[STATUS]", "").Trim();
                 LogTextBlock.Text += data + "\n";

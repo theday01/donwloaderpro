@@ -4,10 +4,15 @@ import argparse
 import shutil
 import yt_dlp
 
+import re
+
 def progress_hook(d):
     if d['status'] == 'downloading':
-        p = d.get('_percent_str', '0%').replace('%', '').strip()
-        print(f"[PROGRESS] {p}")
+        p_str = d.get('_percent_str', '0%')
+        # Remove ANSI escape codes and '%' symbol
+        p_clean = re.sub(r'\x1b\[[0-9;]*m', '', p_str).replace('%', '').strip()
+        # Print on a new line to avoid being mangled by yt-dlp's own progress line
+        print(f"\n[PROGRESS] {p_clean}")
         sys.stdout.flush()
     elif d['status'] == 'finished':
         print("[STATUS] Download finished, now converting...")
