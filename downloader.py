@@ -14,10 +14,13 @@ def progress_hook(d):
         sys.stdout.flush()
 
 def download_video(url, output_path):
-    ffmpeg_available = shutil.which('ffmpeg') is not None
+    # Check in PATH and in current script directory for FFmpeg
+    ffmpeg_available = (shutil.which('ffmpeg') is not None) or \
+                       (os.path.exists(os.path.join(os.path.dirname(__file__), 'ffmpeg.exe'))) or \
+                       (os.path.exists(os.path.join(os.getcwd(), 'ffmpeg.exe')))
 
     if not ffmpeg_available:
-        print("[WARNING] ffmpeg not found. Downloading single file 'best' quality (no merge).")
+        print("[WARNING] ffmpeg not found in PATH or app directory. Downloading single file 'best' quality (no merge).")
         sys.stdout.flush()
 
     ydl_opts = {

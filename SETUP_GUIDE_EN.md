@@ -66,9 +66,16 @@ This is the most critical step for the program to detect the tool:
 6.  Click **OK** on all windows to save the changes.
 
 ### 4. Verify Installation
-1.  Open a new Command Prompt (CMD).
-2.  Type `ffmpeg -version` and press Enter.
-3.  If you see version information, you are ready to go!
+1.  **VERY IMPORTANT:** After adding to PATH, you MUST close all application windows and the Command Prompt, then reopen them for the changes to take effect.
+2.  Open a new Command Prompt (CMD).
+3.  Type `ffmpeg -version` and press Enter.
+4.  If you see version information, you are ready to go!
+
+### The Easy Alternative (If PATH doesn't work)
+If you find the PATH setup difficult:
+1.  Copy the `ffmpeg.exe` file (found inside the `bin` folder you downloaded).
+2.  Paste it directly into the same folder as our application `VideoDownloaderUI.exe` and `downloader.py`.
+3.  The program will now detect it automatically.
 
 ## Troubleshooting
 
