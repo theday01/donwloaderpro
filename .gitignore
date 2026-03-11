@@ -1,0 +1,10 @@
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.json
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

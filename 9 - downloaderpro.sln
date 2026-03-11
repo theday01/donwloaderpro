@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "src\IntegrationTest\IntegrationTest.csproj", "{C5C2A31F-51FE-F0BA-492D-9DE462E3C616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoDownloaderUI", "src\VideoDownloaderUI\VideoDownloaderUI.csproj", "{3206886C-6E88-A9FB-BEB3-91C105582BB0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5C2A31F-51FE-F0BA-492D-9DE462E3C616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C2A31F-51FE-F0BA-492D-9DE462E3C616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C2A31F-51FE-F0BA-492D-9DE462E3C616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C2A31F-51FE-F0BA-492D-9DE462E3C616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3206886C-6E88-A9FB-BEB3-91C105582BB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3206886C-6E88-A9FB-BEB3-91C105582BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3206886C-6E88-A9FB-BEB3-91C105582BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3206886C-6E88-A9FB-BEB3-91C105582BB0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5C2A31F-51FE-F0BA-492D-9DE462E3C616} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{3206886C-6E88-A9FB-BEB3-91C105582BB0} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7B592D12-2C39-4655-B20A-49355F63D7F7}
+	EndGlobalSection
+EndGlobal
