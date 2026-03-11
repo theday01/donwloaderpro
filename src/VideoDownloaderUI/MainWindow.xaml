@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoDownloaderUI"
         mc:Ignorable="d"
-        Title="Jules Pro Video Downloader" Height="600" Width="900"
+        Title="Pro Video Downloader - by EagleShadow" Height="600" Width="900"
         Background="#0F111A" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
