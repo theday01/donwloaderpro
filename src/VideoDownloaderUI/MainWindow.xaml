@@ -82,13 +82,6 @@
                         <Grid x:Name="Root">
                             <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="5" />
                             <Border x:Name="PART_Indicator" CornerRadius="5" HorizontalAlignment="Left">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#BB86FC" Offset="0"/>
-                                        <GradientStop Color="#D7B7FD" Offset="0.5"/>
-                                        <GradientStop Color="#BB86FC" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Border.Background>
                                 <Border.Triggers>
                                     <EventTrigger RoutedEvent="Loaded">
                                         <BeginStoryboard>
