@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import shutil
 import yt_dlp
 
 def progress_hook(d):
@@ -13,8 +14,14 @@ def progress_hook(d):
         sys.stdout.flush()
 
 def download_video(url, output_path):
+    ffmpeg_available = shutil.which('ffmpeg') is not None
+
+    if not ffmpeg_available:
+        print("[WARNING] ffmpeg not found. Downloading single file 'best' quality (no merge).")
+        sys.stdout.flush()
+
     ydl_opts = {
-        'format': 'bestvideo+bestaudio/best',
+        'format': 'bestvideo+bestaudio/best' if ffmpeg_available else 'best',
         'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
         'progress_hooks': [progress_hook],
         'quiet': True,

@@ -19,7 +19,7 @@ To run this application, you need:
   ```bash
   pip install yt-dlp
   ```
-- **For High Quality (4K):** It is recommended to download and install `ffmpeg` and add it to your PATH.
+- **IMPORTANT for High Quality (4K):** You must download and install `ffmpeg` and add it to your PATH. Without it, the program will fallback to a lower quality single-file format. Download it from [ffmpeg.org](https://ffmpeg.org/download.html).
 
 ### 2. Build the Application and Prepare Files
 - Open the project directory in your terminal.

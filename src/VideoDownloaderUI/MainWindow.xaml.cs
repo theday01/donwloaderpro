@@ -74,7 +74,8 @@ namespace VideoDownloaderUI
 
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = pythonExe;
-            start.Arguments = $"downloader.py \"{url}\"";
+            start.ArgumentList.Add("downloader.py");
+            start.ArgumentList.Add(url);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
             start.RedirectStandardError = true;
@@ -125,6 +126,10 @@ namespace VideoDownloaderUI
             else if (data.StartsWith("[STATUS]"))
             {
                 StatusTextBlock.Text = data.Replace("[STATUS]", "").Trim();
+                LogTextBlock.Text += data + "\n";
+            }
+            else if (data.StartsWith("[WARNING]"))
+            {
                 LogTextBlock.Text += data + "\n";
             }
             else if (data.StartsWith("[ERROR]"))

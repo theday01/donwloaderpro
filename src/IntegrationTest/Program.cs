@@ -10,10 +10,12 @@ namespace IntegrationTest
         {
             Console.WriteLine("Testing integration with downloader.py...");
 
+            string root = FindProjectRoot(AppContext.BaseDirectory);
+
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = "python3";
             start.Arguments = "downloader.py --help";
-            start.WorkingDirectory = Path.Combine(AppContext.BaseDirectory, "../../../../../");
+            start.WorkingDirectory = root;
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
             start.RedirectStandardError = true;
@@ -52,6 +54,20 @@ namespace IntegrationTest
                     Environment.Exit(1);
                 }
             }
+        }
+
+        static string FindProjectRoot(string currentDir)
+        {
+            var dir = new DirectoryInfo(currentDir);
+            while (dir != null)
+            {
+                if (File.Exists(Path.Combine(dir.FullName, "downloader.py")))
+                {
+                    return dir.FullName;
+                }
+                dir = dir.Parent;
+            }
+            return currentDir;
         }
     }
 }
