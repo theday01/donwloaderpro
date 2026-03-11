@@ -22,6 +22,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid>
                 <TextBox x:Name="UrlTextBox" Height="40" Padding="10,5" FontSize="16" Background="#2C2C2C" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" Margin="0,0,10,0"/>
@@ -50,7 +51,17 @@
                 <ComboBoxItem Content="720p" Tag="720"/>
                 <ComboBoxItem Content="480p" Tag="480"/>
             </ComboBox>
-            <Button x:Name="DownloadButton" Grid.Column="2" Content="Download" Width="120" Height="40" Background="#03DAC6" Foreground="Black" FontWeight="Bold" Click="DownloadButton_Click"/>
+            <ComboBox x:Name="FormatComboBox" Grid.Column="2" Width="80" Height="40" Margin="0,0,10,0" Background="#2C2C2C" Foreground="White" BorderThickness="0" VerticalContentAlignment="Center" SelectedIndex="0">
+                <ComboBox.Resources>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="#2C2C2C"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                </ComboBox.Resources>
+                <ComboBoxItem Content="MP4" Tag="mp4"/>
+                <ComboBoxItem Content="WebM" Tag="webm"/>
+            </ComboBox>
+            <Button x:Name="DownloadButton" Grid.Column="3" Content="Download" Width="120" Height="40" Background="#03DAC6" Foreground="Black" FontWeight="Bold" Click="DownloadButton_Click"/>
         </Grid>
 
         <ProgressBar x:Name="DownloadProgressBar" Grid.Row="2" Height="20" Minimum="0" Maximum="100" Margin="0,0,0,10" Foreground="#BB86FC" Background="#2C2C2C" BorderThickness="0"/>

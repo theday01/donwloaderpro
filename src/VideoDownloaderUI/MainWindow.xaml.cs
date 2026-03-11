@@ -25,6 +25,7 @@ namespace VideoDownloaderUI
             }
 
             string quality = (QualityComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
+            string format = (FormatComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "mp4";
 
             DownloadButton.IsEnabled = false;
             LogTextBlock.Text = "";
@@ -33,7 +34,7 @@ namespace VideoDownloaderUI
 
             try
             {
-                await Task.Run(() => RunDownloader(url, quality));
+                await Task.Run(() => RunDownloader(url, quality, format));
             }
             catch (Exception ex)
             {
@@ -71,7 +72,7 @@ namespace VideoDownloaderUI
             return "python"; // Default fallback
         }
 
-        private void RunDownloader(string url, string quality)
+        private void RunDownloader(string url, string quality, string format)
         {
             string pythonExe = GetPythonExecutable();
 
@@ -81,6 +82,8 @@ namespace VideoDownloaderUI
             start.ArgumentList.Add(url);
             start.ArgumentList.Add("--quality");
             start.ArgumentList.Add(quality);
+            start.ArgumentList.Add("--format");
+            start.ArgumentList.Add(format);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
             start.RedirectStandardError = true;

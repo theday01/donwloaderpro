@@ -13,7 +13,7 @@ def progress_hook(d):
         print("[STATUS] Download finished, now converting...")
         sys.stdout.flush()
 
-def download_video(url, output_path, quality="best"):
+def download_video(url, output_path, quality="best", ext="mp4"):
     # Check in PATH and in current script directory for FFmpeg
     ffmpeg_available = (shutil.which('ffmpeg') is not None) or \
                        (os.path.exists(os.path.join(os.path.dirname(__file__), 'ffmpeg.exe'))) or \
@@ -24,17 +24,19 @@ def download_video(url, output_path, quality="best"):
         sys.stdout.flush()
         format_str = 'best'
     else:
+        # Construct format string with extension preference
         if quality == "1080":
-            format_str = 'bestvideo[height<=1080]+bestaudio/best[height<=1080]'
+            format_str = f'bestvideo[height<=1080][ext={ext}]+bestaudio[ext=m4a]/best[height<=1080][ext={ext}]/best[height<=1080]'
         elif quality == "720":
-            format_str = 'bestvideo[height<=720]+bestaudio/best[height<=720]'
+            format_str = f'bestvideo[height<=720][ext={ext}]+bestaudio[ext=m4a]/best[height<=720][ext={ext}]/best[height<=720]'
         elif quality == "480":
-            format_str = 'bestvideo[height<=480]+bestaudio/best[height<=480]'
+            format_str = f'bestvideo[height<=480][ext={ext}]+bestaudio[ext=m4a]/best[height<=480][ext={ext}]/best[height<=480]'
         else:
-            format_str = 'bestvideo+bestaudio/best'
+            format_str = f'bestvideo[ext={ext}]+bestaudio[ext=m4a]/best[ext={ext}]/best'
 
     ydl_opts = {
         'format': format_str,
+        'merge_output_format': ext if ffmpeg_available else None,
         'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
         'progress_hooks': [progress_hook],
         'quiet': True,
@@ -58,7 +60,8 @@ if __name__ == "__main__":
     parser.add_argument("url", help="URL of the video to download")
     parser.add_argument("--output", "-o", default=".", help="Output directory")
     parser.add_argument("--quality", "-q", default="best", help="Quality (best, 1080, 720, 480)")
+    parser.add_argument("--format", "-f", default="mp4", help="Extension (mp4, webm)")
 
     args = parser.parse_args()
 
-    download_video(args.url, args.output, args.quality)
+    download_video(args.url, args.output, args.quality, args.format)
