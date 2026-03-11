@@ -132,7 +132,7 @@ namespace VideoDownloaderUI
 
                 // Try to extract only the numeric part
                 var match = System.Text.RegularExpressions.Regex.Match(percentStr, @"\d+(\.\d+)?");
-                if (match.Success && double.TryParse(match.Value, System.Globalization.CultureInfo.InvariantCulture, out double percent))
+                if (match.Success && double.TryParse(match.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double percent))
                 {
                     // Clamp value between 0 and 100
                     percent = Math.Max(0, Math.Min(100, percent));
