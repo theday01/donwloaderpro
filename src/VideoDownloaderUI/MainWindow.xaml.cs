@@ -129,6 +129,7 @@ namespace VideoDownloaderUI
                 if (double.TryParse(percentStr, out double percent))
                 {
                     DownloadProgressBar.Value = percent;
+                    PercentageTextBlock.Text = $"{percent:F1}%";
                 }
             }
             else if (data.StartsWith("[STATUS]"))
