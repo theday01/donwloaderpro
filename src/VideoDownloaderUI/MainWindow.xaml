@@ -81,7 +81,38 @@
                     <ControlTemplate TargetType="ProgressBar">
                         <Grid x:Name="Root">
                             <Border x:Name="Background" Background="{TemplateBinding Background}" CornerRadius="5" />
-                            <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" CornerRadius="5" HorizontalAlignment="Left" />
+                            <Border x:Name="PART_Indicator" CornerRadius="5" HorizontalAlignment="Left">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#BB86FC" Offset="0"/>
+                                        <GradientStop Color="#D7B7FD" Offset="0.5"/>
+                                        <GradientStop Color="#BB86FC" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.RelativeTransform).(TransformGroup.Children)[0].(TranslateTransform.X)"
+                                                    From="-1" To="1" Duration="0:0:1.5" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <TranslateTransform X="0" />
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#BB86FC" Offset="0"/>
+                                        <GradientStop Color="#D7B7FD" Offset="0.5"/>
+                                        <GradientStop Color="#BB86FC" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
