@@ -19,7 +19,7 @@ To run this application, you need:
   ```bash
   pip install yt-dlp
   ```
-- **IMPORTANT for High Quality (4K):** You must download and install `ffmpeg` and add it to your PATH. Without it, the program will fallback to a lower quality single-file format. Download it from [ffmpeg.org](https://ffmpeg.org/download.html).
+- **IMPORTANT for High Quality (4K):** You must download and install `ffmpeg` and add it to your PATH. Without it, the program will fallback to a lower quality single-file format. (See the detailed FFmpeg installation section below).
 
 ### 2. Build the Application and Prepare Files
 - Open the project directory in your terminal.
@@ -40,6 +40,35 @@ To run this application, you need:
 - Frontend: C# WPF (Modern Dark Theme).
 - Backend: Python with `yt-dlp` engine.
 - Communication: Standard I/O redirection for real-time updates.
+
+## Detailed FFmpeg Installation Guide
+
+To avoid errors and ensure the highest video quality, follow these steps exactly:
+
+### 1. Download the Correct Version
+1.  Go to [gyan.dev/ffmpeg/builds/](https://www.gyan.dev/ffmpeg/builds/).
+2.  Scroll down to the **release builds** section.
+3.  Download the file ending in `ffmpeg-release-essentials.zip`.
+
+### 2. Extraction and Setup
+1.  Right-click the downloaded ZIP and select **Extract All**.
+2.  Rename the resulting folder to just `ffmpeg`.
+3.  Move this `ffmpeg` folder to the root of your `C:\` drive, so the path is `C:\ffmpeg`.
+4.  Inside `C:\ffmpeg`, verify there is a `bin` folder. The final path we need is `C:\ffmpeg\bin`.
+
+### 3. Add FFmpeg to System PATH
+This is the most critical step for the program to detect the tool:
+1.  Open the Start Menu and search for **"Edit the system environment variables"**.
+2.  Click the **Environment Variables** button.
+3.  In the **System variables** section (the bottom half), find and double-click the **Path** variable.
+4.  Click **New** on the right side.
+5.  Type or paste: `C:\ffmpeg\bin`.
+6.  Click **OK** on all windows to save the changes.
+
+### 4. Verify Installation
+1.  Open a new Command Prompt (CMD).
+2.  Type `ffmpeg -version` and press Enter.
+3.  If you see version information, you are ready to go!
 
 ## Troubleshooting
 
