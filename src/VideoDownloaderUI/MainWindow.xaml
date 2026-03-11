@@ -13,12 +13,81 @@
         <SolidColorBrush x:Key="SecondaryColor" Color="#03DAC6"/>
         <SolidColorBrush x:Key="CardColor"      Color="#1E202E"/>
 
-        <!-- Button -->
+        <!-- Download / Resume Button -->
         <Style x:Key="ModernButtonStyle" TargetType="Button">
             <Setter Property="Background"      Value="{StaticResource SecondaryColor}"/>
             <Setter Property="Foreground"      Value="Black"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
             <Setter Property="FontSize"        Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Opacity" Value="0.8"/></Trigger>
+                <Trigger Property="IsEnabled"   Value="False"><Setter Property="Background" Value="Gray"/></Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Stop Button (orange) -->
+        <Style x:Key="StopButtonStyle" TargetType="Button">
+            <Setter Property="Background"      Value="#FF9800"/>
+            <Setter Property="Foreground"      Value="Black"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Opacity" Value="0.8"/></Trigger>
+                <Trigger Property="IsEnabled"   Value="False"><Setter Property="Background" Value="Gray"/></Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Resume Button (green) -->
+        <Style x:Key="ResumeButtonStyle" TargetType="Button">
+            <Setter Property="Background"      Value="#4CAF50"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Opacity" Value="0.8"/></Trigger>
+                <Trigger Property="IsEnabled"   Value="False"><Setter Property="Background" Value="Gray"/></Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Cancel Button (red) -->
+        <Style x:Key="CancelButtonStyle" TargetType="Button">
+            <Setter Property="Background"      Value="#F44336"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="13"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -162,11 +231,45 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <Button x:Name="DownloadButton" Grid.Column="2"
-                            Content="DOWNLOAD NOW" Width="180" Height="40"
-                            VerticalAlignment="Bottom" Padding="20,10"
-                            Style="{StaticResource ModernButtonStyle}"
-                            Click="DownloadButton_Click"/>
+                    <!--
+                        Button states:
+                        • Idle    → [⬇ DOWNLOAD NOW]
+                        • Active  → [⏸ STOP]  [✖ CANCEL]
+                        • Paused  → [▶ RESUME] [✖ CANCEL]
+                    -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom">
+
+                        <Button x:Name="DownloadButton"
+                                Content="⬇ DOWNLOAD NOW" Width="165" Height="40"
+                                Padding="15,10"
+                                Style="{StaticResource ModernButtonStyle}"
+                                Click="DownloadButton_Click"
+                                Visibility="Visible"/>
+
+                        <!-- Stop — shown while downloading -->
+                        <Button x:Name="StopButton"
+                                Content="⏸ STOP" Width="110" Height="40"
+                                Padding="12,10" Margin="8,0,0,0"
+                                Style="{StaticResource StopButtonStyle}"
+                                Click="StopButton_Click"
+                                Visibility="Collapsed"/>
+
+                        <!-- Resume — shown while paused -->
+                        <Button x:Name="ResumeButton"
+                                Content="▶ RESUME" Width="110" Height="40"
+                                Padding="12,10" Margin="8,0,0,0"
+                                Style="{StaticResource ResumeButtonStyle}"
+                                Click="ResumeButton_Click"
+                                Visibility="Collapsed"/>
+
+                        <!-- Cancel — shown while downloading OR paused -->
+                        <Button x:Name="CancelButton"
+                                Content="✖ CANCEL" Width="110" Height="40"
+                                Padding="12,10" Margin="8,0,0,0"
+                                Style="{StaticResource CancelButtonStyle}"
+                                Click="CancelButton_Click"
+                                Visibility="Collapsed"/>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
         </Border>
@@ -179,7 +282,6 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Progress section -->
                 <StackPanel Margin="0,0,0,15">
                     <Grid Margin="0,0,0,8">
                         <TextBlock Text="Download Progress" Foreground="Gray" FontSize="12"/>
@@ -188,22 +290,12 @@
                                    HorizontalAlignment="Right" FontSize="12" FontWeight="Bold"/>
                     </Grid>
 
-                    <!--
-                        Custom progress bar — a Grid with a dark background Border (track)
-                        and a colored Border (fill) whose Width we set from code-behind.
-                        No WPF ProgressBar template magic = guaranteed to work.
-                    -->
                     <Grid x:Name="ProgressTrack" Height="14"
                           SizeChanged="ProgressTrack_SizeChanged">
-                        <!-- Track background -->
                         <Border CornerRadius="7" Background="#1C1D2B"/>
-
-                        <!-- Animated fill — Width is set from code-behind -->
                         <Border x:Name="ProgressFill"
-                                HorizontalAlignment="Left"
-                                CornerRadius="7"
-                                Width="0"
-                                ClipToBounds="True">
+                                HorizontalAlignment="Left" CornerRadius="7"
+                                Width="0" ClipToBounds="True">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                     <GradientStop Color="#1A6B00" Offset="0.0"/>
@@ -211,13 +303,8 @@
                                     <GradientStop Color="#1DB300" Offset="1.0"/>
                                 </LinearGradientBrush>
                             </Border.Background>
-
-                            <!-- Shimmer canvas clipped inside fill -->
                             <Canvas IsHitTestVisible="False" ClipToBounds="True">
-
-                                <!-- Shimmer sweep -->
-                                <Rectangle x:Name="ShimmerRect"
-                                           Width="160" Height="40"
+                                <Rectangle x:Name="ShimmerRect" Width="160" Height="40"
                                            Canvas.Left="-160" Canvas.Top="-13">
                                     <Rectangle.Fill>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -243,8 +330,6 @@
                                         </EventTrigger>
                                     </Rectangle.Triggers>
                                 </Rectangle>
-
-                                <!-- Glass top shine -->
                                 <Rectangle Canvas.Left="0" Canvas.Top="0" Width="1200" Height="5">
                                     <Rectangle.Fill>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -258,7 +343,6 @@
                     </Grid>
                 </StackPanel>
 
-                <!-- Log -->
                 <ScrollViewer Grid.Row="1" x:Name="LogScrollViewer"
                               Background="#141622" BorderBrush="#2C2E3E" BorderThickness="1">
                     <TextBlock x:Name="LogTextBlock" TextWrapping="Wrap"
@@ -272,7 +356,8 @@
         <StatusBar Grid.Row="3" Background="Transparent" Margin="0,15,0,0">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
-                    <Ellipse Width="8" Height="8" Fill="{StaticResource SecondaryColor}" Margin="0,0,8,0"/>
+                    <Ellipse x:Name="StatusDot" Width="8" Height="8"
+                             Fill="{StaticResource SecondaryColor}" Margin="0,0,8,0"/>
                     <TextBlock x:Name="StatusTextBlock" Text="Ready" Foreground="Gray" FontSize="12"/>
                 </StackPanel>
             </StatusBarItem>

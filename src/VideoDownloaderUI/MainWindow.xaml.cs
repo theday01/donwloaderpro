@@ -1,60 +1,77 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace VideoDownloaderUI
 {
+    // ── Download states ───────────────────────────────────────────────────
+    internal enum DownloadState { Idle, Downloading, Paused }
+
     public partial class MainWindow : Window
     {
-        // Current progress 0–100
-        private double _currentProgress = 0;
+        private double       _currentProgress = 0;
+        private DownloadState _state          = DownloadState.Idle;
 
-        public MainWindow()
+        // Saved session so Resume can replay the same command
+        private string _savedUrl     = "";
+        private string _savedQuality = "best";
+        private string _savedFormat  = "mp4";
+
+        private Process?              _activeProcess = null;
+        private CancellationTokenSource? _cts        = null;
+        private readonly object       _processLock   = new object();
+
+        public MainWindow() => InitializeComponent();
+
+        // ── UI helpers ────────────────────────────────────────────────────
+
+        private void ApplyState(DownloadState s)
         {
-            InitializeComponent();
+            _state = s;
+
+            DownloadButton.Visibility = s == DownloadState.Idle        ? Visibility.Visible : Visibility.Collapsed;
+            StopButton.Visibility     = s == DownloadState.Downloading  ? Visibility.Visible : Visibility.Collapsed;
+            ResumeButton.Visibility   = s == DownloadState.Paused       ? Visibility.Visible : Visibility.Collapsed;
+            CancelButton.Visibility   = s != DownloadState.Idle         ? Visibility.Visible : Visibility.Collapsed;
+
+            // Status dot colour: teal=ready, orange=downloading, purple=paused
+            StatusDot.Fill = s switch
+            {
+                DownloadState.Downloading => new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00)),
+                DownloadState.Paused      => new SolidColorBrush(Color.FromRgb(0xBB, 0x86, 0xFC)),
+                _                         => (SolidColorBrush)FindResource("SecondaryColor")
+            };
         }
 
-        // Called when the track Grid changes size (window resize etc.)
-        // Re-applies current progress so the fill width stays correct.
         private void ProgressTrack_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetProgressFillWidth(_currentProgress, animate: false);
-        }
+            => SetProgressFillWidth(_currentProgress, animate: false);
 
-        /// <summary>
-        /// Updates the custom progress bar fill width.
-        /// trackWidth * (percent / 100) = fill pixel width.
-        /// </summary>
         private void SetProgressFillWidth(double percent, bool animate = true)
         {
             _currentProgress = Math.Max(0, Math.Min(100, percent));
-
-            double trackWidth = ProgressTrack.ActualWidth;
+            double trackWidth  = ProgressTrack.ActualWidth;
             if (trackWidth <= 0) return;
 
             double targetWidth = trackWidth * (_currentProgress / 100.0);
-
-            // Show/hide the fill
-            ProgressFill.Visibility = _currentProgress > 0
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            ProgressFill.Visibility = _currentProgress > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (animate && _currentProgress > 0)
             {
-                var anim = new DoubleAnimation
+                ProgressFill.BeginAnimation(WidthProperty, new DoubleAnimation
                 {
-                    To       = targetWidth,
-                    Duration = TimeSpan.FromMilliseconds(300),
+                    To             = targetWidth,
+                    Duration       = TimeSpan.FromMilliseconds(300),
                     EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-                };
-                ProgressFill.BeginAnimation(WidthProperty, anim);
+                });
             }
             else
             {
-                ProgressFill.BeginAnimation(WidthProperty, null); // stop running anim
+                ProgressFill.BeginAnimation(WidthProperty, null);
                 ProgressFill.Width = targetWidth;
             }
 
@@ -62,38 +79,117 @@ namespace VideoDownloaderUI
                 _currentProgress.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%";
         }
 
-        // ─────────────────────────────────────────────
+        // ── Download ──────────────────────────────────────────────────────
+
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             string url = UrlTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(url))
-            {
-                MessageBox.Show("Please enter a valid URL.");
-                return;
-            }
+            if (string.IsNullOrEmpty(url)) { MessageBox.Show("Please enter a valid URL."); return; }
 
-            string quality = (QualityComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
-            string format  = (FormatComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString()  ?? "mp4";
+            _savedUrl     = url;
+            _savedQuality = (QualityComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
+            _savedFormat  = (FormatComboBox.SelectedItem  as ComboBoxItem)?.Tag?.ToString()  ?? "mp4";
 
-            DownloadButton.IsEnabled = false;
-            LogTextBlock.Text        = "";
-            StatusTextBlock.Text     = "Starting...";
+            // Full reset only when starting fresh (not resuming)
+            LogTextBlock.Text    = "";
+            StatusTextBlock.Text = "Starting...";
             SetProgressFillWidth(0, animate: false);
+
+            await StartDownloadAsync();
+        }
+
+        // ── Stop (pause) ──────────────────────────────────────────────────
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Kill the process — yt-dlp has already flushed the .part file to disk
+            KillActiveProcess();
+
+            ApplyState(DownloadState.Paused);
+            AppendLog("\n[PAUSED] Download paused — press ▶ RESUME to continue.");
+            StatusTextBlock.Text = "Paused";
+        }
+
+        // ── Resume ────────────────────────────────────────────────────────
+
+        private async void ResumeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_savedUrl)) return;
+
+            AppendLog("\n[RESUMING] Continuing download from where it stopped...");
+            StatusTextBlock.Text = "Resuming...";
+
+            await StartDownloadAsync();      // yt-dlp + continuedl:True picks up the .part file
+        }
+
+        // ── Cancel ────────────────────────────────────────────────────────
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            KillActiveProcess();
+
+            // Full UI reset
+            LogTextBlock.Text        = "";
+            StatusTextBlock.Text     = "Cancelled";
+            SetProgressFillWidth(0, animate: false);
+            PercentageTextBlock.Text = "0%";
+            _savedUrl = "";
+
+            ApplyState(DownloadState.Idle);
+        }
+
+        // ── Shared launch helper ──────────────────────────────────────────
+
+        /// <summary>
+        /// Starts (or resumes) the download using _savedUrl / _savedQuality / _savedFormat.
+        /// yt-dlp's continuedl=True inside downloader.py makes resume transparent.
+        /// </summary>
+        private async Task StartDownloadAsync()
+        {
+            ApplyState(DownloadState.Downloading);
+            _cts = new CancellationTokenSource();
 
             try
             {
-                await Task.Run(() => RunDownloader(url, quality, format));
+                await Task.Run(() => RunDownloader(_savedUrl, _savedQuality, _savedFormat, _cts.Token));
+            }
+            catch (OperationCanceledException)
+            {
+                // Handled by Stop / Cancel buttons — do not reset state here
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
+                ApplyState(DownloadState.Idle);
             }
             finally
             {
-                DownloadButton.IsEnabled = true;
-                StatusTextBlock.Text     = "Ready";
+                _cts?.Dispose();
+                _cts = null;
+
+                // Only reset to Idle if we finished normally (not paused/cancelled)
+                if (_state == DownloadState.Downloading)
+                    ApplyState(DownloadState.Idle);
             }
         }
+
+        // ── Kill helper ───────────────────────────────────────────────────
+
+        private void KillActiveProcess()
+        {
+            lock (_processLock)
+            {
+                try
+                {
+                    if (_activeProcess != null && !_activeProcess.HasExited)
+                        _activeProcess.Kill(entireProcessTree: true);
+                }
+                catch { }
+                finally { _cts?.Cancel(); }
+            }
+        }
+
+        // ── Python process ────────────────────────────────────────────────
 
         private string GetPythonExecutable()
         {
@@ -107,8 +203,7 @@ namespace VideoDownloaderUI
                     p.StartInfo.UseShellExecute        = false;
                     p.StartInfo.RedirectStandardOutput = true;
                     p.StartInfo.CreateNoWindow         = true;
-                    p.Start();
-                    p.WaitForExit();
+                    p.Start(); p.WaitForExit();
                     if (p.ExitCode == 0) return name;
                 }
                 catch { }
@@ -116,11 +211,11 @@ namespace VideoDownloaderUI
             return "python";
         }
 
-        private void RunDownloader(string url, string quality, string format)
+        private void RunDownloader(string url, string quality, string format, CancellationToken ct)
         {
             string pythonExe = GetPythonExecutable();
 
-            var start = new ProcessStartInfo
+            var si = new ProcessStartInfo
             {
                 FileName               = pythonExe,
                 UseShellExecute        = false,
@@ -128,15 +223,22 @@ namespace VideoDownloaderUI
                 RedirectStandardError  = true,
                 CreateNoWindow         = true
             };
-            start.ArgumentList.Add("downloader.py");
-            start.ArgumentList.Add(url);
-            start.ArgumentList.Add("--quality");
-            start.ArgumentList.Add(quality);
-            start.ArgumentList.Add("--format");
-            start.ArgumentList.Add(format);
+            si.ArgumentList.Add("downloader.py");
+            si.ArgumentList.Add(url);
+            si.ArgumentList.Add("--quality"); si.ArgumentList.Add(quality);
+            si.ArgumentList.Add("--format");  si.ArgumentList.Add(format);
 
-            using var process = Process.Start(start);
+            using var process = Process.Start(si);
             if (process == null) return;
+
+            lock (_processLock) _activeProcess = process;
+
+            // Auto-kill if token is cancelled (Stop / Cancel buttons)
+            using var reg = ct.Register(() =>
+            {
+                try { if (!process.HasExited) process.Kill(entireProcessTree: true); }
+                catch { }
+            });
 
             process.OutputDataReceived += (_, e) =>
             {
@@ -152,31 +254,32 @@ namespace VideoDownloaderUI
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             process.WaitForExit();
+
+            lock (_processLock) _activeProcess = null;
+
+            ct.ThrowIfCancellationRequested();
         }
+
+        // ── Output parsing ────────────────────────────────────────────────
 
         private void ProcessOutput(string data)
         {
-            // ── Progress update ──────────────────────────────────────────
             if (data.Contains("[PROGRESS]"))
             {
-                int    idx        = data.IndexOf("[PROGRESS]") + "[PROGRESS]".Length;
-                string percentStr = data.Substring(idx).Trim().Replace(",", ".");
+                int    idx  = data.IndexOf("[PROGRESS]") + "[PROGRESS]".Length;
+                string pStr = data.Substring(idx).Trim().Replace(",", ".");
 
-                var match = System.Text.RegularExpressions.Regex.Match(percentStr, @"\d+(\.\d+)?");
-                if (match.Success &&
-                    double.TryParse(match.Value,
+                var m = System.Text.RegularExpressions.Regex.Match(pStr, @"\d+(\.\d+)?");
+                if (m.Success &&
+                    double.TryParse(m.Value,
                         System.Globalization.NumberStyles.Any,
                         System.Globalization.CultureInfo.InvariantCulture,
                         out double pct))
-                {
                     SetProgressFillWidth(pct);
-                }
 
-                // Don't echo pure progress lines to the log
                 if (data.TrimStart().StartsWith("[PROGRESS]")) return;
             }
 
-            // ── Status / warning / error ──────────────────────────────────
             if (data.StartsWith("[STATUS]"))
                 StatusTextBlock.Text = data.Replace("[STATUS]", "").Trim();
 

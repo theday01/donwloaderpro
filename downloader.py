@@ -29,8 +29,6 @@ def download_video(url, output_path, quality="best", ext="mp4"):
         sys.stdout.flush()
         format_str = 'best'
     else:
-        # Construct format string with extension preference
-        # We prioritize height and then extension to ensure true 1080p
         if quality == "1080":
             format_str = f'bestvideo[height<=1080]+bestaudio/best[height<=1080]'
         elif quality == "720":
@@ -47,6 +45,8 @@ def download_video(url, output_path, quality="best", ext="mp4"):
         'progress_hooks': [progress_hook],
         'quiet': True,
         'no_warnings': True,
+        # ← KEY: resume from .part file if it exists
+        'continuedl': True,
     }
     
     try:
