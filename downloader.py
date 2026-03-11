@@ -25,14 +25,15 @@ def download_video(url, output_path, quality="best", ext="mp4"):
         format_str = 'best'
     else:
         # Construct format string with extension preference
+        # We prioritize height and then extension to ensure true 1080p
         if quality == "1080":
-            format_str = f'bestvideo[height<=1080][ext={ext}]+bestaudio[ext=m4a]/best[height<=1080][ext={ext}]/best[height<=1080]'
+            format_str = f'bestvideo[height<=1080]+bestaudio/best[height<=1080]'
         elif quality == "720":
-            format_str = f'bestvideo[height<=720][ext={ext}]+bestaudio[ext=m4a]/best[height<=720][ext={ext}]/best[height<=720]'
+            format_str = f'bestvideo[height<=720]+bestaudio/best[height<=720]'
         elif quality == "480":
-            format_str = f'bestvideo[height<=480][ext={ext}]+bestaudio[ext=m4a]/best[height<=480][ext={ext}]/best[height<=480]'
+            format_str = f'bestvideo[height<=480]+bestaudio/best[height<=480]'
         else:
-            format_str = f'bestvideo[ext={ext}]+bestaudio[ext=m4a]/best[ext={ext}]/best'
+            format_str = f'bestvideo+bestaudio/best'
 
     ydl_opts = {
         'format': format_str,
