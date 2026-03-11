@@ -127,12 +127,17 @@ namespace VideoDownloaderUI
             {
                 int index = data.IndexOf("[PROGRESS]");
                 string percentStr = data.Substring(index + "[PROGRESS]".Length).Trim();
+                // Replace comma with dot to handle different locales
+                percentStr = percentStr.Replace(",", ".");
+
                 // Try to extract only the numeric part
                 var match = System.Text.RegularExpressions.Regex.Match(percentStr, @"\d+(\.\d+)?");
-                if (match.Success && double.TryParse(match.Value, out double percent))
+                if (match.Success && double.TryParse(match.Value, System.Globalization.CultureInfo.InvariantCulture, out double percent))
                 {
+                    // Clamp value between 0 and 100
+                    percent = Math.Max(0, Math.Min(100, percent));
                     DownloadProgressBar.Value = percent;
-                    PercentageTextBlock.Text = $"{percent:F1}%";
+                    PercentageTextBlock.Text = percent.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%";
                 }
 
                 // If the line only contained progress info, don't log it
