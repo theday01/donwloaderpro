@@ -28,6 +28,7 @@
     <sys:String x:Key="StatusResuming">جاري الاستئناف...</sys:String>
     <sys:String x:Key="StatusCancelled">تم الإلغاء</sys:String>
     <sys:String x:Key="StatusSuccess">تم بنجاح</sys:String>
+    <sys:String x:Key="StatusStarting">جاري بدء التحميل...</sys:String>
     <sys:String x:Key="StatusNoFormat">⚠ لم يتم اختيار الصيغة</sys:String>
 
     <!-- لوحة التأكيد -->
@@ -125,6 +126,9 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
+    <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
+    <sys:String x:Key="WelcomeDev">تم التطوير بواسطة حمزة السعدي - EagleShadow</sys:String>
+    <sys:String x:Key="WelcomeReady">جاهز للبدء</sys:String>
     <sys:String x:Key="NotifyTitle">اكتمل التحميل</sys:String>
     <sys:String x:Key="NotifyMessage">تم حفظ ملف {0} بنجاح!</sys:String>
     <sys:String x:Key="MsgEnterUrl">يرجى إدخال رابط صحيح.</sys:String>

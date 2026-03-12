@@ -28,6 +28,7 @@
     <sys:String x:Key="StatusResuming">Resuming...</sys:String>
     <sys:String x:Key="StatusCancelled">Cancelled</sys:String>
     <sys:String x:Key="StatusSuccess">Success</sys:String>
+    <sys:String x:Key="StatusStarting">Starting download...</sys:String>
     <sys:String x:Key="StatusNoFormat">⚠ No format selected</sys:String>
 
     <!-- Confirmation Panel -->
@@ -125,6 +126,9 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] Continuing download from where it stopped...</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] Audio mode — video will be downloaded then converted to {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] Quality selector is disabled for audio (always uses best audio stream).</sys:String>
+    <sys:String x:Key="WelcomeTitle">Welcome to Video Downloader Pro</sys:String>
+    <sys:String x:Key="WelcomeDev">Developed by Hamza Saadi - EagleShadow</sys:String>
+    <sys:String x:Key="WelcomeReady">Ready to start</sys:String>
     <sys:String x:Key="NotifyTitle">Download Complete</sys:String>
     <sys:String x:Key="NotifyMessage">{0} file saved successfully!</sys:String>
     <sys:String x:Key="MsgEnterUrl">Please enter a valid URL.</sys:String>

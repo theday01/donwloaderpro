@@ -55,6 +55,27 @@ namespace VideoDownloaderUI
             ApplyThemeColors(_settings.AccentTheme);
             ApplyAppTheme(_settings.AppTheme);
             UpdateDownloadPathLabel();
+
+            ShowWelcomeMessage();
+        }
+
+        private void ShowWelcomeMessage()
+        {
+            LogTextBlock.Text = "";
+            AppendLog("╔" + new string('═', 50) + "╗");
+            AppendLog("║" + PadCenter(FindResource("WelcomeTitle").ToString()!, 50) + "║");
+            AppendLog("║" + PadCenter(FindResource("WelcomeDev").ToString()!, 50) + "║");
+            AppendLog("║" + PadCenter("", 50) + "║");
+            AppendLog("║" + PadCenter(FindResource("WelcomeReady").ToString()!, 50) + "║");
+            AppendLog("╚" + new string('═', 50) + "╝\n");
+        }
+
+        private static string PadCenter(string text, int length)
+        {
+            if (text.Length >= length) return text.Substring(0, length);
+            int leftPad = (length - text.Length) / 2;
+            int rightPad = length - text.Length - leftPad;
+            return new string(' ', leftPad) + text + new string(' ', rightPad);
         }
 
         private void ApplyLanguage(string lang)
@@ -1153,6 +1174,8 @@ namespace VideoDownloaderUI
             {
                 string status  = data.Replace("[STATUS]", "").Trim();
                 if (status == "Success") status = FindResource("StatusSuccess").ToString()!;
+                else if (status.StartsWith("Starting download")) status = FindResource("StatusStarting").ToString()!;
+
                 StatusTextBlock.Text = status;
                 bool isConvert = status.Contains("Converting") || status.Contains("conversion") || status.Contains("processing");
                 AppendLog(isConvert ? $"[⚙ PROCESSING] {status}" : data);
