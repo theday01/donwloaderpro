@@ -66,6 +66,8 @@ namespace VideoDownloaderUI
             TabAboutBtn.Tag      = "inactive";
             RefreshTabButtonState(TabDownloaderBtn);
             RefreshTabButtonState(TabAboutBtn);
+            // ✅ FIX 3: تحديث ألوان أيقونات التبويبات عند التبديل
+            SyncTabButtonForegrounds();
         }
 
         private void Tab_About_Click(object sender, RoutedEventArgs e)
@@ -77,6 +79,8 @@ namespace VideoDownloaderUI
             TabAboutBtn.Tag      = "active";
             RefreshTabButtonState(TabDownloaderBtn);
             RefreshTabButtonState(TabAboutBtn);
+            // ✅ FIX 3: تحديث ألوان أيقونات التبويبات عند التبديل
+            SyncTabButtonForegrounds();
 
             if (!_aboutLoaded)
             {
@@ -482,6 +486,7 @@ namespace VideoDownloaderUI
                 ClearLogButton.Foreground = new SolidColorBrush(
                     isLight ? Color.FromRgb(0x99, 0x44, 0x44) : Color.FromRgb(0x88, 0x88, 0x88));
 
+            // ✅ FIX 2: استخدام الاسم الصحيح "AboutIdentityCard" بدل "AboutDevCard"
             ApplyAboutTabTheme(isLight, cardBg);
 
             if (StatusTextBlock  != null) StatusTextBlock.Foreground  = new SolidColorBrush(labelFg);
@@ -490,16 +495,83 @@ namespace VideoDownloaderUI
                 StatusDot.Fill = new SolidColorBrush(dotReady);
 
             ApplySettingsPanelTheme(isLight);
+
+            // ✅ FIX 1+3: تحديث لون أيقونات التبويبات عبر DynamicResource + تطبيق فوري
+            Resources["TabInactiveFg"] = new SolidColorBrush(
+                isLight ? Color.FromRgb(0x55, 0x55, 0x88)
+                        : Color.FromRgb(0xAA, 0xAA, 0xAA));
+            SyncTabButtonForegrounds();
+
+            // ✅ FIX 3: تحديث أيقونة الإعدادات ⚙
+            if (FindName("SettingsButton") is Button gearBtn)
+                gearBtn.Foreground = new SolidColorBrush(
+                    isLight ? Color.FromRgb(0x55, 0x55, 0x88)
+                            : Color.FromRgb(0x88, 0x88, 0x88));
+
+            // ✅ FIX 3: تحديث ألوان خلفية أيقونات بطاقات الـ Changelog
+            UpdateChangelogIconWrappers(isLight,
+                isLight ? Color.FromRgb(0xE8, 0xEB, 0xFF)
+                        : Color.FromRgb(0x1A, 0x0D, 0x2E));
         }
 
+        // ✅ FIX 2: إصلاح اسم البطاقة — "AboutIdentityCard" هو الاسم الصحيح في XAML
         private void ApplyAboutTabTheme(bool isLight, Color cardBg)
         {
             var cardBrush = new SolidColorBrush(cardBg);
-
-            if (FindName("AboutDevCard")       is Border dc)  dc.Background  = cardBrush;
+            if (FindName("AboutIdentityCard")  is Border ic)  ic.Background  = cardBrush;
+            if (FindName("AboutLogoCard")      is Border lc)  lc.Background  = cardBrush;
             if (FindName("AboutSysCard")       is Border sc)  sc.Background  = cardBrush;
-            if (FindName("AboutDepsCard")      is Border dpc) dpc.Background = cardBrush;
             if (FindName("AboutChangelogCard") is Border clc) clc.Background = cardBrush;
+        }
+
+        // ✅ FIX 3: دالة جديدة — تزامن ألوان أيقونات التبويبات مع الثيم والحالة النشطة
+        /// <summary>
+        /// يضبط Foreground لكل زر تبويب بناءً على حالته (active/inactive)
+        /// والثيم الحالي (dark/light). يُستدعى عند تغيير التبويب أو الثيم.
+        /// </summary>
+        private void SyncTabButtonForegrounds()
+        {
+            bool isLight       = _settings.AppTheme == "light";
+            var  activeBrush   = new SolidColorBrush(isLight
+                ? Color.FromRgb(0x1A, 0x1A, 0x2E) : Colors.White);
+            var  inactiveBrush = new SolidColorBrush(isLight
+                ? Color.FromRgb(0x55, 0x55, 0x88)
+                : Color.FromRgb(0xAA, 0xAA, 0xAA));
+
+            if (TabDownloaderBtn != null)
+                TabDownloaderBtn.Foreground =
+                    TabDownloaderBtn.Tag?.ToString() == "active" ? activeBrush : inactiveBrush;
+
+            if (TabAboutBtn != null)
+                TabAboutBtn.Foreground =
+                    TabAboutBtn.Tag?.ToString() == "active" ? activeBrush : inactiveBrush;
+        }
+
+        // ✅ FIX 3: دالة جديدة — إعادة تلوين حاويات الأيقونات الصغيرة في بطاقات Changelog
+        /// <summary>
+        /// تبحث عن الـ Border الصغيرة (32×32) داخل بطاقة Changelog
+        /// وتضبط لونها لتناسب الوضع الفاتح أو الداكن.
+        /// </summary>
+        private void UpdateChangelogIconWrappers(bool isLight, Color wrapperBg)
+        {
+            // في الوضع الداكن: الألوان المُحسّنة موجودة في XAML — لا نُوحّدها بلون واحد
+            // في الوضع الفاتح فقط: نُطبّق خلفية لافندر موحّدة على الحاويات
+            if (!isLight) return;
+
+            if (FindName("AboutChangelogCard") is not Border root) return;
+            var brush = new SolidColorBrush(wrapperBg);
+
+            void Walk(DependencyObject parent)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    if (child is Border b && b.Width == 32 && b.Height == 32)
+                        b.Background = brush;
+                    Walk(child);
+                }
+            }
+            Walk(root);
         }
 
         private void ApplySettingsPanelTheme(bool isLight)

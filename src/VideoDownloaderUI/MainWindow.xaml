@@ -12,10 +12,13 @@
         <SolidColorBrush x:Key="PrimaryColor"   Color="#BB86FC"/>
         <SolidColorBrush x:Key="SecondaryColor" Color="#03DAC6"/>
         <SolidColorBrush x:Key="CardColor"      Color="#1E202E"/>
+        <!-- ✅ FIX 1: مورد ديناميكي للون أيقونات التبويبات غير النشطة -->
+        <SolidColorBrush x:Key="TabInactiveFg"  Color="#AAAAAA"/>
 
         <Style x:Key="TabButtonStyle" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="Foreground"      Value="#555"/>
+            <!-- ✅ FIX 1: استبدال #555 الثابت بمورد ديناميكي -->
+            <Setter Property="Foreground"      Value="{DynamicResource TabInactiveFg}"/>
             <Setter Property="FontSize"        Value="13"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -319,7 +322,7 @@
             <Setter Property="Foreground" Value="#BB86FC"/><Setter Property="Margin" Value="0,0,0,14"/>
         </Style>
         <Style x:Key="AboutRowKey" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#555"/>
+            <Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#888888"/>
             <Setter Property="Width" Value="115"/><Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
         <Style x:Key="AboutRowVal" TargetType="TextBlock">
@@ -798,9 +801,7 @@
                         </Border>
                     </Grid>
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- CHANGELOG — Pro redesign                                       -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    <!-- CHANGELOG -->
                     <Border x:Name="AboutChangelogCard" Background="{StaticResource CardColor}"
                             CornerRadius="14" Padding="0" Margin="0,0,0,18" ClipToBounds="True">
                         <StackPanel>
@@ -819,8 +820,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Border Background="#0F0A1E" CornerRadius="5" Padding="8,4" Margin="0,0,12,0">
-                                            <TextBlock Text="&#x1F4CB;" FontSize="14" VerticalAlignment="Center"/>
+                                        <Border Background="#2A1A4A" CornerRadius="5" Padding="8,4" Margin="0,0,12,0">
+                                            <TextBlock Text="&#x1F4CB;" FontSize="14" Foreground="White" VerticalAlignment="Center"/>
                                         </Border>
                                         <StackPanel>
                                             <TextBlock Text="CHANGELOG" FontFamily="Consolas" FontSize="10"
@@ -843,7 +844,7 @@
 
                             <Border Height="1" Background="#14162A"/>
 
-                            <!-- ─── v 2.1 ─────────────────────────────────────────── -->
+                            <!-- v 2.1 -->
                             <Border Padding="24,22,24,20">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -857,7 +858,6 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- version pill -->
                                     <Border Background="#1A0D2E" CornerRadius="8" Padding="0,6"
                                             HorizontalAlignment="Center" Width="52" VerticalAlignment="Top" Margin="0,2,0,0">
                                         <Border.Effect>
@@ -868,7 +868,6 @@
                                     </Border>
 
                                     <StackPanel Grid.Column="1">
-                                        <!-- release meta row -->
                                         <Grid Margin="0,0,0,12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -899,14 +898,13 @@
                                             </Border>
                                         </Grid>
 
-                                        <!-- feature cards -->
                                         <StackPanel>
                                             <Border Margin="0,0,0,6" CornerRadius="8" Padding="12,10"
                                                     Background="#0D0B18" BorderThickness="1" BorderBrush="#1E1830">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#1A0D2E" Margin="0,0,12,0" VerticalAlignment="Top">
-                                                        <TextBlock Text="&#x1F9ED;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#5C2D9A" Margin="0,0,12,0" VerticalAlignment="Top">
+                                                        <TextBlock Text="&#x1F9ED;" FontSize="15" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
@@ -924,8 +922,8 @@
                                                     Background="#0D0B18" BorderThickness="1" BorderBrush="#1E1830">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#141B2A" Margin="0,0,12,0" VerticalAlignment="Top">
-                                                        <TextBlock Text="&#x1F319;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#1E4A8A" Margin="0,0,12,0" VerticalAlignment="Top">
+                                                        <TextBlock Text="&#x1F319;" FontSize="15" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
@@ -943,8 +941,8 @@
                                                     Background="#0D0B18" BorderThickness="1" BorderBrush="#1E1830">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#1A1A0A" Margin="0,0,12,0" VerticalAlignment="Top">
-                                                        <TextBlock Text="&#x1F50D;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#5C4400" Margin="0,0,12,0" VerticalAlignment="Top">
+                                                        <TextBlock Text="&#x1F50D;" FontSize="15" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
@@ -962,8 +960,8 @@
                                                     Background="#0D0B18" BorderThickness="1" BorderBrush="#1E1830">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#0A1A0A" Margin="0,0,12,0" VerticalAlignment="Top">
-                                                        <TextBlock Text="&#x23F8;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#1A4A22" Margin="0,0,12,0" VerticalAlignment="Top">
+                                                        <TextBlock Text="&#x23F8;" FontSize="15" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
@@ -981,8 +979,8 @@
                                                     Background="#0D0B18" BorderThickness="1" BorderBrush="#1E1830">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#1A0A14" Margin="0,0,12,0" VerticalAlignment="Top">
-                                                        <TextBlock Text="&#x1F3A8;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="32" Height="32" CornerRadius="8" Background="#5C1440" Margin="0,0,12,0" VerticalAlignment="Top">
+                                                        <TextBlock Text="&#x1F3A8;" FontSize="15" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
@@ -1002,7 +1000,7 @@
 
                             <Border Height="1" Margin="24,0" Background="#14162A"/>
 
-                            <!-- ─── v 2.0 ─────────────────────────────────────────── -->
+                            <!-- v 2.0 -->
                             <Border Padding="24,22,24,20" Background="Transparent">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -1076,7 +1074,7 @@
 
                             <Border Height="1" Margin="24,0" Background="#14162A"/>
 
-                            <!-- ─── v 1.0 ─────────────────────────────────────────── -->
+                            <!-- v 1.0 -->
                             <Border Padding="24,20,24,20" Background="Transparent">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
