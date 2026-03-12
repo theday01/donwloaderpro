@@ -12,7 +12,6 @@
         <SolidColorBrush x:Key="SecondaryColor" Color="#03DAC6"/>
         <SolidColorBrush x:Key="CardColor"      Color="#1E202E"/>
 
-        <!-- ── Tab Button ── -->
         <Style x:Key="TabButtonStyle" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
             <Setter Property="Foreground"      Value="#555"/>
@@ -25,8 +24,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Border x:Name="BtnBg" Background="{TemplateBinding Background}"
-                                    Padding="{TemplateBinding Padding}">
+                            <Border x:Name="BtnBg" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <Border x:Name="ActiveBar" Height="2" VerticalAlignment="Bottom"
@@ -46,7 +44,6 @@
             </Setter>
         </Style>
 
-        <!-- ── Modern Button ── -->
         <Style x:Key="ModernButtonStyle" TargetType="Button">
             <Setter Property="Background"      Value="{StaticResource SecondaryColor}"/>
             <Setter Property="Foreground"      Value="Black"/>
@@ -69,7 +66,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Stop Button ── -->
         <Style x:Key="StopButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FF9800"/><Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
@@ -89,7 +85,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Resume Button ── -->
         <Style x:Key="ResumeButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#4CAF50"/><Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
@@ -109,7 +104,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Cancel Button ── -->
         <Style x:Key="CancelButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#F44336"/><Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
@@ -129,77 +123,50 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Confirm Yes ── -->
         <Style x:Key="ConfirmYesStyle" TargetType="Button">
-            <Setter Property="Background" Value="#2E7D32"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize"   Value="13"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor"     Value="Hand"/>
-            <Setter Property="MinWidth"   Value="170"/>
-            <Setter Property="Height"     Value="42"/>
-            <Setter Property="Padding"    Value="18,0"/>
+            <Setter Property="Background" Value="#2E7D32"/><Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="170"/><Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="10" Padding="{TemplateBinding Padding}">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="10" ShadowDepth="2"
-                                                  Color="#1B5E20" Opacity="0.5"/>
-                            </Border.Effect>
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <Border.Effect><DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#1B5E20" Opacity="0.5"/></Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#43A047"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#1B5E20"/>
-                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="#43A047"/></Trigger>
+                            <Trigger Property="IsPressed"   Value="True"><Setter TargetName="Bd" Property="Background" Value="#1B5E20"/></Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- ── Confirm No ── -->
         <Style x:Key="ConfirmNoStyle" TargetType="Button">
-            <Setter Property="Background" Value="#C62828"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize"   Value="13"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor"     Value="Hand"/>
-            <Setter Property="MinWidth"   Value="140"/>
-            <Setter Property="Height"     Value="42"/>
-            <Setter Property="Padding"    Value="18,0"/>
+            <Setter Property="Background" Value="#C62828"/><Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="140"/><Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="10" Padding="{TemplateBinding Padding}">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="10" ShadowDepth="2"
-                                                  Color="#B71C1C" Opacity="0.5"/>
-                            </Border.Effect>
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <Border.Effect><DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#B71C1C" Opacity="0.5"/></Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#E53935"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#B71C1C"/>
-                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="#E53935"/></Trigger>
+                            <Trigger Property="IsPressed"   Value="True"><Setter TargetName="Bd" Property="Background" Value="#B71C1C"/></Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- ── Settings Save Button ── -->
         <Style x:Key="SettingsSaveStyle" TargetType="Button">
             <Setter Property="Background" Value="#03DAC6"/><Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="14"/>
@@ -218,13 +185,10 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Icon Button (gear/close) ── -->
         <Style x:Key="IconButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Gray"/>
-            <Setter Property="FontSize"   Value="20"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor"     Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="FontSize" Value="20"/><Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -242,13 +206,10 @@
             </Style.Triggers>
         </Style>
 
-        <!-- ── Theme Swatch Button ── -->
         <Style x:Key="ThemeSwatchStyle" TargetType="Button">
-            <Setter Property="Width"  Value="32"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/><Setter Property="Height" Value="32"/>
             <Setter Property="Margin" Value="4,0"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="2"/><Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -263,18 +224,13 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="White"/>
-                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="BorderBrush" Value="White"/></Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- ── ComboBox ── -->
         <Style TargetType="ComboBox">
-            <Setter Property="Background"               Value="#2C2E3E"/>
-            <Setter Property="Foreground"               Value="White"/>
-            <Setter Property="BorderThickness"          Value="0"/>
-            <Setter Property="Padding"                  Value="10,5"/>
+            <Setter Property="Background" Value="#2C2E3E"/><Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="10,5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -282,11 +238,9 @@
                         <Border Background="#2C2E3E" CornerRadius="8" Padding="5">
                             <Grid>
                                 <ToggleButton Background="Transparent" BorderThickness="0" Focusable="false"
-                                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
-                                                          RelativeSource={RelativeSource TemplatedParent}}"
+                                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                               ClickMode="Press"/>
-                                <ContentPresenter IsHitTestVisible="False"
-                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                <ContentPresenter IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}"
                                                   Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                 <Path Fill="White" HorizontalAlignment="Right" VerticalAlignment="Center"
                                       Margin="0,0,10,0" Data="M 0 0 L 4 4 L 8 0 Z"/>
@@ -296,8 +250,7 @@
                                             CornerRadius="8" MinWidth="{TemplateBinding ActualWidth}"
                                             MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                         <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                            <StackPanel IsItemsHost="True"
-                                                        KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
                                         </ScrollViewer>
                                     </Border>
                                 </Popup>
@@ -308,11 +261,9 @@
             </Setter>
         </Style>
 
-        <!-- ── Settings Toggle CheckBox ── -->
         <Style x:Key="ToggleCheckStyle" TargetType="CheckBox">
-            <Setter Property="Foreground" Value="#CCCCCC"/>
-            <Setter Property="FontSize"   Value="13"/>
-            <Setter Property="Cursor"     Value="Hand"/>
+            <Setter Property="Foreground" Value="#CCCCCC"/><Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
@@ -322,8 +273,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <ContentPresenter Grid.Column="0" VerticalAlignment="Center"/>
-                            <Border Grid.Column="1" Width="44" Height="24" CornerRadius="12"
-                                    Margin="12,0,0,0" VerticalAlignment="Center">
+                            <Border Grid.Column="1" Width="44" Height="24" CornerRadius="12" Margin="12,0,0,0" VerticalAlignment="Center">
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="#444"/>
@@ -355,108 +305,73 @@
             </Setter>
         </Style>
 
-        <!-- ── Settings Section TextBlock label ── -->
         <Style x:Key="SettingsSectionLabel" TargetType="TextBlock">
-            <Setter Property="Foreground"  Value="#BB86FC"/>
-            <Setter Property="FontSize"    Value="11"/>
-            <Setter Property="FontWeight"  Value="Bold"/>
-            <Setter Property="Margin"      Value="0,18,0,8"/>
-            <Setter Property="Text"        Value="SECTION"/>
+            <Setter Property="Foreground" Value="#BB86FC"/><Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/><Setter Property="Margin" Value="0,18,0,8"/>
         </Style>
-
-        <!-- ── Settings field label ── -->
         <Style x:Key="SettingsFieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#AAAAAA"/>
-            <Setter Property="FontSize"   Value="12"/>
-            <Setter Property="Margin"     Value="0,0,0,6"/>
+            <Setter Property="Foreground" Value="#AAAAAA"/><Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
         </Style>
-
-        <!-- ── About section label ── -->
         <Style x:Key="AboutSectionLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="10"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#BB86FC"/>
-            <Setter Property="Margin"     Value="0,0,0,14"/>
+            <Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#BB86FC"/><Setter Property="Margin" Value="0,0,0,14"/>
         </Style>
-
-        <!-- ── About info row key ── -->
         <Style x:Key="AboutRowKey" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="12"/>
-            <Setter Property="Foreground" Value="#555"/>
-            <Setter Property="Width"      Value="115"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Width" Value="115"/><Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
-
-        <!-- ── About info row value ── -->
         <Style x:Key="AboutRowVal" TargetType="TextBlock">
-            <Setter Property="FontSize"     Value="12"/>
-            <Setter Property="Foreground"   Value="#C8C8C8"/>
+            <Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#C8C8C8"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
     </Window.Resources>
 
-    <!-- Root Grid: tab bar + content + settings overlay -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- 0  Tab navigation bar -->
-            <RowDefinition Height="*"/>     <!-- 1  Page content       -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ════════════════════════════════════════════════
-             TAB NAVIGATION BAR
-             ════════════════════════════════════════════════ -->
-        <Border Grid.Row="0" x:Name="TabBarBorder"
-                Background="#08090F" BorderBrush="#15172A" BorderThickness="0,0,0,1">
+        <!-- TAB BAR -->
+        <Border Grid.Row="0" x:Name="TabBarBorder" Background="#08090F" BorderBrush="#15172A" BorderThickness="0,0,0,1">
             <Grid>
                 <StackPanel Orientation="Horizontal" Margin="14,0">
-                    <Button x:Name="TabDownloaderBtn"
-                            Content="⬇  Downloader"
-                            Tag="active"
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="Tab_Downloader_Click"/>
-                    <Button x:Name="TabAboutBtn"
-                            Content="ℹ  About &amp; System"
-                            Tag="inactive"
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="Tab_About_Click"/>
+                    <Button x:Name="TabDownloaderBtn" Content="&#x2B07;  Downloader" Tag="active"
+                            Style="{StaticResource TabButtonStyle}" Click="Tab_Downloader_Click"/>
+                    <Button x:Name="TabAboutBtn" Content="&#x2139;  About &amp; System" Tag="inactive"
+                            Style="{StaticResource TabButtonStyle}" Click="Tab_About_Click"/>
                 </StackPanel>
-                <!-- App version badge (top-right) -->
-                <Border HorizontalAlignment="Right" VerticalAlignment="Center"
-                        Margin="0,0,20,0" Background="#1A1D2E" CornerRadius="6" Padding="10,4">
-                    <TextBlock Text="v2.1 PRO" FontSize="11" FontWeight="Bold"
-                               Foreground="#444" FontFamily="Consolas"/>
+                <Border HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0"
+                        Background="#1A1D2E" CornerRadius="6" Padding="10,4">
+                    <TextBlock Text="v2.1 PRO" FontSize="11" FontWeight="Bold" Foreground="#444" FontFamily="Consolas"/>
                 </Border>
             </Grid>
         </Border>
 
-        <!-- ════════════════════════════════════════════════
-             PAGE 1 — DOWNLOADER (main content)
-             ════════════════════════════════════════════════ -->
+        <!-- PAGE 1 — DOWNLOADER -->
         <Grid x:Name="MainContentGrid" Grid.Row="1" Margin="30">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>  <!-- 0 Header        -->
-                <RowDefinition Height="Auto"/>  <!-- 1 Input card    -->
-                <RowDefinition Height="Auto"/>  <!-- 2 Confirm panel -->
-                <RowDefinition Height="*"/>     <!-- 3 Progress/Log  -->
-                <RowDefinition Height="Auto"/>  <!-- 4 Footer        -->
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- ── Header ── -->
             <Grid Margin="0,0,0,30">
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock x:Name="AppTitleText" Text="Video Downloader Pro" FontSize="36" FontWeight="ExtraBold"
                                Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center"/>
-                    <TextBlock x:Name="AppSubtitleText" Text="Fast &amp; High Quality Downloads — Video &amp; Audio" FontSize="14"
-                               Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    <TextBlock x:Name="AppSubtitleText" Text="Fast &amp; High Quality Downloads — Video &amp; Audio"
+                               FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                 </StackPanel>
-                <!-- Settings Gear Button -->
                 <Button x:Name="SettingsButton" Style="{StaticResource IconButtonStyle}"
                         HorizontalAlignment="Right" VerticalAlignment="Top"
-                        Content="⚙" ToolTip="Settings" Click="SettingsButton_Click"/>
+                        Content="&#x2699;" ToolTip="Settings" Click="SettingsButton_Click"/>
             </Grid>
 
-            <!-- ── Input card ── -->
             <Border Grid.Row="1" x:Name="InputCard" Background="{StaticResource CardColor}"
                     CornerRadius="15" Padding="20" Margin="0,0,0,20">
                 <StackPanel>
@@ -483,15 +398,12 @@
                             </TextBlock.Style>
                         </TextBlock>
                     </Grid>
-
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
-                        <!-- Quality -->
                         <StackPanel Margin="0,0,10,0">
                             <TextBlock x:Name="QualityLabel" Text="Quality" Foreground="Gray" FontSize="12" Margin="5,0,0,5"/>
                             <ComboBox x:Name="QualityComboBox" Height="40" SelectedIndex="0">
@@ -502,9 +414,8 @@
                                         <Setter Property="Padding"    Value="10"/>
                                     </Style>
                                 </ComboBox.Resources>
-                                <ComboBoxItem Content="🏆 Best Quality" Tag="best"/>
-                                <ComboBoxItem Content="── VIDEO ──" Tag="" IsEnabled="False"
-                                              Foreground="#BB86FC" FontWeight="Bold" FontSize="11"/>
+                                <ComboBoxItem Content="&#x1F3C6; Best Quality" Tag="best"/>
+                                <ComboBoxItem Content="── VIDEO ──" Tag="" IsEnabled="False" Foreground="#BB86FC" FontWeight="Bold" FontSize="11"/>
                                 <ComboBoxItem Content="4K  — 2160p" Tag="2160"/>
                                 <ComboBoxItem Content="2K  — 1440p" Tag="1440"/>
                                 <ComboBoxItem Content="FHD — 1080p" Tag="1080"/>
@@ -515,12 +426,10 @@
                                 <ComboBoxItem Content="Min —  144p" Tag="144"/>
                             </ComboBox>
                         </StackPanel>
-
-                        <!-- Format -->
                         <StackPanel Grid.Column="1" Margin="10,0,10,0">
                             <StackPanel Orientation="Horizontal" Margin="5,0,0,5">
                                 <TextBlock x:Name="FormatLabel" Text="Format" Foreground="Gray" FontSize="12"/>
-                                <TextBlock x:Name="AudioBadge" Text=" 🎵 AUDIO" Foreground="#FF6B6B"
+                                <TextBlock x:Name="AudioBadge" Text=" &#x1F3B5; AUDIO" Foreground="#FF6B6B"
                                            FontSize="11" FontWeight="Bold" Visibility="Collapsed"/>
                             </StackPanel>
                             <ComboBox x:Name="FormatComboBox" Height="40" SelectedIndex="0"
@@ -532,84 +441,59 @@
                                         <Setter Property="Padding"    Value="10"/>
                                     </Style>
                                 </ComboBox.Resources>
-                                <ComboBoxItem Content="── VIDEO ──" Tag="" IsEnabled="False"
-                                              Foreground="#BB86FC" FontWeight="Bold" FontSize="11"/>
+                                <ComboBoxItem Content="── VIDEO ──" Tag="" IsEnabled="False" Foreground="#BB86FC" FontWeight="Bold" FontSize="11"/>
                                 <ComboBoxItem Content="MP4"  Tag="mp4"/>
                                 <ComboBoxItem Content="WebM" Tag="webm"/>
                                 <ComboBoxItem Content="AVI"  Tag="avi"/>
                                 <ComboBoxItem Content="WMV"  Tag="wmv"/>
-                                <ComboBoxItem Content="── AUDIO ──" Tag="" IsEnabled="False"
-                                              Foreground="#FF6B6B" FontWeight="Bold" FontSize="11"/>
-                                <ComboBoxItem Content="MP3 🎵" Tag="mp3"/>
-                                <ComboBoxItem Content="M4A 🎵" Tag="m4a"/>
-                                <ComboBoxItem Content="WAV 🎵" Tag="wav"/>
+                                <ComboBoxItem Content="── AUDIO ──" Tag="" IsEnabled="False" Foreground="#FF6B6B" FontWeight="Bold" FontSize="11"/>
+                                <ComboBoxItem Content="MP3 &#x1F3B5;" Tag="mp3"/>
+                                <ComboBoxItem Content="M4A &#x1F3B5;" Tag="m4a"/>
+                                <ComboBoxItem Content="WAV &#x1F3B5;" Tag="wav"/>
                             </ComboBox>
                         </StackPanel>
-
-                        <!-- Buttons -->
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom">
-                            <Button x:Name="DownloadButton"
-                                    Content="⬇ DOWNLOAD NOW" Width="165" Height="40" Padding="15,10"
-                                    Style="{StaticResource ModernButtonStyle}"
-                                    Click="DownloadButton_Click" Visibility="Visible"/>
-                            <Button x:Name="StopButton"
-                                    Content="⏸ STOP" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
-                                    Style="{StaticResource StopButtonStyle}"
-                                    Click="StopButton_Click" Visibility="Collapsed"/>
-                            <Button x:Name="ResumeButton"
-                                    Content="▶ RESUME" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
-                                    Style="{StaticResource ResumeButtonStyle}"
-                                    Click="ResumeButton_Click" Visibility="Collapsed"/>
-                            <Button x:Name="CancelButton"
-                                    Content="✖ CANCEL" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
-                                    Style="{StaticResource CancelButtonStyle}"
-                                    Click="CancelButton_Click" Visibility="Collapsed"/>
+                            <Button x:Name="DownloadButton" Content="&#x2B07; DOWNLOAD NOW" Width="165" Height="40" Padding="15,10"
+                                    Style="{StaticResource ModernButtonStyle}" Click="DownloadButton_Click" Visibility="Visible"/>
+                            <Button x:Name="StopButton" Content="&#x23F8; STOP" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
+                                    Style="{StaticResource StopButtonStyle}" Click="StopButton_Click" Visibility="Collapsed"/>
+                            <Button x:Name="ResumeButton" Content="&#x25B6; RESUME" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
+                                    Style="{StaticResource ResumeButtonStyle}" Click="ResumeButton_Click" Visibility="Collapsed"/>
+                            <Button x:Name="CancelButton" Content="&#x2716; CANCEL" Width="110" Height="40" Padding="12,10" Margin="8,0,0,0"
+                                    Style="{StaticResource CancelButtonStyle}" Click="CancelButton_Click" Visibility="Collapsed"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- ── Duplicate confirm panel ── -->
             <Border Grid.Row="2" x:Name="ConfirmPanel"
                     Background="#2A1A00" BorderBrush="#FF9800" BorderThickness="1"
-                    CornerRadius="12" Padding="18,14" Margin="0,0,0,16"
-                    Visibility="Collapsed">
+                    CornerRadius="12" Padding="18,14" Margin="0,0,0,16" Visibility="Collapsed">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="⚠  This file was already downloaded!" FontSize="14"
-                                   FontWeight="Bold" Foreground="#FF9800"/>
-                        <TextBlock x:Name="ConfirmFileNameText" Text="" FontSize="11"
-                                   Foreground="#AAAAAA" Margin="0,4,0,0" TextWrapping="Wrap"/>
-                        <TextBlock Text="Do you want to re-download it with the new quality/format?"
-                                   FontSize="12" Foreground="White" Margin="0,6,0,0"/>
+                        <TextBlock Text="&#x26A0;  This file was already downloaded!" FontSize="14" FontWeight="Bold" Foreground="#FF9800"/>
+                        <TextBlock x:Name="ConfirmFileNameText" Text="" FontSize="11" Foreground="#AAAAAA" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Do you want to re-download it with the new quality/format?" FontSize="12" Foreground="White" Margin="0,6,0,0"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                VerticalAlignment="Center" Margin="20,0,0,0">
-                        <Button x:Name="ConfirmYesButton"
-                                Content="✔  Yes, Re-download"
-                                Style="{StaticResource ConfirmYesStyle}"
-                                Click="ConfirmYes_Click"/>
-                        <Button x:Name="ConfirmNoButton"
-                                Content="✖  No, Cancel"
-                                Style="{StaticResource ConfirmNoStyle}"
-                                Margin="12,0,0,0"
-                                Click="ConfirmNo_Click"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <Button x:Name="ConfirmYesButton" Content="&#x2714;  Yes, Re-download"
+                                Style="{StaticResource ConfirmYesStyle}" Click="ConfirmYes_Click"/>
+                        <Button x:Name="ConfirmNoButton" Content="&#x2716;  No, Cancel"
+                                Style="{StaticResource ConfirmNoStyle}" Margin="12,0,0,0" Click="ConfirmNo_Click"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- ── Progress + Log card ── -->
             <Border Grid.Row="3" x:Name="ProgressLogCard" Background="{StaticResource CardColor}" CornerRadius="15" Padding="15">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
                     <StackPanel Margin="0,0,0,15">
                         <Grid Margin="0,0,0,8">
                             <TextBlock x:Name="ProgressLabel" Text="Download Progress" Foreground="Gray" FontSize="12"/>
@@ -619,8 +503,7 @@
                         </Grid>
                         <Grid x:Name="ProgressTrack" Height="14" SizeChanged="ProgressTrack_SizeChanged">
                             <Border x:Name="ProgressTrackBg" CornerRadius="7" Background="#1C1D2B"/>
-                            <Border x:Name="ProgressFill" HorizontalAlignment="Left" CornerRadius="7"
-                                    Width="0" ClipToBounds="True">
+                            <Border x:Name="ProgressFill" HorizontalAlignment="Left" CornerRadius="7" Width="0" ClipToBounds="True">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                         <GradientStop Color="#1A6B00" Offset="0.0"/>
@@ -629,8 +512,7 @@
                                     </LinearGradientBrush>
                                 </Border.Background>
                                 <Canvas IsHitTestVisible="False" ClipToBounds="True">
-                                    <Rectangle x:Name="ShimmerRect" Width="160" Height="40"
-                                               Canvas.Left="-160" Canvas.Top="-13">
+                                    <Rectangle x:Name="ShimmerRect" Width="160" Height="40" Canvas.Left="-160" Canvas.Top="-13">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                                 <GradientStop Color="#00FFFFFF" Offset="0.0"/>
@@ -646,8 +528,7 @@
                                                     <Storyboard RepeatBehavior="Forever">
                                                         <DoubleAnimation Storyboard.TargetName="ShimmerRect"
                                                             Storyboard.TargetProperty="(Canvas.Left)"
-                                                            From="-160" To="900" Duration="0:0:1.8"
-                                                            RepeatBehavior="Forever"/>
+                                                            From="-160" To="900" Duration="0:0:1.8" RepeatBehavior="Forever"/>
                                                     </Storyboard>
                                                 </BeginStoryboard>
                                             </EventTrigger>
@@ -665,46 +546,36 @@
                             </Border>
                         </Grid>
                     </StackPanel>
-
-                    <!-- Log area + Clear button overlay -->
                     <Grid Grid.Row="1">
-                        <ScrollViewer x:Name="LogScrollViewer"
-                                      Background="#141622" BorderBrush="#2C2E3E" BorderThickness="1">
+                        <ScrollViewer x:Name="LogScrollViewer" Background="#141622" BorderBrush="#2C2E3E" BorderThickness="1">
                             <TextBlock x:Name="LogTextBlock" TextWrapping="Wrap"
                                        Foreground="{StaticResource SecondaryColor}"
                                        Padding="15" FontFamily="Consolas" FontSize="12"/>
                         </ScrollViewer>
-                        <Button x:Name="ClearLogButton"
-                                Content="⌫  Clear" Click="ClearLog_Click"
+                        <Button x:Name="ClearLogButton" Content="&#x232B;  Clear" Click="ClearLog_Click"
                                 HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                Margin="0,0,10,10" Width="78" Height="28"
-                                Cursor="Hand" ToolTip="Clear log (available when not downloading)">
+                                Margin="0,0,10,10" Width="78" Height="28" Cursor="Hand">
                             <Button.Style>
                                 <Style TargetType="Button">
-                                    <Setter Property="Background"      Value="#22FFFFFF"/>
-                                    <Setter Property="Foreground"      Value="#888888"/>
-                                    <Setter Property="FontSize"        Value="11"/>
-                                    <Setter Property="FontWeight"      Value="SemiBold"/>
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="BorderBrush"     Value="#33FFFFFF"/>
+                                    <Setter Property="Background" Value="#22FFFFFF"/><Setter Property="Foreground" Value="#888888"/>
+                                    <Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#33FFFFFF"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
-                                                <Border x:Name="Bd"
-                                                        Background="{TemplateBinding Background}"
+                                                <Border x:Name="Bd" Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="7">
+                                                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Bd" Property="Background"  Value="#44F44336"/>
+                                                        <Setter TargetName="Bd" Property="Background" Value="#44F44336"/>
                                                         <Setter TargetName="Bd" Property="BorderBrush" Value="#88F44336"/>
-                                                        <Setter Property="Foreground"                  Value="#F44336"/>
+                                                        <Setter Property="Foreground" Value="#F44336"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="Bd" Property="Background"  Value="#88F44336"/>
+                                                        <Setter TargetName="Bd" Property="Background" Value="#88F44336"/>
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
                                                         <Setter Property="Opacity" Value="0.25"/>
@@ -720,7 +591,6 @@
                 </Grid>
             </Border>
 
-            <!-- ── Footer ── -->
             <StatusBar Grid.Row="4" Background="Transparent" Margin="0,15,0,0">
                 <StatusBarItem>
                     <StackPanel Orientation="Horizontal">
@@ -736,16 +606,13 @@
             </StatusBar>
         </Grid>
 
-        <!-- ════════════════════════════════════════════════
-             PAGE 2 — ABOUT & SYSTEM INFO
-             ════════════════════════════════════════════════ -->
+        <!-- PAGE 2 — ABOUT -->
         <Grid x:Name="AboutContentGrid" Grid.Row="1" Visibility="Collapsed" Margin="30,10,30,30">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>
 
-                    <!-- ── App Identity Banner ── -->
-                    <Border x:Name="AboutIdentityCard" CornerRadius="16" Padding="28,24"
-                            Margin="0,0,0,18" ClipToBounds="True">
+                    <!-- App Identity Banner -->
+                    <Border x:Name="AboutIdentityCard" CornerRadius="16" Padding="28,24" Margin="0,0,0,18" ClipToBounds="True">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                 <GradientStop Color="#12142A" Offset="0.0"/>
@@ -761,20 +628,59 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <!-- Title row -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                    <TextBlock Text="🎬" FontSize="30" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="Video Downloader Pro" FontSize="26" FontWeight="ExtraBold"
-                                                   Foreground="#BB86FC"/>
-                                        <TextBlock Text="Fast &amp; High Quality Downloads  ·  Video &amp; Audio"
-                                                   FontSize="13" Foreground="#555" Margin="0,3,0,0"/>
-                                    </StackPanel>
+
+                            <!-- Left: Title + credits (NO icon) -->
+                            <StackPanel VerticalAlignment="Center">
+
+                                <!-- Title — no emoji icon -->
+                                <TextBlock Text="Video Downloader Pro"
+                                           FontSize="26" FontWeight="ExtraBold"
+                                           Foreground="#BB86FC" Margin="0,0,0,4"/>
+
+                                <!-- Subtitle -->
+                                <TextBlock Text="Fast &amp; High Quality Downloads  ·  Video &amp; Audio"
+                                           FontSize="13" Foreground="#555" Margin="0,0,0,16"/>
+
+                                <!-- Thin divider -->
+                                <Border Height="1" Background="#1E2040" Margin="0,0,0,14"/>
+
+                                <!-- Credits line -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <TextBlock Text="صمم وطور بواسطة " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="hamzasaadi" Foreground="#BB86FC" FontSize="12"
+                                               FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                    <TextBlock Text="·" Foreground="#333" FontSize="12" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                    <TextBlock Text="آخر تحديث  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="12/03/2026" Foreground="#03DAC6" FontSize="12"
+                                               FontFamily="Consolas" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 </StackPanel>
+
+                                <!-- Website link line -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="الموقع الإلكتروني:  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock FontSize="12" VerticalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://eagleshadow.technology"
+                                                   RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Setter Property="Foreground" Value="#03DAC6"/>
+                                                    <Setter Property="TextDecorations" Value="None"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#BB86FC"/>
+                                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                            https://eagleshadow.technology
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+
                             </StackPanel>
 
-                            <!-- Version orb -->
+                            <!-- Right: Version orb -->
                             <Border Grid.Column="1" Width="88" Height="88" CornerRadius="44"
                                     VerticalAlignment="Center" Margin="20,0,0,0">
                                 <Border.Background>
@@ -790,13 +696,13 @@
                                     <TextBlock Text="v 2.1" FontSize="17" FontWeight="ExtraBold"
                                                Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="P R O" FontSize="9" FontWeight="Bold"
-                                                Foreground="#AAFFFFFF" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                               Foreground="#AAFFFFFF" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
 
-                    <!-- ── Two-column row: Developer + System Info ── -->
+                    <!-- Logo (LEFT) + System Info (RIGHT) -->
                     <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -804,147 +710,123 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- ── System Info Card ── -->
-                        <Border Grid.Column="2" x:Name="AboutSysCard" Background="{StaticResource CardColor}"
-                                CornerRadius="14" Padding="24">
+                        <!-- LEFT: Logo Card -->
+                        <Border Grid.Column="0" x:Name="AboutLogoCard"
+                                Background="{StaticResource CardColor}"
+                                CornerRadius="14" ClipToBounds="True">
+                            <Grid>
+                                <Border CornerRadius="14" Opacity="0.12">
+                                    <Border.Background>
+                                        <RadialGradientBrush Center="0.5,0.5" RadiusX="0.65" RadiusY="0.65">
+                                            <GradientStop Color="#BB86FC" Offset="0.0"/>
+                                            <GradientStop Color="Transparent" Offset="1.0"/>
+                                        </RadialGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <Image Source="logo.png" Stretch="Uniform"
+                                       MaxWidth="280" MaxHeight="280"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Margin="36" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- RIGHT: System Info Card -->
+                        <Border Grid.Column="2" x:Name="AboutSysCard"
+                                Background="{StaticResource CardColor}" CornerRadius="14" Padding="24">
                             <StackPanel>
                                 <Grid Margin="0,0,0,14">
-                                    <!-- logo behind content -->
-                                    <Image Source="logo.png" Opacity="0.1" Stretch="None"
-                                           HorizontalAlignment="Left" VerticalAlignment="Center"
-                                           Margin="0,0,8,0"/>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Style="{StaticResource AboutSectionLabel}"
-                                                   Text="🖥  SYSTEM INFO" Margin="0"/>
-                                        <Button Grid.Column="1" x:Name="RefreshSysInfoBtn" Content="⟳  Refresh"
-                                                HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                FontSize="11" FontWeight="SemiBold"
-                                                Foreground="#444" Background="Transparent"
-                                                BorderThickness="1" BorderBrush="#2A2D45"
-                                                Cursor="Hand" Padding="8,3"
-                                                Click="RefreshSysInfo_Click">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                                            CornerRadius="5" Padding="{TemplateBinding Padding}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#03DAC6"/>
-                                                            <Setter Property="Foreground" Value="#03DAC6"/>
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="💻  Operating System"/>
-                                    <TextBlock x:Name="SysOsText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..."/>
+                                    <TextBlock Style="{StaticResource AboutSectionLabel}" Text="&#x1F5A5;  SYSTEM INFO" Margin="0"/>
+                                    <Button Grid.Column="1" x:Name="RefreshSysInfoBtn" Content="&#x27F3;  Refresh"
+                                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                                            FontSize="11" FontWeight="SemiBold" Foreground="#444"
+                                            Background="Transparent" BorderThickness="1" BorderBrush="#2A2D45"
+                                            Cursor="Hand" Padding="8,3" Click="RefreshSysInfo_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="5" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Bd" Property="BorderBrush" Value="#03DAC6"/>
+                                                        <Setter Property="Foreground" Value="#03DAC6"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="⚙  .NET Runtime"/>
-                                    <TextBlock x:Name="SysDotnetText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..."/>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F4BB;  Operating System"/>
+                                    <TextBlock x:Name="SysOsText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..."/>
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="📐  Architecture"/>
-                                    <TextBlock x:Name="SysArchText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..."/>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x2699;  .NET Runtime"/>
+                                    <TextBlock x:Name="SysDotnetText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..."/>
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="🧠  Processors"/>
-                                    <TextBlock x:Name="SysCpuText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..."/>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F4D0;  Architecture"/>
+                                    <TextBlock x:Name="SysArchText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..."/>
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="🗂  Settings Path"/>
-                                    <TextBlock x:Name="SysAppDataText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..." TextWrapping="Wrap"/>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F9E0;  Processors"/>
+                                    <TextBlock x:Name="SysCpuText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..."/>
                                 </Grid>
-                                <Grid Margin="0,0,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="📁  Exe Location"/>
-                                    <TextBlock x:Name="SysExePathText" Style="{StaticResource AboutRowVal}"
-                                               Grid.Column="1" Text="Detecting..." TextWrapping="Wrap"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F5C2;  Settings Path"/>
+                                    <TextBlock x:Name="SysAppDataText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..." TextWrapping="Wrap"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F4C1;  Exe Location"/>
+                                    <TextBlock x:Name="SysExePathText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..." TextWrapping="Wrap"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
                     </Grid>
 
-                    <!-- ── Changelog / Versions Card ── -->
+                    <!-- Changelog -->
                     <Border x:Name="AboutChangelogCard" Background="{StaticResource CardColor}"
                             CornerRadius="14" Padding="24" Margin="0,0,0,18">
                         <StackPanel>
-                            <TextBlock Style="{StaticResource AboutSectionLabel}" Text="📋  CHANGELOG"/>
-
-                            <!-- v2.1 -->
+                            <TextBlock Style="{StaticResource AboutSectionLabel}" Text="&#x1F4CB;  CHANGELOG"/>
                             <Grid Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Background="#1A0D2E" CornerRadius="6" Padding="8,4"
-                                        Margin="0,0,14,0" VerticalAlignment="Top">
-                                    <TextBlock Text="v 2.1" FontSize="11" FontWeight="Bold"
-                                               Foreground="#BB86FC" FontFamily="Consolas"/>
+                                <Border Background="#1A0D2E" CornerRadius="6" Padding="8,4" Margin="0,0,14,0" VerticalAlignment="Top">
+                                    <TextBlock Text="v 2.1" FontSize="11" FontWeight="Bold" Foreground="#BB86FC" FontFamily="Consolas"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock Text="Current Release" FontSize="13" FontWeight="Bold"
-                                               Foreground="White" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Current Release" FontSize="13" FontWeight="Bold" Foreground="White" Margin="0,0,0,5"/>
                                     <TextBlock FontSize="11" Foreground="#555" TextWrapping="Wrap"
                                                Text="+ Added About &amp; System tab with live dependency detection&#x0a;+ Light / Dark mode theme switcher&#x0a;+ Duplicate file detection and smart re-download confirm&#x0a;+ Stop / Resume / Cancel download controls&#x0a;+ Accent color theming (Teal · Purple · Pink · Blue · Orange · Green)"/>
                                 </StackPanel>
                             </Grid>
                             <Border Height="1" Background="#14162A" Margin="0,0,0,14"/>
-
-                            <!-- v2.0 -->
-                            <Grid Margin="0,0,0,0">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Background="#121A12" CornerRadius="6" Padding="8,4"
-                                        Margin="0,0,14,0" VerticalAlignment="Top">
-                                    <TextBlock Text="v 2.0" FontSize="11" FontWeight="Bold"
-                                               Foreground="#4CAF80" FontFamily="Consolas"/>
+                                <Border Background="#121A12" CornerRadius="6" Padding="8,4" Margin="0,0,14,0" VerticalAlignment="Top">
+                                    <TextBlock Text="v 2.0" FontSize="11" FontWeight="Bold" Foreground="#4CAF80" FontFamily="Consolas"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock Text="Major Redesign" FontSize="13" FontWeight="Bold"
-                                               Foreground="White" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Major Redesign" FontSize="13" FontWeight="Bold" Foreground="White" Margin="0,0,0,5"/>
                                     <TextBlock FontSize="11" Foreground="#555" TextWrapping="Wrap"
                                                Text="+ Full WPF dark-mode UI redesign&#x0a;+ Multi-format support: MP4 · WebM · AVI · WMV · MP3 · M4A · WAV&#x0a;+ Quality presets from 144p to 4K&#x0a;+ yt-dlp integration replacing youtube-dl&#x0a;+ Animated progress bar with shimmer effect"/>
                                 </StackPanel>
@@ -952,82 +834,59 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- ── Footer signature ── -->
+                    <!-- Footer -->
                     <Border Background="#08090F" CornerRadius="12" Padding="20,14" Margin="0,0,0,4">
-                        <Grid>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="Made with " FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
-                                <TextBlock Text="❤" FontSize="14" Foreground="#FF4477" VerticalAlignment="Center" Margin="3,0"/>
-                                <TextBlock Text=" by " FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
-                                <TextBlock Text="EagleShadow" FontSize="12" FontWeight="Bold"
-                                           Foreground="#777" VerticalAlignment="Center"/>
-                                <TextBlock Text="  ·  Powered by yt-dlp &amp; FFmpeg  ·  MIT License"
-                                           FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Made with " FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
+                            <TextBlock Text="&#x2764;" FontSize="14" Foreground="#FF4477" VerticalAlignment="Center" Margin="3,0"/>
+                            <TextBlock Text=" by " FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
+                            <TextBlock Text="EagleShadow" FontSize="12" FontWeight="Bold" Foreground="#777" VerticalAlignment="Center"/>
+                            <TextBlock Text="  ·  Powered by yt-dlp &amp; FFmpeg  ·  MIT License" FontSize="12" Foreground="#333" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Border>
 
                 </StackPanel>
             </ScrollViewer>
         </Grid>
 
-        <!-- ════════════════════════════════════════════════
-             SETTINGS OVERLAY  (hidden by default)
-             ════════════════════════════════════════════════ -->
+        <!-- SETTINGS OVERLAY -->
         <Grid x:Name="SettingsOverlay" Grid.RowSpan="2" Visibility="Collapsed">
-
-            <!-- Dim backdrop -->
             <Border Background="#CC000000" MouseDown="SettingsBackdrop_Click"/>
-
-            <!-- Settings card slides in from right -->
-            <Border x:Name="SettingsCard"
-                    Background="#13152A" CornerRadius="20,0,0,20"
-                    Width="420" HorizontalAlignment="Right"
-                    BorderBrush="#2A2D45" BorderThickness="1,0,0,0">
+            <Border x:Name="SettingsCard" Background="#13152A" CornerRadius="20,0,0,20"
+                    Width="420" HorizontalAlignment="Right" BorderBrush="#2A2D45" BorderThickness="1,0,0,0">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#000000" Opacity="0.6"/>
                 </Border.Effect>
-
-                <Grid Margin="0">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Settings Header -->
                     <Border x:Name="SettingsHeaderBorder" Background="#0F111A" CornerRadius="20,0,0,0" Padding="24,20">
                         <Grid>
                             <StackPanel>
-                                <TextBlock x:Name="SettingsTitleText" Text="⚙  Settings" FontSize="22" FontWeight="ExtraBold"
-                                           Foreground="White"/>
-                                <TextBlock x:Name="SettingsSubtitleText" Text="Customize your download experience" FontSize="12"
-                                           Foreground="Gray" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="SettingsTitleText" Text="&#x2699;  Settings" FontSize="22" FontWeight="ExtraBold" Foreground="White"/>
+                                <TextBlock x:Name="SettingsSubtitleText" Text="Customize your download experience" FontSize="12" Foreground="Gray" Margin="0,4,0,0"/>
                             </StackPanel>
-                            <Button Style="{StaticResource IconButtonStyle}"
-                                    Content="✕" FontSize="16" HorizontalAlignment="Right"
-                                    VerticalAlignment="Top" Click="CloseSettings_Click"/>
+                            <Button Style="{StaticResource IconButtonStyle}" Content="&#x2715;" FontSize="16"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top" Click="CloseSettings_Click"/>
                         </Grid>
                     </Border>
 
-                    <!-- Scrollable Settings Content -->
                     <ScrollViewer x:Name="SettingsScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24,8,24,8">
                         <StackPanel>
-
-                            <!-- ── 1. DOWNLOAD LOCATION ── -->
-                            <TextBlock Style="{StaticResource SettingsSectionLabel}"
-                                       Text="📁  DOWNLOAD LOCATION"/>
+                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="&#x1F4C1;  DOWNLOAD LOCATION"/>
                             <TextBlock Style="{StaticResource SettingsFieldLabel}" Text="Save downloads to:"/>
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="DownloadPathBox"
-                                         Height="38" Padding="12,5" FontSize="12"
-                                         Background="#2C2E3E" Foreground="White"
-                                         BorderThickness="0" VerticalContentAlignment="Center"
-                                         CaretBrush="White" FontFamily="Consolas">
+                                <TextBox x:Name="DownloadPathBox" Height="38" Padding="12,5" FontSize="12"
+                                         Background="#2C2E3E" Foreground="White" BorderThickness="0"
+                                         VerticalContentAlignment="Center" CaretBrush="White" FontFamily="Consolas">
                                     <TextBox.Resources>
                                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="8,0,0,8"/></Style>
                                     </TextBox.Resources>
@@ -1037,8 +896,7 @@
                                         BorderThickness="0" Cursor="Hand" Click="BrowsePath_Click">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="0,8,8,0" Padding="{TemplateBinding Padding}">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="0,8,8,0" Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
@@ -1048,8 +906,7 @@
                             <TextBlock x:Name="DownloadPathHint" FontSize="11" Foreground="#666"
                                        Text="Leave empty to save next to the application." Margin="0,0,0,4"/>
 
-                            <!-- ── 2. APPEARANCE ── -->
-                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="🎨  APPEARANCE"/>
+                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="&#x1F3A8;  APPEARANCE"/>
                             <TextBlock Style="{StaticResource SettingsFieldLabel}" Text="Accent color theme:"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <Button x:Name="ThemeTeal"   Style="{StaticResource ThemeSwatchStyle}" Background="#03DAC6" ToolTip="Teal (default)" Click="Theme_Click" Tag="teal"/>
@@ -1060,8 +917,7 @@
                                 <Button x:Name="ThemeGreen"  Style="{StaticResource ThemeSwatchStyle}" Background="#66BB6A" ToolTip="Green"          Click="Theme_Click" Tag="green"/>
                             </StackPanel>
 
-                            <!-- ── 3. DEFAULT PREFERENCES ── -->
-                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="🎛  DEFAULT PREFERENCES"/>
+                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="&#x1F39B;  DEFAULT PREFERENCES"/>
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -1078,7 +934,7 @@
                                                 <Setter Property="Padding"    Value="8"/>
                                             </Style>
                                         </ComboBox.Resources>
-                                        <ComboBoxItem Content="🏆 Best" Tag="best"/>
+                                        <ComboBoxItem Content="&#x1F3C6; Best" Tag="best"/>
                                         <ComboBoxItem Content="4K — 2160p" Tag="2160"/>
                                         <ComboBoxItem Content="FHD — 1080p" Tag="1080"/>
                                         <ComboBoxItem Content="HD — 720p"   Tag="720"/>
@@ -1100,26 +956,24 @@
                                         <ComboBoxItem Content="WebM"   Tag="webm"/>
                                         <ComboBoxItem Content="AVI"    Tag="avi"/>
                                         <ComboBoxItem Content="WMV"    Tag="wmv"/>
-                                        <ComboBoxItem Content="MP3 🎵" Tag="mp3"/>
-                                        <ComboBoxItem Content="M4A 🎵" Tag="m4a"/>
-                                        <ComboBoxItem Content="WAV 🎵" Tag="wav"/>
+                                        <ComboBoxItem Content="MP3 &#x1F3B5;" Tag="mp3"/>
+                                        <ComboBoxItem Content="M4A &#x1F3B5;" Tag="m4a"/>
+                                        <ComboBoxItem Content="WAV &#x1F3B5;" Tag="wav"/>
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
 
-                            <!-- ── 4. BEHAVIOR ── -->
-                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="⚡  BEHAVIOR"/>
+                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="&#x26A1;  BEHAVIOR"/>
                             <Border x:Name="BehaviorCard" Background="#1A1C2E" CornerRadius="12" Padding="16,12" Margin="0,0,0,8">
                                 <StackPanel>
-                                    <CheckBox x:Name="AutoOpenFolderCheck"   Style="{StaticResource ToggleCheckStyle}" Content="Open download folder when done"          Margin="0,0,0,14"/>
-                                    <CheckBox x:Name="ShowNotificationCheck" Style="{StaticResource ToggleCheckStyle}" Content="Show notification on completion"         Margin="0,0,0,14"/>
-                                    <CheckBox x:Name="ClearLogCheck"         Style="{StaticResource ToggleCheckStyle}" Content="Clear log before each download"          Margin="0,0,0,14"/>
+                                    <CheckBox x:Name="AutoOpenFolderCheck"   Style="{StaticResource ToggleCheckStyle}" Content="Open download folder when done"             Margin="0,0,0,14"/>
+                                    <CheckBox x:Name="ShowNotificationCheck" Style="{StaticResource ToggleCheckStyle}" Content="Show notification on completion"            Margin="0,0,0,14"/>
+                                    <CheckBox x:Name="ClearLogCheck"         Style="{StaticResource ToggleCheckStyle}" Content="Clear log before each download"             Margin="0,0,0,14"/>
                                     <CheckBox x:Name="SkipDuplicateCheck"    Style="{StaticResource ToggleCheckStyle}" Content="Skip duplicate file check (not recommended)" Margin="0,0,0,0"/>
                                 </StackPanel>
                             </Border>
 
-                            <!-- ── 5. SYSTEM THEME ── -->
-                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="🌗  SYSTEM THEME"/>
+                            <TextBlock Style="{StaticResource SettingsSectionLabel}" Text="&#x1F317;  SYSTEM THEME"/>
                             <TextBlock Style="{StaticResource SettingsFieldLabel}" Text="Choose the interface appearance mode:"/>
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
@@ -1131,32 +985,27 @@
                                         Background="#1A1C2E" BorderThickness="2" BorderBrush="#03DAC6"
                                         MouseDown="DarkThemeCard_Click">
                                     <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="🌙" FontSize="28" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Dark Mode" FontSize="13" FontWeight="Bold"
-                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,2"/>
-                                        <TextBlock Text="Easy on the eyes" FontSize="11"
-                                                   Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="&#x1F319;" FontSize="28" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Dark Mode" FontSize="13" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,2"/>
+                                        <TextBlock Text="Easy on the eyes" FontSize="11" Foreground="#888" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <Border x:Name="LightThemeCard" Grid.Column="2" CornerRadius="12" Padding="14,16" Cursor="Hand"
                                         Background="#2C2E3E" BorderThickness="2" BorderBrush="Transparent"
                                         MouseDown="LightThemeCard_Click">
                                     <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="☀️" FontSize="28" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Light Mode" FontSize="13" FontWeight="Bold"
-                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,2"/>
-                                        <TextBlock Text="Bright &amp; clean" FontSize="11"
-                                                   Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="&#x2600;&#xFE0F;" FontSize="28" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Light Mode" FontSize="13" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,2"/>
+                                        <TextBlock Text="Bright &amp; clean" FontSize="11" Foreground="#888" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
                             <TextBlock x:Name="ThemeRestartHint" FontSize="11" Foreground="#888" Margin="0,2,0,0"
-                                       Text="ℹ Changes will be applied after saving." TextWrapping="Wrap"/>
+                                       Text="&#x2139; Changes will be applied after saving." TextWrapping="Wrap"/>
                             <Border Height="20"/>
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Save & Reset footer -->
                     <Border x:Name="SettingsFooterBorder" Grid.Row="2" Background="#0F111A" CornerRadius="0,0,0,20" Padding="24,16">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -1164,23 +1013,19 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="ResetButton" Content="↺ Reset defaults" Cursor="Hand"
+                            <Button x:Name="ResetButton" Content="&#x21BA; Reset defaults" Cursor="Hand"
                                     Background="Transparent" Foreground="#666"
                                     BorderThickness="0" FontSize="12" VerticalAlignment="Center"
                                     Click="ResetSettings_Click">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <TextBlock Text="{TemplateBinding Content}"
-                                                   Foreground="{TemplateBinding Foreground}"
-                                                   FontSize="{TemplateBinding FontSize}"
-                                                   TextDecorations="Underline" Cursor="Hand"/>
+                                        <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                                                   FontSize="{TemplateBinding FontSize}" TextDecorations="Underline" Cursor="Hand"/>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <Button Grid.Column="2" Content="✔  Save Settings"
-                                    Width="150" Height="42" Padding="0"
-                                    Style="{StaticResource SettingsSaveStyle}"
-                                    Click="SaveSettings_Click"/>
+                            <Button Grid.Column="2" Content="&#x2714;  Save Settings" Width="150" Height="42" Padding="0"
+                                    Style="{StaticResource SettingsSaveStyle}" Click="SaveSettings_Click"/>
                         </Grid>
                     </Border>
                 </Grid>
