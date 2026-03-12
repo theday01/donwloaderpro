@@ -723,7 +723,7 @@
                                         </RadialGradientBrush>
                                     </Border.Background>
                                 </Border>
-                                <Image Source="logo.png" Stretch="Uniform"
+                                <Image Source="developer.png" Stretch="Uniform"
                                        MaxWidth="280" MaxHeight="280"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Margin="36" RenderOptions.BitmapScalingMode="HighQuality"/>
