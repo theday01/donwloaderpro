@@ -83,6 +83,33 @@
     <sys:String x:Key="ByLabel"> by </sys:String>
     <sys:String x:Key="AllRightsReserved">  ·  Developed by Hamza Saadi - all rights reserved </sys:String>
 
+    <!-- Changelog Details -->
+    <sys:String x:Key="v2_1_Date">March 12, 2026</sys:String>
+    <sys:String x:Key="v2_1_ChangesCount">5 changes</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Title">About &amp; System Tab</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Desc">Live dependency detection for Python, yt-dlp, and FFmpeg &#x2014; real-time status indicators and version reporting.</sys:String>
+    <sys:String x:Key="v2_1_Theme_Title">Light / Dark Mode Switcher</sys:String>
+    <sys:String x:Key="v2_1_Theme_Desc">Full bi-directional theme engine &#x2014; every card, input, log, and surface adapts instantly with no restart required.</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Title">Duplicate File Detection</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Desc">Pre-download scan compares sanitized filenames across all extensions &#x2014; inline confirm panel before any re-download.</sys:String>
+    <sys:String x:Key="v2_1_Controls_Title">Stop / Resume / Cancel</sys:String>
+    <sys:String x:Key="v2_1_Controls_Desc">Full download lifecycle controls &#x2014; pause mid-stream and resume from the last byte using yt-dlp&#x2019;s continuedl flag.</sys:String>
+    <sys:String x:Key="v2_1_Accent_Title">6-Color Accent System</sys:String>
+    <sys:String x:Key="v2_1_Accent_Desc">Teal, Purple, Pink, Blue, Orange, Green &#x2014; gradient progress bars and live accent propagation across every UI surface.</sys:String>
+
+    <sys:String x:Key="v2_0_Title">Major Redesign</sys:String>
+    <sys:String x:Key="v2_0_Date">January 4, 2026</sys:String>
+    <sys:String x:Key="v2_0_ChangesCount">5 changes</sys:String>
+    <sys:String x:Key="v2_0_UI_Desc">Full WPF dark-mode UI redesign</sys:String>
+    <sys:String x:Key="v2_0_Format_Desc">Multi-format: MP4 · WebM · AVI · WMV · MP3 · M4A · WAV</sys:String>
+    <sys:String x:Key="v2_0_Quality_Desc">Quality presets from 144p to 4K</sys:String>
+    <sys:String x:Key="v2_0_Engine_Desc">yt-dlp integration replacing youtube-dl</sys:String>
+    <sys:String x:Key="v2_0_Anim_Desc">Animated progress bar with shimmer effect</sys:String>
+
+    <sys:String x:Key="v1_0_Title">Initial Launch</sys:String>
+    <sys:String x:Key="v1_0_Date">October 18, 2025</sys:String>
+    <sys:String x:Key="v1_0_Desc">+ Basic YouTube download via youtube-dl with WinForms UI&#x0a;+ Custom output directory support&#x0a;+ Real-time console log output</sys:String>
+
     <!-- Log Messages (Code Behind) -->
     <sys:String x:Key="LogSettingsSaved">[⚙] Settings saved successfully.</sys:String>
     <sys:String x:Key="LogSettingsReset">[⚙] Settings reset to defaults.</sys:String>

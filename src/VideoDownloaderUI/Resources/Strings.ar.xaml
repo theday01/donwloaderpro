@@ -83,6 +83,33 @@
     <sys:String x:Key="ByLabel"> بواسطة </sys:String>
     <sys:String x:Key="AllRightsReserved">  ·  تطوير حمزة السعدي - جميع الحقوق محفوظة </sys:String>
 
+    <!-- تفاصيل سجل التغييرات -->
+    <sys:String x:Key="v2_1_Date">12 مارس 2026</sys:String>
+    <sys:String x:Key="v2_1_ChangesCount">5 تغييرات</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Title">تبويب "حول النظام"</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Desc">اكتشاف فوري للاعتمادات (Python, yt-dlp, FFmpeg) — مؤشرات حالة حية وتقارير الإصدارات.</sys:String>
+    <sys:String x:Key="v2_1_Theme_Title">مبدل الوضع الفاتح/الداكن</sys:String>
+    <sys:String x:Key="v2_1_Theme_Desc">محرك ثيمات ثنائي الاتجاه بالكامل — كل بطاقة ومدخل وسجل يتكيف فوراً دون الحاجة لإعادة التشغيل.</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Title">كشف الملفات المكررة</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Desc">فحص ما قبل التحميل يقارن الأسماء عبر جميع الصيغ — لوحة تأكيد مدمجة قبل أي إعادة تحميل.</sys:String>
+    <sys:String x:Key="v2_1_Controls_Title">إيقاف / استئناف / إلغاء</sys:String>
+    <sys:String x:Key="v2_1_Controls_Desc">تحكم كامل بدورة حياة التحميل — إيقاف مؤقت والاستئناف من آخر بايت باستخدام خاصية continuedl.</sys:String>
+    <sys:String x:Key="v2_1_Accent_Title">نظام ألوان بـ 6 تدرجات</sys:String>
+    <sys:String x:Key="v2_1_Accent_Desc">تيل، بنفسجي، وردي، أزرق، برتقالي، أخضر — أشرطة تقدم متدرجة وتطبيق فوري للون على الواجهة.</sys:String>
+
+    <sys:String x:Key="v2_0_Title">إعادة تصميم شاملة</sys:String>
+    <sys:String x:Key="v2_0_Date">4 يناير 2026</sys:String>
+    <sys:String x:Key="v2_0_ChangesCount">5 تغييرات</sys:String>
+    <sys:String x:Key="v2_0_UI_Desc">إعادة تصميم كاملة لواجهة WPF بالوضع الداكن</sys:String>
+    <sys:String x:Key="v2_0_Format_Desc">متعدد الصيغ: MP4 · WebM · AVI · WMV · MP3 · M4A · WAV</sys:String>
+    <sys:String x:Key="v2_0_Quality_Desc">خيارات جودة تبدأ من 144p وحتى 4K</sys:String>
+    <sys:String x:Key="v2_0_Engine_Desc">تكامل yt-dlp ليحل محل youtube-dl</sys:String>
+    <sys:String x:Key="v2_0_Anim_Desc">شريط تقدم متحرك مع تأثير الشيمر (Shimmer)</sys:String>
+
+    <sys:String x:Key="v1_0_Title">الإطلاق الأولي</sys:String>
+    <sys:String x:Key="v1_0_Date">18 أكتوبر 2025</sys:String>
+    <sys:String x:Key="v1_0_Desc">+ تحميل يوتيوب أساسي عبر youtube-dl مع واجهة WinForms&#x0a;+ دعم مجلدات الإخراج المخصصة&#x0a;+ مخرجات سجل الكونسول الفورية</sys:String>
+
     <!-- رسائل السجل (برمجياً) -->
     <sys:String x:Key="LogSettingsSaved">[⚙] تم حفظ الإعدادات بنجاح.</sys:String>
     <sys:String x:Key="LogSettingsReset">[⚙] تم استعادة الإعدادات الافتراضية.</sys:String>
