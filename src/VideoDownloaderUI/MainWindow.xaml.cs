@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,16 +33,19 @@ namespace VideoDownloaderUI
         private readonly object          _processLock   = new object();
 
         // Settings
-        private AppSettings _settings      = new AppSettings();
+        private AppSettings _settings         = new AppSettings();
         private string      _selectedTheme    = "teal";
-        private string      _selectedAppTheme = "dark";   // "dark" | "light" 
+        private string      _selectedAppTheme = "dark";
+
+        // About tab
+        private bool _aboutLoaded = false;
 
         // ── Constructor ───────────────────────────────────────────────────
 
         public MainWindow()
         {
             InitializeComponent();
-            _settings        = SettingsManager.Load();
+            _settings         = SettingsManager.Load();
             _selectedAppTheme = _settings.AppTheme;
             ApplySettingsToUI();
             ApplyThemeColors(_settings.AccentTheme);
@@ -49,14 +53,252 @@ namespace VideoDownloaderUI
             UpdateDownloadPathLabel();
         }
 
-        // ── Settings: open / close ────────────────────────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  TAB NAVIGATION
+        // ════════════════════════════════════════════════════════════════
+
+        private void Tab_Downloader_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentGrid.Visibility  = Visibility.Visible;
+            AboutContentGrid.Visibility = Visibility.Collapsed;
+
+            TabDownloaderBtn.Tag = "active";
+            TabAboutBtn.Tag      = "inactive";
+            // Force button to re-evaluate its DataTrigger
+            RefreshTabButtonState(TabDownloaderBtn);
+            RefreshTabButtonState(TabAboutBtn);
+        }
+
+        private void Tab_About_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentGrid.Visibility  = Visibility.Collapsed;
+            AboutContentGrid.Visibility = Visibility.Visible;
+
+            TabDownloaderBtn.Tag = "inactive";
+            TabAboutBtn.Tag      = "active";
+            RefreshTabButtonState(TabDownloaderBtn);
+            RefreshTabButtonState(TabAboutBtn);
+
+            // Lazy-load system info the first time, or if refresh was requested
+            if (!_aboutLoaded)
+            {
+                _aboutLoaded = true;
+                _ = LoadSystemInfoAsync();
+            }
+        }
+
+        /// <summary>
+        /// Forces a Button to re-apply its ControlTemplate triggers by briefly toggling
+        /// an unrelated property (works around WPF DataTrigger refresh quirk).
+        /// </summary>
+        private static void RefreshTabButtonState(Button btn)
+        {
+            // Invalidate and force layout so DataTrigger re-fires
+            btn.InvalidateVisual();
+            btn.UpdateLayout();
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  SYSTEM INFO & DEPENDENCY DETECTION
+        // ════════════════════════════════════════════════════════════════
+
+        private async Task LoadSystemInfoAsync()
+        {
+            // ── Static info (no subprocess) ──────────────────────────────
+            SysOsText.Text      = GetFriendlyOsName();
+            SysDotnetText.Text  = $".NET {Environment.Version}";
+            SysArchText.Text    = RuntimeInformation.OSArchitecture.ToString();
+            SysCpuText.Text     = $"{Environment.ProcessorCount} logical core{(Environment.ProcessorCount > 1 ? "s" : "")}";
+            SysAppDataText.Text = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "ProVideoDownloader");
+            SysExePathText.Text = Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "—";
+
+            // Reset badges to "checking" state
+            SetDepChecking(DepPythonStatus,  DepPythonBadge,  DepPythonVersion);
+            SetDepChecking(DepYtdlpStatus,   DepYtdlpBadge,   DepYtdlpVersion);
+            SetDepChecking(DepFfmpegStatus,  DepFfmpegBadge,  DepFfmpegVersion);
+            DepStatusSummary.Text       = "Checking...";
+            DepStatusSummary.Foreground = new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x55));
+
+            // ── Async: probe each tool ───────────────────────────────────
+            await Task.Run(() =>
+            {
+                // Python
+                var (pyFound, pyText, pyDesc) = ProbePython();
+                Dispatcher.Invoke(() => UpdateDepRow(
+                    DepPythonVersion, DepPythonStatus, DepPythonBadge, pyFound, pyText, pyDesc));
+
+                // yt-dlp
+                var (ytFound, ytText, ytDesc) = ProbeYtDlp();
+                Dispatcher.Invoke(() => UpdateDepRow(
+                    DepYtdlpVersion, DepYtdlpStatus, DepYtdlpBadge, ytFound, ytText, ytDesc));
+
+                // FFmpeg
+                var (ffFound, ffText, ffDesc) = ProbeFfmpeg();
+                Dispatcher.Invoke(() => UpdateDepRow(
+                    DepFfmpegVersion, DepFfmpegStatus, DepFfmpegBadge, ffFound, ffText, ffDesc));
+
+                Dispatcher.Invoke(UpdateDepSummary);
+            });
+        }
+
+        // ── Probers ───────────────────────────────────────────────────────
+
+        private (bool found, string version, string desc) ProbePython()
+        {
+            string py = GetPythonExecutable();
+            string? raw = RunSysCommand(py, "--version", timeoutMs: 5000);
+            if (raw == null) return (false, "Not found", "Install from python.org");
+
+            // "Python 3.x.y"
+            string ver = raw.Trim();
+            if (!ver.StartsWith("Python", StringComparison.OrdinalIgnoreCase))
+                ver = "Python " + ver;
+            return (true, ver, $"Executable: {py}");
+        }
+
+        private (bool found, string version, string desc) ProbeYtDlp()
+        {
+            string? raw = RunSysCommand("yt-dlp", "--version", timeoutMs: 8000);
+            if (raw == null) return (false, "Not found", "pip install yt-dlp");
+            string ver = raw.Trim().Split('\n')[0];
+            return (true, $"yt-dlp  {ver}", "pip install -U yt-dlp  to update");
+        }
+
+        private (bool found, string version, string desc) ProbeFfmpeg()
+        {
+            string? raw = RunSysCommand("ffmpeg", "-version", timeoutMs: 6000);
+            if (raw == null)
+            {
+                // Also check local exe next to the app
+                string local = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".",
+                    "ffmpeg.exe");
+                if (File.Exists(local))
+                    return (true, "ffmpeg  (local bundle)", $"Found at: {local}");
+
+                return (false, "Not found", "Download from ffmpeg.org — needed for audio/AVI/WMV");
+            }
+            // First line: "ffmpeg version N.M.P ..."
+            string firstLine = raw.Trim().Split('\n')[0];
+            string shortVer  = firstLine.Replace("ffmpeg version ", "").Split(' ')[0];
+            return (true, $"ffmpeg  {shortVer}", "Found in PATH");
+        }
+
+        // ── Command runner ────────────────────────────────────────────────
+
+        private static string? RunSysCommand(string exe, string args, int timeoutMs = 6000)
+        {
+            try
+            {
+                using var p = new Process
+                {
+                    StartInfo = new ProcessStartInfo(exe, args)
+                    {
+                        UseShellExecute        = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError  = true,
+                        CreateNoWindow         = true
+                    }
+                };
+                p.Start();
+                string stdout = p.StandardOutput.ReadToEnd();
+                string stderr = p.StandardError.ReadToEnd();
+                bool exited   = p.WaitForExit(timeoutMs);
+                if (!exited) { try { p.Kill(); } catch { } return null; }
+                if (p.ExitCode != 0 && string.IsNullOrWhiteSpace(stdout))
+                    stdout = stderr;
+                return string.IsNullOrWhiteSpace(stdout) ? null : stdout;
+            }
+            catch { return null; }
+        }
+
+        // ── UI helpers ────────────────────────────────────────────────────
+
+        private static void SetDepChecking(TextBlock statusTb, Border badge, TextBlock versionTb)
+        {
+            versionTb.Text  = "Detecting...";
+            versionTb.Foreground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x44));
+            statusTb.Text   = "●  Checking";
+            statusTb.Foreground = new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x55));
+            badge.Background    = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x18));
+        }
+
+        private static void UpdateDepRow(TextBlock versionTb, TextBlock statusTb, Border badge,
+                                          bool found, string version, string desc)
+        {
+            var okGreen  = Color.FromRgb(0x4C, 0xAF, 0x50);
+            var errRed   = Color.FromRgb(0xF4, 0x43, 0x36);
+            var okBg     = Color.FromRgb(0x0B, 0x1C, 0x0B);
+            var errBg    = Color.FromRgb(0x1C, 0x08, 0x08);
+
+            versionTb.Text       = version;
+            versionTb.Foreground = new SolidColorBrush(found
+                ? Color.FromRgb(0x66, 0x88, 0x66)
+                : Color.FromRgb(0x66, 0x33, 0x33));
+
+            statusTb.Text       = found ? "●  Installed" : "●  Not Found";
+            statusTb.Foreground = new SolidColorBrush(found ? okGreen : errRed);
+            badge.Background    = new SolidColorBrush(found ? okBg   : errBg);
+
+            // Update the small description under the version text
+            // (third TextBlock inside the dep row's StackPanel — index 2)
+            if (versionTb.Parent is StackPanel sp && sp.Children.Count > 2 &&
+                sp.Children[2] is TextBlock descTb)
+            {
+                descTb.Text       = desc;
+                descTb.Foreground = new SolidColorBrush(found
+                    ? Color.FromRgb(0x33, 0x55, 0x33)
+                    : Color.FromRgb(0x66, 0x33, 0x22));
+            }
+        }
+
+        private void UpdateDepSummary()
+        {
+            int installed = 0;
+            if (DepPythonStatus.Text.Contains("Installed")) installed++;
+            if (DepYtdlpStatus.Text.Contains("Installed"))  installed++;
+            if (DepFfmpegStatus.Text.Contains("Installed"))  installed++;
+
+            DepStatusSummary.Text = $"{installed} / 3 components ready";
+            DepStatusSummary.Foreground = new SolidColorBrush(
+                installed == 3 ? Color.FromRgb(0x4C, 0xAF, 0x50) :
+                installed >= 1 ? Color.FromRgb(0xFF, 0xB7, 0x4D) :
+                                 Color.FromRgb(0xF4, 0x43, 0x36));
+        }
+
+        private static string GetFriendlyOsName()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var v = Environment.OSVersion.Version;
+                // Windows 11 = build >= 22000
+                string name = v.Build >= 22000 ? "Windows 11" : "Windows 10";
+                return $"{name}  (Build {v.Build})";
+            }
+            return RuntimeInformation.OSDescription;
+        }
+
+        // ── Refresh button ────────────────────────────────────────────────
+
+        private void RefreshSysInfo_Click(object sender, RoutedEventArgs e)
+        {
+            _aboutLoaded = false;
+            _aboutLoaded = true;
+            _ = LoadSystemInfoAsync();
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  SETTINGS OPEN / CLOSE
+        // ════════════════════════════════════════════════════════════════
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadSettingsIntoPanel();
             SettingsOverlay.Visibility = Visibility.Visible;
             AnimateSettingsIn();
-            // Ensure settings panel reflects the current theme immediately
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                 new Action(() => ApplySettingsPanelTheme(_settings.AppTheme == "light")));
         }
@@ -80,11 +322,13 @@ namespace VideoDownloaderUI
             SettingsCard.RenderTransform.BeginAnimation(TranslateTransform.XProperty, anim);
         }
 
-        // ── Settings: load values into panel controls ─────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  SETTINGS: LOAD / SAVE / RESET
+        // ════════════════════════════════════════════════════════════════
 
         private void LoadSettingsIntoPanel()
         {
-            DownloadPathBox.Text        = _settings.DownloadPath;
+            DownloadPathBox.Text            = _settings.DownloadPath;
             AutoOpenFolderCheck.IsChecked   = _settings.AutoOpenFolder;
             ShowNotificationCheck.IsChecked = _settings.ShowCompletionNotify;
             ClearLogCheck.IsChecked         = _settings.ClearLogEachDownload;
@@ -98,8 +342,6 @@ namespace VideoDownloaderUI
             SelectComboByTag(DefaultQualityBox, _settings.DefaultQuality);
             SelectComboByTag(DefaultFormatBox,  _settings.DefaultFormat);
         }
-
-        // ── Settings: save ────────────────────────────────────────────────
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -124,8 +366,6 @@ namespace VideoDownloaderUI
             AppendLog("[⚙] Settings saved successfully.");
         }
 
-        // ── Settings: reset ───────────────────────────────────────────────
-
         private void ResetSettings_Click(object sender, RoutedEventArgs e)
         {
             _settings         = new AppSettings();
@@ -134,8 +374,6 @@ namespace VideoDownloaderUI
             LoadSettingsIntoPanel();
             AppendLog("[⚙] Settings reset to defaults.");
         }
-
-        // ── Browse folder ─────────────────────────────────────────────────
 
         private void BrowsePath_Click(object sender, RoutedEventArgs e)
         {
@@ -152,7 +390,9 @@ namespace VideoDownloaderUI
                 DownloadPathBox.Text = dlg.SelectedPath;
         }
 
-        // ── Theme swatch ──────────────────────────────────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  THEME
+        // ════════════════════════════════════════════════════════════════
 
         private void Theme_Click(object sender, RoutedEventArgs e)
         {
@@ -172,8 +412,6 @@ namespace VideoDownloaderUI
                     : Brushes.Transparent;
         }
 
-        // ── App theme (dark / light) cards ───────────────────────────────
-
         private void DarkThemeCard_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _selectedAppTheme = "dark";
@@ -191,16 +429,16 @@ namespace VideoDownloaderUI
             var accent = (SolidColorBrush)FindResource("SecondaryColor");
             if (DarkThemeCard != null)
             {
-                DarkThemeCard.BorderBrush  = selected == "dark"  ? accent : Brushes.Transparent;
-                DarkThemeCard.Background   = new SolidColorBrush(Color.FromRgb(0x1A,0x1C,0x2E));
+                DarkThemeCard.BorderBrush = selected == "dark"  ? accent : Brushes.Transparent;
+                DarkThemeCard.Background  = new SolidColorBrush(Color.FromRgb(0x1A, 0x1C, 0x2E));
             }
             if (LightThemeCard != null)
             {
                 LightThemeCard.BorderBrush = selected == "light" ? accent : Brushes.Transparent;
                 LightThemeCard.Background  = new SolidColorBrush(
                     selected == "light"
-                        ? Color.FromRgb(0xE0,0xE3,0xF0)
-                        : Color.FromRgb(0x2C,0x2E,0x3E));
+                        ? Color.FromRgb(0xE0, 0xE3, 0xF0)
+                        : Color.FromRgb(0x2C, 0x2E, 0x3E));
             }
         }
 
@@ -208,49 +446,45 @@ namespace VideoDownloaderUI
         {
             bool isLight = appTheme == "light";
 
-            // ── Palette ──────────────────────────────────────────────────
-            // Window & layout
             var windowBg   = isLight ? Color.FromRgb(0xED, 0xEF, 0xFA) : Color.FromRgb(0x0F, 0x11, 0x1A);
             var cardBg     = isLight ? Color.FromRgb(0xFF, 0xFF, 0xFF) : Color.FromRgb(0x1E, 0x20, 0x2E);
             var inputBg    = isLight ? Color.FromRgb(0xF3, 0xF4, 0xFD) : Color.FromRgb(0x2C, 0x2E, 0x3E);
             var logBg      = isLight ? Color.FromRgb(0xF8, 0xF9, 0xFF) : Color.FromRgb(0x14, 0x16, 0x22);
             var logBorder  = isLight ? Color.FromRgb(0xD8, 0xDB, 0xF0) : Color.FromRgb(0x2C, 0x2E, 0x3E);
             var cardBorder = isLight ? Color.FromRgb(0xE0, 0xE3, 0xF5) : Color.FromRgb(0x1E, 0x20, 0x2E);
-
-            // Text
             var headingFg  = isLight ? Color.FromRgb(0x4A, 0x1A, 0x8C) : Color.FromRgb(0xBB, 0x86, 0xFC);
             var subHeadFg  = isLight ? Color.FromRgb(0x55, 0x55, 0x88) : Color.FromRgb(0x88, 0x88, 0x88);
             var inputFg    = isLight ? Color.FromRgb(0x1A, 0x1A, 0x2E) : Colors.White;
             var labelFg    = isLight ? Color.FromRgb(0x66, 0x66, 0x99) : Color.FromRgb(0x88, 0x88, 0x88);
             var logFg      = isLight ? Color.FromRgb(0x0A, 0x6B, 0x5A) : Color.FromRgb(0x03, 0xDA, 0xC6);
-            var progressLabelFg = isLight ? Color.FromRgb(0x44, 0x44, 0x88) : Color.FromRgb(0x88, 0x88, 0x88);
             var percentFg  = isLight ? Color.FromRgb(0x77, 0x22, 0xCC) : Color.FromRgb(0xBB, 0x86, 0xFC);
             var pathFg     = isLight ? Color.FromRgb(0x99, 0x99, 0xBB) : Color.FromRgb(0x44, 0x44, 0x55);
+            var tabBarBg   = isLight ? Color.FromRgb(0xE0, 0xE3, 0xF5) : Color.FromRgb(0x08, 0x09, 0x0F);
+            var tabBarBord = isLight ? Color.FromRgb(0xCC, 0xCE, 0xE8) : Color.FromRgb(0x15, 0x17, 0x2A);
+            var dotReady   = isLight ? Color.FromRgb(0x03, 0xB0, 0xA0) : Color.FromRgb(0x03, 0xDA, 0xC6);
 
-            // Status dot
-            var dotReady = isLight ? Color.FromRgb(0x03, 0xB0, 0xA0) : Color.FromRgb(0x03, 0xDA, 0xC6);
-
-            // ── Window & root ─────────────────────────────────────────────
             Background = new SolidColorBrush(windowBg);
             Resources["CardColor"] = new SolidColorBrush(cardBg);
 
-            // ── Header texts ──────────────────────────────────────────────
-            if (FindName("AppTitleText") is TextBlock titleTb)
-                titleTb.Foreground = new SolidColorBrush(headingFg);
-            if (FindName("AppSubtitleText") is TextBlock subTb)
-                subTb.Foreground = new SolidColorBrush(subHeadFg);
+            // Tab bar
+            if (FindName("TabBarBorder") is Border tbBar)
+            {
+                tbBar.Background   = new SolidColorBrush(tabBarBg);
+                tbBar.BorderBrush  = new SolidColorBrush(tabBarBord);
+            }
 
-            // ── URL input card ────────────────────────────────────────────
+            if (FindName("AppTitleText")    is TextBlock titleTb) titleTb.Foreground    = new SolidColorBrush(headingFg);
+            if (FindName("AppSubtitleText") is TextBlock subTb)   subTb.Foreground      = new SolidColorBrush(subHeadFg);
+
             if (FindName("InputCard") is Border inputCard)
             {
-                inputCard.Background    = new SolidColorBrush(cardBg);
-                inputCard.BorderBrush   = new SolidColorBrush(cardBorder);
+                inputCard.Background     = new SolidColorBrush(cardBg);
+                inputCard.BorderBrush    = new SolidColorBrush(cardBorder);
                 inputCard.BorderThickness = new Thickness(isLight ? 1 : 0);
-                if (isLight)
-                    inputCard.Effect = new System.Windows.Media.Effects.DropShadowEffect
-                    { BlurRadius = 18, ShadowDepth = 2, Color = Color.FromRgb(0xC0,0xC4,0xE8), Opacity = 0.45 };
-                else
-                    inputCard.Effect = null;
+                inputCard.Effect = isLight
+                    ? new System.Windows.Media.Effects.DropShadowEffect
+                      { BlurRadius = 18, ShadowDepth = 2, Color = Color.FromRgb(0xC0,0xC4,0xE8), Opacity = 0.45 }
+                    : null;
             }
             if (UrlTextBox != null)
             {
@@ -259,176 +493,151 @@ namespace VideoDownloaderUI
                 UrlTextBox.CaretBrush = new SolidColorBrush(inputFg);
             }
 
-            // Quality / Format labels
-            if (FindName("QualityLabel") is TextBlock ql)
-                ql.Foreground = new SolidColorBrush(labelFg);
-            if (FindName("FormatLabel") is TextBlock fl)
-                fl.Foreground = new SolidColorBrush(labelFg);
+            if (FindName("QualityLabel") is TextBlock ql) ql.Foreground = new SolidColorBrush(labelFg);
+            if (FindName("FormatLabel")  is TextBlock fl) fl.Foreground = new SolidColorBrush(labelFg);
 
-            // ── Progress + Log card ───────────────────────────────────────
             if (FindName("ProgressLogCard") is Border plCard)
             {
-                plCard.Background    = new SolidColorBrush(cardBg);
-                plCard.BorderBrush   = new SolidColorBrush(cardBorder);
+                plCard.Background     = new SolidColorBrush(cardBg);
+                plCard.BorderBrush    = new SolidColorBrush(cardBorder);
                 plCard.BorderThickness = new Thickness(isLight ? 1 : 0);
-                if (isLight)
-                    plCard.Effect = new System.Windows.Media.Effects.DropShadowEffect
-                    { BlurRadius = 18, ShadowDepth = 2, Color = Color.FromRgb(0xC0,0xC4,0xE8), Opacity = 0.45 };
-                else
-                    plCard.Effect = null;
+                plCard.Effect = isLight
+                    ? new System.Windows.Media.Effects.DropShadowEffect
+                      { BlurRadius = 18, ShadowDepth = 2, Color = Color.FromRgb(0xC0,0xC4,0xE8), Opacity = 0.45 }
+                    : null;
             }
-            if (FindName("ProgressLabel") is TextBlock progressLabelTb)
-                progressLabelTb.Foreground = new SolidColorBrush(progressLabelFg);
+            if (FindName("ProgressLabel")  is TextBlock progressLabelTb)
+                progressLabelTb.Foreground = new SolidColorBrush(labelFg);
             if (PercentageTextBlock != null)
                 PercentageTextBlock.Foreground = new SolidColorBrush(percentFg);
 
-            // Progress track background
             if (FindName("ProgressTrackBg") is Border trackBg)
                 trackBg.Background = new SolidColorBrush(
                     isLight ? Color.FromRgb(0xDD,0xDF,0xF5) : Color.FromRgb(0x1C,0x1D,0x2B));
 
-            // Log ScrollViewer
             if (LogScrollViewer != null)
             {
-                LogScrollViewer.Background    = new SolidColorBrush(logBg);
-                LogScrollViewer.BorderBrush   = new SolidColorBrush(logBorder);
+                LogScrollViewer.Background     = new SolidColorBrush(logBg);
+                LogScrollViewer.BorderBrush    = new SolidColorBrush(logBorder);
                 LogScrollViewer.BorderThickness = new Thickness(1);
             }
             if (LogTextBlock != null)
                 LogTextBlock.Foreground = new SolidColorBrush(logFg);
-
-            // Clear button colours
             if (ClearLogButton != null)
-            {
                 ClearLogButton.Foreground = new SolidColorBrush(
-                    isLight ? Color.FromRgb(0x99, 0x44, 0x44) : Color.FromRgb(0x88, 0x88, 0x88));
-            }
+                    isLight ? Color.FromRgb(0x99,0x44,0x44) : Color.FromRgb(0x88,0x88,0x88));
 
-            // ── Status bar ────────────────────────────────────────────────
-            if (StatusTextBlock != null)
-                StatusTextBlock.Foreground = new SolidColorBrush(labelFg);
-            if (DownloadPathLabel != null)
-                DownloadPathLabel.Foreground = new SolidColorBrush(pathFg);
+            // About tab cards
+            ApplyAboutTabTheme(isLight, cardBg);
+
+            if (StatusTextBlock  != null) StatusTextBlock.Foreground  = new SolidColorBrush(labelFg);
+            if (DownloadPathLabel != null) DownloadPathLabel.Foreground = new SolidColorBrush(pathFg);
             if (StatusDot != null && _state == DownloadState.Idle)
                 StatusDot.Fill = new SolidColorBrush(dotReady);
 
-            // ── Settings panel ────────────────────────────────────────────
             ApplySettingsPanelTheme(isLight);
+        }
+
+        private void ApplyAboutTabTheme(bool isLight, Color cardBg)
+        {
+            var cardBrush = new SolidColorBrush(cardBg);
+
+            if (FindName("AboutDevCard")       is Border dc)  dc.Background  = cardBrush;
+            if (FindName("AboutSysCard")       is Border sc)  sc.Background  = cardBrush;
+            if (FindName("AboutDepsCard")      is Border dpc) dpc.Background = cardBrush;
+            if (FindName("AboutChangelogCard") is Border clc) clc.Background = cardBrush;
+
+            // About section labels
+            var labelColor = isLight
+                ? new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x88))
+                : new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x55));
+
+            if (SysOsText      != null) { /* foreground stays from detection */ }
         }
 
         private void ApplySettingsPanelTheme(bool isLight)
         {
-            // ── Settings panel palette ────────────────────────────────────
-            var sBg          = isLight ? Color.FromRgb(0xFF, 0xFF, 0xFF) : Color.FromRgb(0x13, 0x15, 0x2A);
-            var sHeaderBg    = isLight ? Color.FromRgb(0xF0, 0xF2, 0xFB) : Color.FromRgb(0x0F, 0x11, 0x1A);
-            var sFooterBg    = isLight ? Color.FromRgb(0xF0, 0xF2, 0xFB) : Color.FromRgb(0x0F, 0x11, 0x1A);
-            var sScrollBg    = isLight ? Color.FromRgb(0xFF, 0xFF, 0xFF) : Color.FromRgb(0x13, 0x15, 0x2A);
-            var sBorderColor = isLight ? Color.FromRgb(0xE0, 0xE3, 0xF5) : Color.FromRgb(0x2A, 0x2D, 0x45);
-            var sBehaviorBg  = isLight ? Color.FromRgb(0xF3, 0xF4, 0xFD) : Color.FromRgb(0x1A, 0x1C, 0x2E);
-            var sInputBg     = isLight ? Color.FromRgb(0xF3, 0xF4, 0xFD) : Color.FromRgb(0x2C, 0x2E, 0x3E);
-            var sBorderInput = isLight ? Color.FromRgb(0xD8, 0xDB, 0xF0) : Color.FromRgb(0x2C, 0x2E, 0x3E);
+            var sBg         = isLight ? Color.FromRgb(0xFF,0xFF,0xFF) : Color.FromRgb(0x13,0x15,0x2A);
+            var sHeaderBg   = isLight ? Color.FromRgb(0xF0,0xF2,0xFB) : Color.FromRgb(0x0F,0x11,0x1A);
+            var sFooterBg   = isLight ? Color.FromRgb(0xF0,0xF2,0xFB) : Color.FromRgb(0x0F,0x11,0x1A);
+            var sScrollBg   = isLight ? Color.FromRgb(0xFF,0xFF,0xFF) : Color.FromRgb(0x13,0x15,0x2A);
+            var sBorderColor= isLight ? Color.FromRgb(0xE0,0xE3,0xF5) : Color.FromRgb(0x2A,0x2D,0x45);
+            var sBehaviorBg = isLight ? Color.FromRgb(0xF3,0xF4,0xFD) : Color.FromRgb(0x1A,0x1C,0x2E);
+            var sInputBg    = isLight ? Color.FromRgb(0xF3,0xF4,0xFD) : Color.FromRgb(0x2C,0x2E,0x3E);
+            var sBorderInput= isLight ? Color.FromRgb(0xD8,0xDB,0xF0) : Color.FromRgb(0x2C,0x2E,0x3E);
+            var sTitleFg    = isLight ? Color.FromRgb(0x22,0x10,0x55) : Colors.White;
+            var sSubtitleFg = isLight ? Color.FromRgb(0x66,0x66,0x99) : Color.FromRgb(0x88,0x88,0x88);
+            var sInputFg    = isLight ? Color.FromRgb(0x1A,0x1A,0x2E) : Colors.White;
+            var sHintFg     = isLight ? Color.FromRgb(0x99,0x99,0xBB) : Color.FromRgb(0x55,0x55,0x55);
+            var sResetFg    = isLight ? Color.FromRgb(0x88,0x88,0xAA) : Color.FromRgb(0x66,0x66,0x66);
 
-            // Text
-            var sTitleFg     = isLight ? Color.FromRgb(0x22, 0x10, 0x55) : Colors.White;
-            var sSubtitleFg  = isLight ? Color.FromRgb(0x66, 0x66, 0x99) : Color.FromRgb(0x88, 0x88, 0x88);
-            var sInputFg     = isLight ? Color.FromRgb(0x1A, 0x1A, 0x2E) : Colors.White;
-            var sHintFg      = isLight ? Color.FromRgb(0x99, 0x99, 0xBB) : Color.FromRgb(0x55, 0x55, 0x55);
-            var sResetFg     = isLight ? Color.FromRgb(0x88, 0x88, 0xAA) : Color.FromRgb(0x66, 0x66, 0x66);
-
-            // ── SettingsCard (outer) ──────────────────────────────────────
             if (SettingsCard != null)
             {
-                SettingsCard.Background   = new SolidColorBrush(sBg);
-                SettingsCard.BorderBrush  = new SolidColorBrush(sBorderColor);
+                SettingsCard.Background  = new SolidColorBrush(sBg);
+                SettingsCard.BorderBrush = new SolidColorBrush(sBorderColor);
                 SettingsCard.Effect = isLight
                     ? new System.Windows.Media.Effects.DropShadowEffect
                       { BlurRadius = 40, ShadowDepth = 0, Color = Color.FromRgb(0xB0,0xB8,0xE0), Opacity = 0.5 }
                     : new System.Windows.Media.Effects.DropShadowEffect
                       { BlurRadius = 30, ShadowDepth = 0, Color = Colors.Black, Opacity = 0.6 };
             }
+            if (FindName("SettingsHeaderBorder") is Border hdr) hdr.Background = new SolidColorBrush(sHeaderBg);
+            if (FindName("SettingsTitleText")    is TextBlock t) t.Foreground   = new SolidColorBrush(sTitleFg);
+            if (FindName("SettingsSubtitleText") is TextBlock s) s.Foreground   = new SolidColorBrush(sSubtitleFg);
+            if (FindName("SettingsScrollViewer") is ScrollViewer sv) sv.Background = new SolidColorBrush(sScrollBg);
 
-            // ── Header ───────────────────────────────────────────────────
-            if (FindName("SettingsHeaderBorder") is Border hdr)
-                hdr.Background = new SolidColorBrush(sHeaderBg);
-            if (FindName("SettingsTitleText") is TextBlock ttl)
-                ttl.Foreground = new SolidColorBrush(sTitleFg);
-            if (FindName("SettingsSubtitleText") is TextBlock sub)
-                sub.Foreground = new SolidColorBrush(sSubtitleFg);
-
-            // ── Scrollable body ───────────────────────────────────────────
-            if (FindName("SettingsScrollViewer") is ScrollViewer sv)
-                sv.Background = new SolidColorBrush(sScrollBg);
-
-            // ── TextBox: Download path ────────────────────────────────────
             if (DownloadPathBox != null)
             {
-                DownloadPathBox.Background  = new SolidColorBrush(sInputBg);
-                DownloadPathBox.Foreground  = new SolidColorBrush(sInputFg);
-                DownloadPathBox.CaretBrush  = new SolidColorBrush(sInputFg);
-                DownloadPathBox.BorderBrush = new SolidColorBrush(sBorderInput);
+                DownloadPathBox.Background      = new SolidColorBrush(sInputBg);
+                DownloadPathBox.Foreground      = new SolidColorBrush(sInputFg);
+                DownloadPathBox.CaretBrush      = new SolidColorBrush(sInputFg);
+                DownloadPathBox.BorderBrush     = new SolidColorBrush(sBorderInput);
                 DownloadPathBox.BorderThickness = new Thickness(isLight ? 1 : 0);
             }
+            if (DownloadPathHint  != null) DownloadPathHint.Foreground  = new SolidColorBrush(sHintFg);
+            if (ThemeRestartHint  != null) ThemeRestartHint.Foreground  = new SolidColorBrush(sHintFg);
+            if (FindName("BehaviorCard") is Border bc) bc.Background    = new SolidColorBrush(sBehaviorBg);
 
-            // ── Hints ─────────────────────────────────────────────────────
-            if (DownloadPathHint != null)
-                DownloadPathHint.Foreground = new SolidColorBrush(sHintFg);
-            if (ThemeRestartHint != null)
-                ThemeRestartHint.Foreground = new SolidColorBrush(sHintFg);
-
-            // ── Behavior toggles card ─────────────────────────────────────
-            if (FindName("BehaviorCard") is Border bc)
-                bc.Background = new SolidColorBrush(sBehaviorBg);
-
-            // CheckBox foreground (walk children)
             if (FindName("BehaviorCard") is Border bcWalk)
                 SetChildCheckBoxForeground(bcWalk, isLight
-                    ? new SolidColorBrush(Color.FromRgb(0x22, 0x22, 0x44))
-                    : new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)));
+                    ? new SolidColorBrush(Color.FromRgb(0x22,0x22,0x44))
+                    : new SolidColorBrush(Color.FromRgb(0xCC,0xCC,0xCC)));
 
-            // ── Theme cards (dark/light selector) ────────────────────────
             if (DarkThemeCard != null)
             {
                 DarkThemeCard.Background = new SolidColorBrush(
-                    isLight ? Color.FromRgb(0xE8, 0xEA, 0xF8) : Color.FromRgb(0x1A, 0x1C, 0x2E));
-                // title inside
+                    isLight ? Color.FromRgb(0xE8,0xEA,0xF8) : Color.FromRgb(0x1A,0x1C,0x2E));
                 SetChildTextForeground(DarkThemeCard, isLight
-                    ? new SolidColorBrush(Color.FromRgb(0x1A, 0x1A, 0x2E))
+                    ? new SolidColorBrush(Color.FromRgb(0x1A,0x1A,0x2E))
                     : new SolidColorBrush(Colors.White), skipFirst: true);
                 SetChildTextForeground(DarkThemeCard, isLight
-                    ? new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0xAA))
-                    : new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)), skipFirst: false, labelOnly: true);
+                    ? new SolidColorBrush(Color.FromRgb(0x88,0x88,0xAA))
+                    : new SolidColorBrush(Color.FromRgb(0x88,0x88,0x88)), skipFirst: false, labelOnly: true);
             }
             if (LightThemeCard != null)
             {
                 LightThemeCard.Background = new SolidColorBrush(
-                    isLight ? Color.FromRgb(0xFF, 0xFF, 0xFF) : Color.FromRgb(0x2C, 0x2E, 0x3E));
+                    isLight ? Color.FromRgb(0xFF,0xFF,0xFF) : Color.FromRgb(0x2C,0x2E,0x3E));
                 SetChildTextForeground(LightThemeCard, isLight
-                    ? new SolidColorBrush(Color.FromRgb(0x1A, 0x1A, 0x2E))
+                    ? new SolidColorBrush(Color.FromRgb(0x1A,0x1A,0x2E))
                     : new SolidColorBrush(Colors.White), skipFirst: true);
                 SetChildTextForeground(LightThemeCard, isLight
-                    ? new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0xAA))
-                    : new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)), skipFirst: false, labelOnly: true);
+                    ? new SolidColorBrush(Color.FromRgb(0x88,0x88,0xAA))
+                    : new SolidColorBrush(Color.FromRgb(0x88,0x88,0x88)), skipFirst: false, labelOnly: true);
             }
-            // Re-apply selection border after theme card background changes
             UpdateAppThemeCards(_selectedAppTheme);
 
-            // ── Footer ────────────────────────────────────────────────────
-            if (FindName("SettingsFooterBorder") is Border ftr)
-                ftr.Background = new SolidColorBrush(sFooterBg);
-            if (FindName("ResetButton") is Button resetBtn)
-            {
-                // The template renders a TextBlock with Foreground binding — update directly
-                resetBtn.Foreground = new SolidColorBrush(sResetFg);
-            }
+            if (FindName("SettingsFooterBorder") is Border ftr) ftr.Background = new SolidColorBrush(sFooterBg);
+            if (FindName("ResetButton")          is Button rb)  rb.Foreground  = new SolidColorBrush(sResetFg);
         }
 
-        // ── Helpers: walk visual tree to re-colour children ───────────────
+        // ── Visual tree helpers ───────────────────────────────────────────
 
         private static void SetChildCheckBoxForeground(DependencyObject parent, Brush brush)
         {
-            for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
-                var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+                var child = VisualTreeHelper.GetChild(parent, i);
                 if (child is CheckBox cb) cb.Foreground = brush;
                 SetChildCheckBoxForeground(child, brush);
             }
@@ -444,12 +653,12 @@ namespace VideoDownloaderUI
         private static void SetChildTextForegroundInner(DependencyObject parent, Brush brush,
             bool skipFirst, bool labelOnly, ref bool firstSeen)
         {
-            for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
-                var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+                var child = VisualTreeHelper.GetChild(parent, i);
                 if (child is TextBlock tb)
                 {
-                    if (skipFirst && !firstSeen) { firstSeen = true; continue; } // skip emoji
+                    if (skipFirst && !firstSeen) { firstSeen = true; continue; }
                     if (!labelOnly || (tb.FontSize <= 12))
                         tb.Foreground = brush;
                 }
@@ -457,33 +666,28 @@ namespace VideoDownloaderUI
             }
         }
 
-        // ── Apply theme colors to the main window ─────────────────────────
+        // ── Theme colors ──────────────────────────────────────────────────
 
         private void ApplyThemeColors(string theme)
         {
             var (primary, secondary) = SettingsManager.GetThemeColors(theme);
             Resources["SecondaryColor"] = new SolidColorBrush(primary);
 
-            // Update progress bar gradient to match theme
             if (ProgressFill != null && !AudioFormats.Contains(_savedFormat))
             {
                 ProgressFill.Background = new LinearGradientBrush(new GradientStopCollection
                 {
-                    new GradientStop(Color.FromArgb(0xFF, (byte)(primary.R / 2), (byte)(primary.G / 2), (byte)(primary.B / 2)), 0.0),
-                    new GradientStop(primary, 0.5),
+                    new GradientStop(Color.FromArgb(0xFF,(byte)(primary.R/2),(byte)(primary.G/2),(byte)(primary.B/2)),0.0),
+                    new GradientStop(primary,   0.5),
                     new GradientStop(secondary, 1.0)
-                }, new Point(0, 0), new Point(1, 0));
+                }, new Point(0,0), new Point(1,0));
             }
         }
 
-        // ── Apply saved preferences to main controls ──────────────────────
-
         private void ApplySettingsToUI()
         {
-            // Set default quality/format combos if they match a tag
             if (!string.IsNullOrEmpty(_settings.DefaultQuality))
                 SelectComboByTag(QualityComboBox, _settings.DefaultQuality);
-
             if (!string.IsNullOrEmpty(_settings.DefaultFormat))
                 SelectComboByTag(FormatComboBox, _settings.DefaultFormat);
         }
@@ -492,14 +696,13 @@ namespace VideoDownloaderUI
         {
             if (DownloadPathLabel == null) return;
             string dir = SettingsManager.GetDownloadDirectory(_settings);
-            // Show truncated path in status bar
-            DownloadPathLabel.Text = dir.Length > 55
-                ? "📁 …" + dir[^52..]
-                : "📁 " + dir;
+            DownloadPathLabel.Text    = dir.Length > 55 ? "📁 …" + dir[^52..] : "📁 " + dir;
             DownloadPathLabel.ToolTip = dir;
         }
 
-        // ── Format ComboBox ───────────────────────────────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  FORMAT COMBO
+        // ════════════════════════════════════════════════════════════════
 
         private void FormatComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -507,7 +710,7 @@ namespace VideoDownloaderUI
             string fmt   = GetSelectedFormat();
             bool isAudio = AudioFormats.Contains(fmt);
 
-            if (AudioBadge     != null) AudioBadge.Visibility    = isAudio ? Visibility.Visible : Visibility.Collapsed;
+            if (AudioBadge      != null) AudioBadge.Visibility     = isAudio ? Visibility.Visible : Visibility.Collapsed;
             if (QualityComboBox != null) { QualityComboBox.IsEnabled = !isAudio; QualityComboBox.Opacity = isAudio ? 0.4 : 1.0; }
             if (DownloadButton  != null && _state == DownloadState.Idle)
                 DownloadButton.Content = isAudio ? "🎵 EXTRACT AUDIO" : "⬇ DOWNLOAD NOW";
@@ -527,13 +730,15 @@ namespace VideoDownloaderUI
             var (primary, secondary) = SettingsManager.GetThemeColors(theme);
             return new LinearGradientBrush(new GradientStopCollection
             {
-                new GradientStop(Color.FromArgb(0xFF, (byte)(primary.R / 2), (byte)(primary.G / 2), (byte)(primary.B / 2)), 0.0),
+                new GradientStop(Color.FromArgb(0xFF,(byte)(primary.R/2),(byte)(primary.G/2),(byte)(primary.B/2)),0.0),
                 new GradientStop(primary,  0.5),
                 new GradientStop(secondary,1.0)
             }, new Point(0,0), new Point(1,0));
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  DOWNLOAD LOGIC
+        // ════════════════════════════════════════════════════════════════
 
         private string GetSelectedFormat()
             => (FormatComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "";
@@ -541,19 +746,12 @@ namespace VideoDownloaderUI
         private static void SelectComboByTag(ComboBox box, string tag)
         {
             foreach (ComboBoxItem item in box.Items)
-            {
-                if (item.Tag?.ToString() == tag)
-                {
-                    box.SelectedItem = item;
-                    return;
-                }
-            }
+                if (item.Tag?.ToString() == tag) { box.SelectedItem = item; return; }
         }
 
         private void ApplyState(DownloadState s)
         {
             _state = s;
-
             DownloadButton.Visibility = s == DownloadState.Idle           ? Visibility.Visible : Visibility.Collapsed;
             StopButton.Visibility     = s == DownloadState.Downloading     ? Visibility.Visible : Visibility.Collapsed;
             ResumeButton.Visibility   = s == DownloadState.Paused          ? Visibility.Visible : Visibility.Collapsed;
@@ -571,8 +769,6 @@ namespace VideoDownloaderUI
                 DownloadState.WaitingConfirm => new SolidColorBrush(Color.FromRgb(0xFF,0x98,0x00)),
                 _                            => (SolidColorBrush)FindResource("SecondaryColor")
             };
-
-            // Clear button: enabled only when log is not being written
             if (ClearLogButton != null)
                 ClearLogButton.IsEnabled = (s != DownloadState.Downloading);
         }
@@ -603,12 +799,9 @@ namespace VideoDownloaderUI
                 ProgressFill.BeginAnimation(WidthProperty, null);
                 ProgressFill.Width = targetWidth;
             }
-
             PercentageTextBlock.Text =
                 _currentProgress.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%";
         }
-
-        // ── Download button ───────────────────────────────────────────────
 
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -635,59 +828,43 @@ namespace VideoDownloaderUI
             _overwrite    = false;
 
             if (_settings.ClearLogEachDownload) LogTextBlock.Text = "";
-
             StatusTextBlock.Text = "Checking...";
             SetProgressFillWidth(0, animate: false);
 
-            // Skip duplicate check if user opted out
             if (!_settings.SkipDuplicateCheck)
             {
                 AppendLog("[INFO] Checking if file was previously downloaded...");
                 string existingFile = await Task.Run(() => RunCheckOnly(_savedUrl, _savedFormat));
-
                 if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
                 {
                     _detectedFile = existingFile;
                     ConfirmFileNameText.Text = $"📄  {Path.GetFileName(existingFile)}";
-                    AppendLog("");
-                    AppendLog($"[⚠ DUPLICATE] Found existing file:");
-                    AppendLog($"    {existingFile}");
-                    AppendLog("");
+                    AppendLog(""); AppendLog($"[⚠ DUPLICATE] Found existing file:");
+                    AppendLog($"    {existingFile}"); AppendLog("");
                     AppendLog("[?] Choose an action using the panel above ↑");
                     StatusTextBlock.Text = "⚠ File already exists — awaiting your choice";
                     ApplyState(DownloadState.WaitingConfirm);
                     return;
                 }
             }
-
             await BeginDownload();
         }
-
-        // ── Confirm panel: YES ────────────────────────────────────────────
 
         private async void ConfirmYes_Click(object sender, RoutedEventArgs e)
         {
             _overwrite = true;
-            AppendLog("");
-            AppendLog("[INFO] Re-download confirmed — existing file will be replaced.");
-            AppendLog($"[INFO] New quality: {_savedQuality}  |  Format: {_savedFormat.ToUpper()}");
-            AppendLog("");
+            AppendLog(""); AppendLog("[INFO] Re-download confirmed — existing file will be replaced.");
+            AppendLog($"[INFO] New quality: {_savedQuality}  |  Format: {_savedFormat.ToUpper()}"); AppendLog("");
             await BeginDownload();
         }
 
-        // ── Confirm panel: NO ─────────────────────────────────────────────
-
         private void ConfirmNo_Click(object sender, RoutedEventArgs e)
         {
-            AppendLog("");
-            AppendLog("[CANCELLED] Download cancelled — existing file kept.");
+            AppendLog(""); AppendLog("[CANCELLED] Download cancelled — existing file kept.");
             StatusTextBlock.Text = "Cancelled";
-            _savedUrl            = "";
-            _detectedFile        = "";
+            _savedUrl = ""; _detectedFile = "";
             ApplyState(DownloadState.Idle);
         }
-
-        // ── Stop / Resume / Cancel ────────────────────────────────────────
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
@@ -712,18 +889,13 @@ namespace VideoDownloaderUI
             StatusTextBlock.Text     = "Cancelled";
             SetProgressFillWidth(0, animate: false);
             PercentageTextBlock.Text = "0%";
-            _savedUrl                = "";
-            _savedFormat             = "";
-            _overwrite               = false;
+            _savedUrl = ""; _savedFormat = ""; _overwrite = false;
             ApplyState(DownloadState.Idle);
         }
 
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
-            // Only allowed when nothing is actively writing to the log
             if (_state == DownloadState.Downloading) return;
-
-            // Fade out → clear → fade in
             var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(150));
             fadeOut.Completed += (_, __) =>
             {
@@ -734,15 +906,13 @@ namespace VideoDownloaderUI
             LogTextBlock.BeginAnimation(OpacityProperty, fadeOut);
         }
 
-        // ── Shared helpers ────────────────────────────────────────────────
-
         private async Task BeginDownload()
         {
             bool isAudio = AudioFormats.Contains(_savedFormat);
             if (isAudio)
             {
                 AppendLog($"[INFO] Audio mode — video will be downloaded then converted to {_savedFormat.ToUpper()}.");
-                AppendLog($"[INFO] Quality selector is disabled for audio (always uses best audio stream).");
+                AppendLog("[INFO] Quality selector is disabled for audio (always uses best audio stream).");
                 AppendLog("");
             }
             await StartDownloadAsync();
@@ -752,31 +922,20 @@ namespace VideoDownloaderUI
         {
             ApplyState(DownloadState.Downloading);
             _cts = new CancellationTokenSource();
-
             try
             {
                 await Task.Run(() => RunDownloader(_savedUrl, _savedQuality, _savedFormat, _overwrite, _cts.Token));
-
-                // Post-download actions
                 if (_state == DownloadState.Downloading)
                 {
                     if (_settings.ShowCompletionNotify)
                         ShowToastNotification("Download Complete", $"{_savedFormat.ToUpper()} file saved successfully!");
-
                     if (_settings.AutoOpenFolder)
-                    {
-                        string dir = SettingsManager.GetDownloadDirectory(_settings);
-                        Process.Start("explorer.exe", dir);
-                    }
+                        Process.Start("explorer.exe", SettingsManager.GetDownloadDirectory(_settings));
                 }
             }
             catch (OperationCanceledException) { }
             catch (Exception ex) { System.Windows.MessageBox.Show("Error: " + ex.Message); ApplyState(DownloadState.Idle); }
-            finally
-            {
-                _cts?.Dispose(); _cts = null;
-                if (_state == DownloadState.Downloading) ApplyState(DownloadState.Idle);
-            }
+            finally { _cts?.Dispose(); _cts = null; if (_state == DownloadState.Downloading) ApplyState(DownloadState.Idle); }
         }
 
         private void KillActiveProcess()
@@ -795,16 +954,16 @@ namespace VideoDownloaderUI
             {
                 using var icon = new WinForms.NotifyIcon
                 {
-                    Icon    = System.Drawing.SystemIcons.Information,
-                    Visible = true,
+                    Icon            = System.Drawing.SystemIcons.Information,
+                    Visible         = true,
                     BalloonTipTitle = title,
                     BalloonTipText  = message,
                     BalloonTipIcon  = WinForms.ToolTipIcon.Info
                 };
                 icon.ShowBalloonTip(4000);
-                System.Threading.Thread.Sleep(4500);
+                Thread.Sleep(4500);
             }
-            catch { /* notification not critical */ }
+            catch { }
         }
 
         // ── Python helpers ────────────────────────────────────────────────
@@ -818,9 +977,7 @@ namespace VideoDownloaderUI
                     using var p = new Process();
                     p.StartInfo = new ProcessStartInfo(name, "--version")
                     {
-                        UseShellExecute        = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow         = true
+                        UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true
                     };
                     p.Start(); p.WaitForExit();
                     if (p.ExitCode == 0) return name;
@@ -834,7 +991,6 @@ namespace VideoDownloaderUI
         {
             string python    = GetPythonExecutable();
             string outputDir = SettingsManager.GetDownloadDirectory(_settings);
-
             var si = new ProcessStartInfo
             {
                 FileName               = python,
@@ -852,33 +1008,23 @@ namespace VideoDownloaderUI
             si.ArgumentList.Add("--output");     si.ArgumentList.Add(outputDir);
             si.ArgumentList.Add("--format");     si.ArgumentList.Add(format);
             si.ArgumentList.Add("--check-only");
-
             try
             {
                 using var p = Process.Start(si);
                 if (p == null) return "";
                 string stdout = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
-
                 foreach (var line in stdout.Split('\n'))
                 {
                     string trimmed = line.Trim();
-                    if (trimmed.StartsWith("[FILECHECK_DEBUG]"))
-                        Dispatcher.Invoke(() => AppendLog(trimmed));
-                    else if (trimmed.StartsWith("[FILECHECK_ERROR]"))
-                        Dispatcher.Invoke(() => AppendLog($"[WARN] Check failed: {trimmed}"));
+                    if (trimmed.StartsWith("[FILECHECK_DEBUG]"))  Dispatcher.Invoke(() => AppendLog(trimmed));
+                    else if (trimmed.StartsWith("[FILECHECK_ERROR]")) Dispatcher.Invoke(() => AppendLog($"[WARN] Check failed: {trimmed}"));
                 }
-
                 foreach (var line in stdout.Split('\n'))
-                {
                     if (line.TrimStart().StartsWith("[FILECHECK] "))
                         return line.Trim().Substring("[FILECHECK] ".Length).Trim();
-                }
             }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(() => AppendLog($"[WARN] RunCheckOnly exception: {ex.Message}"));
-            }
+            catch (Exception ex) { Dispatcher.Invoke(() => AppendLog($"[WARN] RunCheckOnly exception: {ex.Message}")); }
             return "";
         }
 
@@ -886,7 +1032,6 @@ namespace VideoDownloaderUI
         {
             string python    = GetPythonExecutable();
             string outputDir = SettingsManager.GetDownloadDirectory(_settings);
-
             var si = new ProcessStartInfo
             {
                 FileName               = python,
@@ -899,7 +1044,6 @@ namespace VideoDownloaderUI
             };
             si.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
             si.EnvironmentVariables["PYTHONUTF8"]       = "1";
-
             si.ArgumentList.Add("downloader.py");
             si.ArgumentList.Add(url);
             si.ArgumentList.Add("--output");  si.ArgumentList.Add(outputDir);
@@ -909,7 +1053,6 @@ namespace VideoDownloaderUI
 
             using var process = Process.Start(si);
             if (process == null) return;
-
             lock (_processLock) _activeProcess = process;
 
             using var reg = ct.Register(() =>
@@ -920,19 +1063,15 @@ namespace VideoDownloaderUI
 
             process.OutputDataReceived += (_, e) =>
             {
-                if (!string.IsNullOrEmpty(e.Data))
-                    Dispatcher.Invoke(() => ProcessOutput(e.Data));
+                if (!string.IsNullOrEmpty(e.Data)) Dispatcher.Invoke(() => ProcessOutput(e.Data));
             };
             process.ErrorDataReceived += (_, e) =>
             {
-                if (!string.IsNullOrEmpty(e.Data))
-                    Dispatcher.Invoke(() => AppendLog("[ERR] " + e.Data));
+                if (!string.IsNullOrEmpty(e.Data)) Dispatcher.Invoke(() => AppendLog("[ERR] " + e.Data));
             };
-
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             process.WaitForExit();
-
             lock (_processLock) _activeProcess = null;
             ct.ThrowIfCancellationRequested();
         }
@@ -945,26 +1084,21 @@ namespace VideoDownloaderUI
             {
                 int    idx  = data.IndexOf("[PROGRESS]") + "[PROGRESS]".Length;
                 string pStr = data.Substring(idx).Trim().Replace(",", ".");
-                var m = System.Text.RegularExpressions.Regex.Match(pStr, @"\d+(\.\d+)?");
+                var    m    = System.Text.RegularExpressions.Regex.Match(pStr, @"\d+(\.\d+)?");
                 if (m.Success &&
-                    double.TryParse(m.Value,
-                        System.Globalization.NumberStyles.Any,
-                        System.Globalization.CultureInfo.InvariantCulture,
-                        out double pct))
+                    double.TryParse(m.Value, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out double pct))
                     SetProgressFillWidth(pct);
-
                 if (data.TrimStart().StartsWith("[PROGRESS]")) return;
             }
-
             if (data.StartsWith("[STATUS]"))
             {
-                string status = data.Replace("[STATUS]", "").Trim();
+                string status   = data.Replace("[STATUS]", "").Trim();
                 StatusTextBlock.Text = status;
-                bool isConvert = status.Contains("Converting") || status.Contains("conversion") || status.Contains("processing");
+                bool isConvert  = status.Contains("Converting") || status.Contains("conversion") || status.Contains("processing");
                 AppendLog(isConvert ? $"[⚙ PROCESSING] {status}" : data);
                 return;
             }
-
             AppendLog(data);
         }
 
