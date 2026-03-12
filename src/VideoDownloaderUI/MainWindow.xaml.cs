@@ -115,33 +115,8 @@ namespace VideoDownloaderUI
             SysExePathText.Text = Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "—";
 
-            // Reset badges to "checking" state
-            SetDepChecking(DepPythonStatus,  DepPythonBadge,  DepPythonVersion);
-            SetDepChecking(DepYtdlpStatus,   DepYtdlpBadge,   DepYtdlpVersion);
-            SetDepChecking(DepFfmpegStatus,  DepFfmpegBadge,  DepFfmpegVersion);
-            DepStatusSummary.Text       = "Checking...";
-            DepStatusSummary.Foreground = new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x55));
+            // dependency checks removed – UI no longer contains Dep* controls
 
-            // ── Async: probe each tool ───────────────────────────────────
-            await Task.Run(() =>
-            {
-                // Python
-                var (pyFound, pyText, pyDesc) = ProbePython();
-                Dispatcher.Invoke(() => UpdateDepRow(
-                    DepPythonVersion, DepPythonStatus, DepPythonBadge, pyFound, pyText, pyDesc));
-
-                // yt-dlp
-                var (ytFound, ytText, ytDesc) = ProbeYtDlp();
-                Dispatcher.Invoke(() => UpdateDepRow(
-                    DepYtdlpVersion, DepYtdlpStatus, DepYtdlpBadge, ytFound, ytText, ytDesc));
-
-                // FFmpeg
-                var (ffFound, ffText, ffDesc) = ProbeFfmpeg();
-                Dispatcher.Invoke(() => UpdateDepRow(
-                    DepFfmpegVersion, DepFfmpegStatus, DepFfmpegBadge, ffFound, ffText, ffDesc));
-
-                Dispatcher.Invoke(UpdateDepSummary);
-            });
         }
 
         // ── Probers ───────────────────────────────────────────────────────
@@ -255,19 +230,6 @@ namespace VideoDownloaderUI
             }
         }
 
-        private void UpdateDepSummary()
-        {
-            int installed = 0;
-            if (DepPythonStatus.Text.Contains("Installed")) installed++;
-            if (DepYtdlpStatus.Text.Contains("Installed"))  installed++;
-            if (DepFfmpegStatus.Text.Contains("Installed"))  installed++;
-
-            DepStatusSummary.Text = $"{installed} / 3 components ready";
-            DepStatusSummary.Foreground = new SolidColorBrush(
-                installed == 3 ? Color.FromRgb(0x4C, 0xAF, 0x50) :
-                installed >= 1 ? Color.FromRgb(0xFF, 0xB7, 0x4D) :
-                                 Color.FromRgb(0xF4, 0x43, 0x36));
-        }
 
         private static string GetFriendlyOsName()
         {
