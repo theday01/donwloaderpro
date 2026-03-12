@@ -766,7 +766,7 @@ namespace VideoDownloaderUI
             if (AudioBadge      != null) AudioBadge.Visibility      = isAudio ? Visibility.Visible : Visibility.Collapsed;
             if (QualityComboBox != null) { QualityComboBox.IsEnabled = !isAudio; QualityComboBox.Opacity = isAudio ? 0.4 : 1.0; }
             if (DownloadButton  != null && _state == DownloadState.Idle)
-                DownloadButton.Content = isAudio ? "🎵 EXTRACT AUDIO" : "⬇ DOWNLOAD NOW";
+                DownloadButton.Content = isAudio ? FindResource("ExtractAudioButtonText") : FindResource("DownloadButtonText");
 
             if (ProgressFill != null)
                 ProgressFill.Background = isAudio
@@ -813,7 +813,7 @@ namespace VideoDownloaderUI
             ConfirmPanel.Visibility   = s == DownloadState.WaitingConfirm  ? Visibility.Visible : Visibility.Collapsed;
 
             if (s == DownloadState.Idle)
-                DownloadButton.Content = AudioFormats.Contains(GetSelectedFormat()) ? "🎵 EXTRACT AUDIO" : "⬇ DOWNLOAD NOW";
+                DownloadButton.Content = AudioFormats.Contains(GetSelectedFormat()) ? FindResource("ExtractAudioButtonText") : FindResource("DownloadButtonText");
 
             StatusDot.Fill = s switch
             {
