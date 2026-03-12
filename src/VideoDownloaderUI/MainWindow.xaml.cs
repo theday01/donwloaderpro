@@ -982,7 +982,11 @@ namespace VideoDownloaderUI
                 if (_state == DownloadState.Downloading)
                 {
                     if (_settings.ShowCompletionNotify)
-                        ShowToastNotification("Download Complete", $"{_savedFormat.ToUpper()} file saved successfully!");
+                    {
+                        string title = FindResource("NotifyTitle").ToString()!;
+                        string msg   = string.Format(FindResource("NotifyMessage").ToString()!, _savedFormat.ToUpper());
+                        ShowToastNotification(title, msg);
+                    }
                     if (_settings.AutoOpenFolder)
                         Process.Start("explorer.exe", SettingsManager.GetDownloadDirectory(_settings));
                 }
@@ -1148,6 +1152,7 @@ namespace VideoDownloaderUI
             if (data.StartsWith("[STATUS]"))
             {
                 string status  = data.Replace("[STATUS]", "").Trim();
+                if (status == "Success") status = FindResource("StatusSuccess").ToString()!;
                 StatusTextBlock.Text = status;
                 bool isConvert = status.Contains("Converting") || status.Contains("conversion") || status.Contains("processing");
                 AppendLog(isConvert ? $"[⚙ PROCESSING] {status}" : data);

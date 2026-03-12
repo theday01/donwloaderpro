@@ -27,6 +27,7 @@
     <sys:String x:Key="StatusChecking">جاري التحقق...</sys:String>
     <sys:String x:Key="StatusResuming">جاري الاستئناف...</sys:String>
     <sys:String x:Key="StatusCancelled">تم الإلغاء</sys:String>
+    <sys:String x:Key="StatusSuccess">تم بنجاح</sys:String>
     <sys:String x:Key="StatusNoFormat">⚠ لم يتم اختيار الصيغة</sys:String>
 
     <!-- لوحة التأكيد -->
@@ -124,6 +125,8 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
+    <sys:String x:Key="NotifyTitle">اكتمل التحميل</sys:String>
+    <sys:String x:Key="NotifyMessage">تم حفظ ملف {0} بنجاح!</sys:String>
     <sys:String x:Key="MsgEnterUrl">يرجى إدخال رابط صحيح.</sys:String>
     <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  يرجى اختيار صيغة التحميل أولاً!      </sys:String>
     <sys:String x:Key="VideoFormatsLabel">  صيغ الفيديو  ←  MP4 · WebM · AVI · WMV       </sys:String>
