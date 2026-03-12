@@ -646,18 +646,18 @@
 
                                 <!-- Credits line -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                    <TextBlock Text="صمم وطور بواسطة " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
-                                    <TextBlock Text="hamzasaadi" Foreground="#BB86FC" FontSize="12"
+                                    <TextBlock Text="Designed &amp; developed by " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Hamza Saadi" Foreground="#BB86FC" FontSize="12"
                                                FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,16,0"/>
                                     <TextBlock Text="·" Foreground="#333" FontSize="12" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                                    <TextBlock Text="آخر تحديث  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Last updated  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
                                     <TextBlock Text="12/03/2026" Foreground="#03DAC6" FontSize="12"
                                                FontFamily="Consolas" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <!-- Website link line -->
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="الموقع الإلكتروني:  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Website:  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
                                     <TextBlock FontSize="12" VerticalAlignment="Center">
                                         <Hyperlink NavigateUri="https://eagleshadow.technology"
                                                    RequestNavigate="Hyperlink_RequestNavigate">
