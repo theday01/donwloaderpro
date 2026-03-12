@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <!-- ✅ أيقونة ملف .exe نفسه (تظهر في Explorer وشريط المهام) -->
+    <ApplicationIcon>..\..\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,16 @@
     </Content>
     <Content Include="..\..\developer.png">
       <Link>developer.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- ✅ نسخ logo.png إلى مجلد الإخراج (يُستخدم كأيقونة النافذة في وقت التشغيل) -->
+    <Content Include="..\..\logo.png">
+      <Link>logo.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- ✅ نسخ logo.ico إلى مجلد الإخراج (احتياطي لأي استخدام مستقبلي) -->
+    <Content Include="..\..\logo.ico">
+      <Link>logo.ico</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

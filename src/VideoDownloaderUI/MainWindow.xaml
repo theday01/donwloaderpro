@@ -5,7 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Pro Video Downloader - by EagleShadow" Height="820" Width="1080"
-        Background="#0F111A" WindowStartupLocation="CenterScreen">
+        Background="#0F111A" WindowStartupLocation="CenterScreen"
+        Icon="logo.png">
+
+    <!-- ✅ Icon="logo.png" — يُظهر الشعار في:
+         • أيقونة النافذة (الزاوية العلوية اليسرى)
+         • شريط المهام (Taskbar) أثناء التشغيل
+         • Alt+Tab بين النوافذ
+    -->
 
     <Window.Resources>
         <SolidColorBrush x:Key="PrimaryColor"   Color="#BB86FC"/>
@@ -361,11 +368,16 @@
             </Grid.RowDefinitions>
 
             <Grid Margin="0,0,0,30">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock x:Name="AppTitleText" Text="Video Downloader Pro" FontSize="36" FontWeight="ExtraBold"
-                               Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center"/>
-                    <TextBlock x:Name="AppSubtitleText" Text="Fast &amp; High Quality Downloads — Video &amp; Audio"
-                               FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                <!-- ✅ شعار التطبيق في الهيدر بجانب العنوان -->
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="logo.png" Width="40" Height="40" Margin="0,0,12,0"
+                           VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="AppTitleText" Text="Video Downloader Pro" FontSize="36" FontWeight="ExtraBold"
+                                   Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="AppSubtitleText" Text="Fast &amp; High Quality Downloads — Video &amp; Audio"
+                                   FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
                 </StackPanel>
                 <Button x:Name="SettingsButton" Style="{StaticResource IconButtonStyle}"
                         HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -629,22 +641,21 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- Left: Title + credits (NO icon) -->
                             <StackPanel VerticalAlignment="Center">
+                                <!-- ✅ شعار التطبيق في تاب About -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <Image Source="logo.png" Width="48" Height="48" Margin="0,0,14,0"
+                                           VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <TextBlock Text="Video Downloader Pro"
+                                               FontSize="26" FontWeight="ExtraBold"
+                                               Foreground="#BB86FC" VerticalAlignment="Center"/>
+                                </StackPanel>
 
-                                <!-- Title — no emoji icon -->
-                                <TextBlock Text="Video Downloader Pro"
-                                           FontSize="26" FontWeight="ExtraBold"
-                                           Foreground="#BB86FC" Margin="0,0,0,4"/>
-
-                                <!-- Subtitle -->
                                 <TextBlock Text="Fast &amp; High Quality Downloads  ·  Video &amp; Audio"
                                            FontSize="13" Foreground="#555" Margin="0,0,0,16"/>
 
-                                <!-- Thin divider -->
                                 <Border Height="1" Background="#1E2040" Margin="0,0,0,14"/>
 
-                                <!-- Credits line -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                     <TextBlock Text="Designed &amp; developed by " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
                                     <TextBlock Text="Hamza Saadi" Foreground="#BB86FC" FontSize="12"
@@ -655,7 +666,6 @@
                                                FontFamily="Consolas" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 </StackPanel>
 
-                                <!-- Website link line -->
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Website:  " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
                                     <TextBlock FontSize="12" VerticalAlignment="Center">
@@ -677,7 +687,6 @@
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
-
                             </StackPanel>
 
                             <!-- Right: Version orb -->
