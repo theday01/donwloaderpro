@@ -47,10 +47,41 @@ namespace VideoDownloaderUI
             InitializeComponent();
             _settings         = SettingsManager.Load();
             _selectedAppTheme = _settings.AppTheme;
+
+            // Apply language first
+            ApplyLanguage(_settings.Language);
+
             ApplySettingsToUI();
             ApplyThemeColors(_settings.AccentTheme);
             ApplyAppTheme(_settings.AppTheme);
             UpdateDownloadPathLabel();
+        }
+
+        private void ApplyLanguage(string lang)
+        {
+            try
+            {
+                var dict = new ResourceDictionary
+                {
+                    Source = new Uri($"Resources/Strings.{lang}.xaml", UriKind.Relative)
+                };
+
+                // Replace old language dictionary
+                var oldDict = Application.Current.Resources.MergedDictionaries
+                    .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Strings."));
+
+                if (oldDict != null)
+                    Application.Current.Resources.MergedDictionaries.Remove(oldDict);
+
+                Application.Current.Resources.MergedDictionaries.Add(dict);
+
+                // Set FlowDirection (RTL for Arabic)
+                this.FlowDirection = (lang == "ar") ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error applying language: " + ex.Message);
+            }
         }
 
         // ════════════════════════════════════════════════════════════════
@@ -301,6 +332,7 @@ namespace VideoDownloaderUI
 
             SelectComboByTag(DefaultQualityBox, _settings.DefaultQuality);
             SelectComboByTag(DefaultFormatBox,  _settings.DefaultFormat);
+            SelectComboByTag(LanguageComboBox,  _settings.Language);
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -312,18 +344,20 @@ namespace VideoDownloaderUI
             _settings.SkipDuplicateCheck   = SkipDuplicateCheck.IsChecked == true;
             _settings.AccentTheme          = _selectedTheme;
             _settings.AppTheme             = _selectedAppTheme;
+            _settings.Language             = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "en";
 
             _settings.DefaultQuality = (DefaultQualityBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
             _settings.DefaultFormat  = (DefaultFormatBox.SelectedItem  as ComboBoxItem)?.Tag?.ToString() ?? "mp4";
 
             SettingsManager.Save(_settings);
+            ApplyLanguage(_settings.Language);
             ApplyThemeColors(_selectedTheme);
             ApplyAppTheme(_selectedAppTheme);
             UpdateDownloadPathLabel();
             ApplySettingsToUI();
 
             CloseSettingsPanel();
-            AppendLog("[⚙] Settings saved successfully.");
+            AppendLog(FindResource("LogSettingsSaved").ToString()!);
         }
 
         private void ResetSettings_Click(object sender, RoutedEventArgs e)
@@ -332,7 +366,7 @@ namespace VideoDownloaderUI
             _selectedTheme    = "teal";
             _selectedAppTheme = "dark";
             LoadSettingsIntoPanel();
-            AppendLog("[⚙] Settings reset to defaults.");
+            AppendLog(FindResource("LogSettingsReset").ToString()!);
         }
 
         private void BrowsePath_Click(object sender, RoutedEventArgs e)
@@ -825,19 +859,19 @@ namespace VideoDownloaderUI
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             string url = UrlTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(url)) { System.Windows.MessageBox.Show("Please enter a valid URL."); return; }
+            if (string.IsNullOrEmpty(url)) { System.Windows.MessageBox.Show(FindResource("MsgEnterUrl").ToString()); return; }
 
             string chosenFormat = GetSelectedFormat();
             if (string.IsNullOrEmpty(chosenFormat))
             {
                 LogTextBlock.Text = "";
                 AppendLog("╔══════════════════════════════════════════════════╗");
-                AppendLog("║  ⚠  Please select a download format first!      ║");
+                AppendLog("║" + FindResource("FormatSelectionWarningTitle").ToString() + "║");
                 AppendLog("║                                                  ║");
-                AppendLog("║  VIDEO formats  →  MP4 · WebM · AVI · WMV       ║");
-                AppendLog("║  AUDIO formats  →  MP3 · M4A · WAV              ║");
+                AppendLog("║" + FindResource("VideoFormatsLabel").ToString() + "║");
+                AppendLog("║" + FindResource("AudioFormatsLabel").ToString() + "║");
                 AppendLog("╚══════════════════════════════════════════════════╝");
-                StatusTextBlock.Text = "⚠ No format selected";
+                StatusTextBlock.Text = FindResource("StatusNoFormat").ToString();
                 return;
             }
 
@@ -847,21 +881,21 @@ namespace VideoDownloaderUI
             _overwrite    = false;
 
             if (_settings.ClearLogEachDownload) LogTextBlock.Text = "";
-            StatusTextBlock.Text = "Checking...";
+            StatusTextBlock.Text = FindResource("StatusChecking").ToString();
             SetProgressFillWidth(0, animate: false);
 
             if (!_settings.SkipDuplicateCheck)
             {
-                AppendLog("[INFO] Checking if file was previously downloaded...");
+                AppendLog(FindResource("LogDuplicateCheck").ToString()!);
                 string existingFile = await Task.Run(() => RunCheckOnly(_savedUrl, _savedFormat));
                 if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
                 {
                     _detectedFile = existingFile;
                     ConfirmFileNameText.Text = $"📄  {Path.GetFileName(existingFile)}";
-                    AppendLog(""); AppendLog($"[⚠ DUPLICATE] Found existing file:");
+                    AppendLog(""); AppendLog(FindResource("LogDuplicateFound").ToString()!);
                     AppendLog($"    {existingFile}"); AppendLog("");
-                    AppendLog("[?] Choose an action using the panel above ↑");
-                    StatusTextBlock.Text = "⚠ File already exists — awaiting your choice";
+                    AppendLog(FindResource("LogChoicePanel").ToString()!);
+                    StatusTextBlock.Text = FindResource("StatusWaitingChoice").ToString();
                     ApplyState(DownloadState.WaitingConfirm);
                     return;
                 }
@@ -872,15 +906,16 @@ namespace VideoDownloaderUI
         private async void ConfirmYes_Click(object sender, RoutedEventArgs e)
         {
             _overwrite = true;
-            AppendLog(""); AppendLog("[INFO] Re-download confirmed — existing file will be replaced.");
-            AppendLog($"[INFO] New quality: {_savedQuality}  |  Format: {_savedFormat.ToUpper()}"); AppendLog("");
+            AppendLog(""); AppendLog(FindResource("LogOverwriteConfirmed").ToString()!);
+            AppendLog(string.Format(FindResource("LogNewConfig").ToString()!, _savedQuality, _savedFormat.ToUpper()));
+            AppendLog("");
             await BeginDownload();
         }
 
         private void ConfirmNo_Click(object sender, RoutedEventArgs e)
         {
-            AppendLog(""); AppendLog("[CANCELLED] Download cancelled — existing file kept.");
-            StatusTextBlock.Text = "Cancelled";
+            AppendLog(""); AppendLog(FindResource("LogCancelled").ToString()!);
+            StatusTextBlock.Text = FindResource("StatusCancelled").ToString();
             _savedUrl = ""; _detectedFile = "";
             ApplyState(DownloadState.Idle);
         }
@@ -889,15 +924,15 @@ namespace VideoDownloaderUI
         {
             KillActiveProcess();
             ApplyState(DownloadState.Paused);
-            AppendLog("\n[PAUSED] Download paused — press ▶ RESUME to continue.");
-            StatusTextBlock.Text = "Paused";
+            AppendLog(FindResource("LogPaused").ToString()!);
+            StatusTextBlock.Text = FindResource("CancelButtonText").ToString()!.Replace("✖", "").Trim(); // Fallback
         }
 
         private async void ResumeButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(_savedUrl)) return;
-            AppendLog("\n[RESUMING] Continuing download from where it stopped...");
-            StatusTextBlock.Text = "Resuming...";
+            AppendLog(FindResource("LogResuming").ToString()!);
+            StatusTextBlock.Text = FindResource("StatusResuming").ToString();
             await StartDownloadAsync();
         }
 
@@ -905,7 +940,7 @@ namespace VideoDownloaderUI
         {
             KillActiveProcess();
             LogTextBlock.Text        = "";
-            StatusTextBlock.Text     = "Cancelled";
+            StatusTextBlock.Text     = FindResource("StatusCancelled").ToString();
             SetProgressFillWidth(0, animate: false);
             PercentageTextBlock.Text = "0%";
             _savedUrl = ""; _savedFormat = ""; _overwrite = false;
@@ -930,8 +965,8 @@ namespace VideoDownloaderUI
             bool isAudio = AudioFormats.Contains(_savedFormat);
             if (isAudio)
             {
-                AppendLog($"[INFO] Audio mode — video will be downloaded then converted to {_savedFormat.ToUpper()}.");
-                AppendLog("[INFO] Quality selector is disabled for audio (always uses best audio stream).");
+                AppendLog(string.Format(FindResource("LogAudioMode").ToString()!, _savedFormat.ToUpper()));
+                AppendLog(FindResource("LogAudioQuality").ToString()!);
                 AppendLog("");
             }
             await StartDownloadAsync();

@@ -16,6 +16,7 @@ namespace VideoDownloaderUI
         public bool    ClearLogEachDownload  { get; set; } = false;
         public bool    SkipDuplicateCheck    { get; set; } = false;
         public string  AppTheme             { get; set; } = "dark";   // dark | light
+        public string  Language             { get; set; } = "en";     // en | ar
     }
 
     public static class SettingsManager
