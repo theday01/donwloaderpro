@@ -774,7 +774,7 @@
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F4BB;  Operating System"/>
+                                    <TextBlock Style="{StaticResource AboutRowKey}" Text="&#x1F4BB;  O-S"/>
                                     <TextBlock x:Name="SysOsText" Style="{StaticResource AboutRowVal}" Grid.Column="1" Text="Detecting..."/>
                                 </Grid>
                                 <Grid Margin="0,0,0,12">
