@@ -70,6 +70,9 @@
     <sys:String x:Key="SaveSettings">&#x2714;  Save Settings</sys:String>
 
     <!-- About Page -->
+    <sys:String x:Key="AboutDescLine1">A powerful tool to download videos and audio from various platforms.</sys:String>
+    <sys:String x:Key="AboutDescLine2">Supports high quality up to 4K, multiple formats, and download resumption.</sys:String>
+    <sys:String x:Key="AboutDescLine3">Designed with a modern interface to provide a smooth and fast user experience.</sys:String>
     <sys:String x:Key="DesignedBy">Designed &amp; developed by </sys:String>
     <sys:String x:Key="LastUpdated">Last updated  </sys:String>
     <sys:String x:Key="SystemInfoLabel">&#x1F5A5;  SYSTEM INFO</sys:String>

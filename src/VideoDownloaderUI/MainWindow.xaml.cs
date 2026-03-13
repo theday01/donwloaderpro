@@ -667,6 +667,12 @@ namespace VideoDownloaderUI
         private void ApplyAboutTabTheme(bool isLight, Color cardBg)
         {
             var cardBrush = new SolidColorBrush(cardBg);
+            var descFg    = isLight ? Color.FromRgb(0x55, 0x55, 0x88) : Color.FromRgb(0x66, 0x66, 0x66);
+            var descBrush = new SolidColorBrush(descFg);
+
+            if (AboutDesc1 != null) AboutDesc1.Foreground = descBrush;
+            if (AboutDesc2 != null) AboutDesc2.Foreground = descBrush;
+            if (AboutDesc3 != null) AboutDesc3.Foreground = descBrush;
 
             if (FindName("AboutIdentityCard") is Border ic)
             {
