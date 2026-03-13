@@ -3,7 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- عام -->
-    <sys:String x:Key="AppTitle">محمل الفيديو برو</sys:String>
+    <sys:String x:Key="AppTitle">EagleVStream</sys:String>
     <sys:String x:Key="AppSubtitle">تحميل سريع وبجودة عالية — فيديو وصوت</sys:String>
     <sys:String x:Key="VersionLabel">إصدار v2.1 PRO</sys:String>
 
@@ -178,7 +178,7 @@
 
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
-    <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
+    <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج EagleVStream</sys:String>
     <sys:String x:Key="WelcomeDev">تم التطوير بواسطة حمزة السعدي - EagleShadow</sys:String>
     <sys:String x:Key="WelcomeReady">جاهز للبدء</sys:String>
     <sys:String x:Key="NotifyTitle">اكتمل التحميل</sys:String>

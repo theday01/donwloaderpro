@@ -260,7 +260,7 @@ namespace VideoDownloaderUI
 
             SysAppDataText.Text = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "ProVideoDownloader");
+                "EagleVStream");
             SysExePathText.Text = Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "—";
 
