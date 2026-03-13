@@ -141,8 +141,36 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] Continuing download from where it stopped...</sys:String>
     <sys:String x:Key="LogPartialFound">Partial download found, resuming from last position…</sys:String>
     <sys:String x:Key="LogAutoResuming">Network restored — automatically resuming download…</sys:String>
-    <sys:String x:Key="LogNetworkLost">Internet connection lost. The download has been paused and will automatically resume once the connection is restored.</sys:String>
-    <sys:String x:Key="LogNetworkRestored">Connection restored. Resuming download from the last byte…</sys:String>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  NETWORK LOST / RESTORED  —  Professional log box messages     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <sys:String x:Key="LogNetworkLost_L1">╔══════════════════════════════════════════════════╗</sys:String>
+    <sys:String x:Key="LogNetworkLost_L2">║  ⚡  CONNECTION LOST                              ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L3">╠══════════════════════════════════════════════════╣</sys:String>
+    <sys:String x:Key="LogNetworkLost_L4">║  Your internet connection has been interrupted.  ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L5">║  The download is paused — no data has been lost. ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L6">║  Monitoring the connection in the background...  ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L7">║  Download will resume automatically once the     ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L8">║  connection is restored. No action required.     ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L9">╚══════════════════════════════════════════════════╝</sys:String>
+
+    <sys:String x:Key="LogNetworkRestored_L1">╔══════════════════════════════════════════════════╗</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L2">║  ✔  CONNECTION RESTORED                          ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L3">╠══════════════════════════════════════════════════╣</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L4">║  Internet is back — resuming your download now.  ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L5">║  Continuing from the exact byte it stopped at.   ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L6">╚══════════════════════════════════════════════════╝</sys:String>
+
+    <!-- Legacy single-line keys (kept for SafeResource fallbacks) -->
+    <sys:String x:Key="LogNetworkLost">⚡ Connection lost — download paused. Will resume automatically.</sys:String>
+    <sys:String x:Key="LogNetworkRestored">✔ Connection restored — resuming from the last byte.</sys:String>
+
+    <sys:String x:Key="StatusNetworkLost">⚡ Connection lost — waiting to restore…</sys:String>
+    <sys:String x:Key="StatusNetworkWaiting">Waiting for internet connection…</sys:String>
+    <sys:String x:Key="StatusNetworkRestored">✔ Connection restored — resuming…</sys:String>
+    <sys:String x:Key="StatusRetrying">Reconnecting and resuming…</sys:String>
+
     <sys:String x:Key="LogAudioMode">[INFO] Audio mode — video will be downloaded then converted to {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] Quality selector is disabled for audio (always uses best audio stream).</sys:String>
     <sys:String x:Key="WelcomeTitle">Welcome to Video Downloader Pro</sys:String>
@@ -176,8 +204,9 @@
     <!-- History Confirmation -->
     <sys:String x:Key="MsgClearHistoryConfirm">Are you sure you want to clear all history?</sys:String>
     <sys:String x:Key="MsgClearHistoryTitle">Clear History</sys:String>
-<!-- Contact Section -->
-    <sys:String x:Key="ContactSectionTitle">Contact the Developer -HAMZASAADI</sys:String>
+
+    <!-- Contact Section -->
+    <sys:String x:Key="ContactSectionTitle">Contact the Developer - HAMZA SAADI</sys:String>
     <sys:String x:Key="ContactSectionSubtitle">Reach out for support, feedback, or collaboration</sys:String>
     <sys:String x:Key="ContactUsTitle">GET IN TOUCH</sys:String>
     <sys:String x:Key="ContactUsSubtitle">All channels are monitored — expect a reply within 24 h</sys:String>

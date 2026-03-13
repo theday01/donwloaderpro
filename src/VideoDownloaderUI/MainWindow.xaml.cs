@@ -154,7 +154,6 @@ namespace VideoDownloaderUI
             catch (Exception ex)
             {
                 Debug.WriteLine("Error applying language: " + ex.Message);
-                // If the requested language file is corrupt/missing, fall back to English
                 if (lang != "en")
                 {
                     try
@@ -166,7 +165,7 @@ namespace VideoDownloaderUI
                         Application.Current.Resources.MergedDictionaries.Add(fallback);
                         this.FlowDirection = FlowDirection.LeftToRight;
                     }
-                    catch { /* English file also missing — keep going with defaults */ }
+                    catch { }
                 }
             }
         }
@@ -937,7 +936,6 @@ namespace VideoDownloaderUI
             if (ClearLogButton != null)
                 ClearLogButton.IsEnabled = (s != DownloadState.Downloading);
 
-            // Reset network-lost flag when leaving Downloading state
             if (s != DownloadState.Downloading)
                 _networkWasLost = false;
         }
@@ -1337,54 +1335,95 @@ namespace VideoDownloaderUI
             ct.ThrowIfCancellationRequested();
         }
 
-        // ── Output parsing ────────────────────────────────────────────────
+        // ════════════════════════════════════════════════════════════════
+        //  OUTPUT PARSING  ←  ✅ UPDATED: Professional network messages
+        // ════════════════════════════════════════════════════════════════
 
         private void ProcessOutput(string data)
         {
-            // ── Network tags (priority — handle before anything else) ─────────
+            // ── [NETWORK_LOST] ────────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_LOST]"))
             {
-                _networkWasLost = true;
+                _networkWasLost    = true;
                 _autoResumePending = true;
-                StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
-                StatusTextBlock.Text = SafeResource("StatusNetworkLost", "Connection lost — waiting…");
+                StatusDot.Fill       = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
+                StatusTextBlock.Text = SafeResource("StatusNetworkLost", "⚡ Connection lost — waiting…");
+
                 AppendLog("");
-                AppendLog("[⚡ NETWORK] " + SafeResource("LogNetworkLost", "Internet lost — download paused. Waiting to reconnect…"));
+                AppendLog(SafeResource("LogNetworkLost_L1",
+                    "╔══════════════════════════════════════════════════╗"));
+                AppendLog(SafeResource("LogNetworkLost_L2",
+                    "║  ⚡  CONNECTION LOST                              ║"));
+                AppendLog(SafeResource("LogNetworkLost_L3",
+                    "╠══════════════════════════════════════════════════╣"));
+                AppendLog(SafeResource("LogNetworkLost_L4",
+                    "║  Your internet connection has been interrupted.  ║"));
+                AppendLog(SafeResource("LogNetworkLost_L5",
+                    "║  The download is paused — no data has been lost. ║"));
+                AppendLog(SafeResource("LogNetworkLost_L6",
+                    "║  Monitoring the connection in the background...  ║"));
+                AppendLog(SafeResource("LogNetworkLost_L7",
+                    "║  Download will resume automatically once the     ║"));
+                AppendLog(SafeResource("LogNetworkLost_L8",
+                    "║  connection is restored. No action required.     ║"));
+                AppendLog(SafeResource("LogNetworkLost_L9",
+                    "╚══════════════════════════════════════════════════╝"));
+                AppendLog("");
                 return;
             }
+
+            // ── [NETWORK_WAITING] ─────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_WAITING]"))
             {
                 _autoResumePending = true;
                 StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
                 var m = System.Text.RegularExpressions.Regex.Match(data, @"\((\d+)s elapsed\)");
                 string elapsed = m.Success ? $" ({m.Groups[1].Value}s)" : "";
-                StatusTextBlock.Text = SafeResource("StatusNetworkWaiting", "Waiting for internet…") + elapsed;
+                StatusTextBlock.Text = SafeResource("StatusNetworkWaiting", "Waiting for internet connection…") + elapsed;
                 return;
             }
+
+            // ── [NETWORK_RESTORED] ────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_RESTORED]"))
             {
-                _networkWasLost = false;
+                _networkWasLost    = false;
                 _autoResumePending = false;
-                StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
-                StatusTextBlock.Text = SafeResource("StatusNetworkRestored", "Connection restored — resuming…");
-                AppendLog("[✔ NETWORK] " + SafeResource("LogNetworkRestored", "Internet restored — resuming from last position."));
+                StatusDot.Fill       = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
+                StatusTextBlock.Text = SafeResource("StatusNetworkRestored", "✔ Connection restored — resuming…");
+
+                AppendLog(SafeResource("LogNetworkRestored_L1",
+                    "╔══════════════════════════════════════════════════╗"));
+                AppendLog(SafeResource("LogNetworkRestored_L2",
+                    "║  ✔  CONNECTION RESTORED                          ║"));
+                AppendLog(SafeResource("LogNetworkRestored_L3",
+                    "╠══════════════════════════════════════════════════╣"));
+                AppendLog(SafeResource("LogNetworkRestored_L4",
+                    "║  Internet is back — resuming your download now.  ║"));
+                AppendLog(SafeResource("LogNetworkRestored_L5",
+                    "║  Continuing from the exact byte it stopped at.   ║"));
+                AppendLog(SafeResource("LogNetworkRestored_L6",
+                    "╚══════════════════════════════════════════════════╝"));
                 AppendLog("");
                 return;
             }
+
+            // ── [NETWORK_ERROR] ───────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_ERROR]"))
             {
                 AppendLog("[⚠ NETWORK] " + data.Substring("[NETWORK_ERROR]".Length).Trim());
                 return;
             }
+
+            // ── [NETWORK_TIMEOUT] ─────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_TIMEOUT]"))
             {
-                _autoResumePending = true;
+                _autoResumePending = false;
                 StatusDot.Fill = (SolidColorBrush)FindResource("SecondaryColor");
                 AppendLog("[⚠ NETWORK] " + data.Substring("[NETWORK_TIMEOUT]".Length).Trim());
                 return;
             }
 
-            // ── Progress ──────────────────────────────────────────────────────
+            // ── [PROGRESS] ────────────────────────────────────────────────────────
             if (data.Contains("[PROGRESS]"))
             {
                 int    idx  = data.IndexOf("[PROGRESS]") + "[PROGRESS]".Length;
@@ -1397,7 +1436,7 @@ namespace VideoDownloaderUI
                 if (data.TrimStart().StartsWith("[PROGRESS]")) return;
             }
 
-            // ── Status ────────────────────────────────────────────────────────
+            // ── [STATUS] ──────────────────────────────────────────────────────────
             if (data.StartsWith("[STATUS]"))
             {
                 string status = data.Replace("[STATUS]", "").Trim();
@@ -1409,8 +1448,7 @@ namespace VideoDownloaderUI
                     status = SafeResource("StatusRetrying", "Reconnecting and resuming…");
 
                 StatusTextBlock.Text = status;
-                // Restore orange dot if we're back to downloading after a network issue
-                if (_networkWasLost == false)
+                if (!_networkWasLost)
                     StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
 
                 bool isConvert = status.Contains("Converting") || status.Contains("conversion") || status.Contains("processing");

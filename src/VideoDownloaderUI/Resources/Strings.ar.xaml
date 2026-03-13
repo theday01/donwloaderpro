@@ -141,8 +141,36 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
     <sys:String x:Key="LogPartialFound">تم العثور على تحميل غير مكتمل، جاري الاستئناف من آخر نقطة…</sys:String>
     <sys:String x:Key="LogAutoResuming">عادت الشبكة — جاري استئناف التحميل تلقائياً…</sys:String>
-    <sys:String x:Key="LogNetworkLost">انقطع الاتصال بالإنترنت. تم إيقاف التحميل مؤقتاً، وسيتم استئنافه تلقائياً فور استعادة الاتصال.</sys:String>
-    <sys:String x:Key="LogNetworkRestored">تم استعادة الاتصال. جاري استئناف التحميل من آخر نقطة توقف…</sys:String>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  انقطاع / استعادة الشبكة  —  رسائل احترافية داخل السجل        -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <sys:String x:Key="LogNetworkLost_L1">╔══════════════════════════════════════════════════╗</sys:String>
+    <sys:String x:Key="LogNetworkLost_L2">║  ⚡  انقطع الاتصال بالإنترنت                     ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L3">╠══════════════════════════════════════════════════╣</sys:String>
+    <sys:String x:Key="LogNetworkLost_L4">║  تم إيقاف التحميل مؤقتاً بشكل تلقائي.           ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L5">║  لم يُفقد أي جزء من البيانات المُحمَّلة.         ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L6">║  يتم مراقبة حالة الاتصال باستمرار...             ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L7">║  سيُستأنف التحميل تلقائياً فور عودة الاتصال.    ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L8">║  لا يلزم أي إجراء من طرفك، انتظر لحظة.          ║</sys:String>
+    <sys:String x:Key="LogNetworkLost_L9">╚══════════════════════════════════════════════════╝</sys:String>
+
+    <sys:String x:Key="LogNetworkRestored_L1">╔══════════════════════════════════════════════════╗</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L2">║  ✔  عاد الاتصال بالإنترنت                        ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L3">╠══════════════════════════════════════════════════╣</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L4">║  جاري استئناف التحميل من نقطة التوقف تلقائياً.  ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L5">║  لن تحتاج لإعادة التحميل من البداية.             ║</sys:String>
+    <sys:String x:Key="LogNetworkRestored_L6">╚══════════════════════════════════════════════════╝</sys:String>
+
+    <!-- Legacy single-line keys (kept for SafeResource fallbacks) -->
+    <sys:String x:Key="LogNetworkLost">⚡ انقطع الاتصال — تم إيقاف التحميل مؤقتاً. سيُستأنف تلقائياً.</sys:String>
+    <sys:String x:Key="LogNetworkRestored">✔ عاد الاتصال — جاري الاستئناف من آخر بايت.</sys:String>
+
+    <sys:String x:Key="StatusNetworkLost">⚡ انقطع الاتصال — في انتظار الاستعادة…</sys:String>
+    <sys:String x:Key="StatusNetworkWaiting">جاري انتظار الاتصال بالإنترنت…</sys:String>
+    <sys:String x:Key="StatusNetworkRestored">✔ عاد الاتصال — جاري الاستئناف…</sys:String>
+    <sys:String x:Key="StatusRetrying">جاري إعادة الاتصال والاستئناف…</sys:String>
+
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
     <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
@@ -177,7 +205,7 @@
     <sys:String x:Key="MsgClearHistoryConfirm">هل أنت متأكد من رغبتك في مسح سجل التحميلات بالكامل؟</sys:String>
     <sys:String x:Key="MsgClearHistoryTitle">مسح السجل</sys:String>
 
-<!-- قسم التواصل -->
+    <!-- قسم التواصل -->
     <sys:String x:Key="ContactSectionTitle">التواصل مع المطور - حمزة سعدي</sys:String>
     <sys:String x:Key="ContactSectionSubtitle">للدعم الفني أو الاقتراحات أو التعاون</sys:String>
     <sys:String x:Key="ContactUsTitle">تواصل معنا</sys:String>
@@ -188,4 +216,5 @@
     <sys:String x:Key="LabelInstagram">إنستغرام</sys:String>
     <sys:String x:Key="LabelEmail">البريد الإلكتروني</sys:String>
     <sys:String x:Key="LabelWebsite">الموقع الإلكتروني</sys:String>
+
 </ResourceDictionary>
