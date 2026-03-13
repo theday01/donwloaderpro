@@ -1,0 +1,176 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- عام -->
+    <sys:String x:Key="AppTitle">محمل الفيديو برو</sys:String>
+    <sys:String x:Key="AppSubtitle">تحميل سريع وبجودة عالية — فيديو وصوت</sys:String>
+    <sys:String x:Key="VersionLabel">إصدار v2.1 PRO</sys:String>
+
+    <!-- التبويبات -->
+    <sys:String x:Key="TabDownloader">&#x2B07;  المحمل</sys:String>
+    <sys:String x:Key="TabHistory">&#x231A;  التاريخ</sys:String>
+    <sys:String x:Key="TabAbout">&#x2139;  حول النظام</sys:String>
+
+    <!-- صفحة المحمل -->
+    <sys:String x:Key="UrlPlaceholder">أدخل رابط الفيديو هنا ...</sys:String>
+    <sys:String x:Key="QualityLabel">الجودة</sys:String>
+    <sys:String x:Key="FormatLabel">الصيغة</sys:String>
+    <sys:String x:Key="AudioBadge">&#x1F3B5; صوت</sys:String>
+    <sys:String x:Key="DownloadButtonText">&#x2B07; تحميل الآن</sys:String>
+    <sys:String x:Key="ExtractAudioButtonText">&#x1F3B5; استخراج الصوت</sys:String>
+    <sys:String x:Key="StopButtonText">&#x23F8; إيقاف</sys:String>
+    <sys:String x:Key="ResumeButtonText">&#x25B6; استئناف</sys:String>
+    <sys:String x:Key="CancelButtonText">&#x2716; إلغاء</sys:String>
+    <sys:String x:Key="ProgressLabel">تقدم التحميل</sys:String>
+    <sys:String x:Key="ClearLogButtonText">&#x232B;  مسح</sys:String>
+    <sys:String x:Key="OpenFolderButtonText">&#x1F4C1;  فتح المجلد</sys:String>
+    <sys:String x:Key="StatusReady">جاهز</sys:String>
+    <sys:String x:Key="StatusChecking">جاري التحقق...</sys:String>
+    <sys:String x:Key="StatusResuming">جاري الاستئناف...</sys:String>
+    <sys:String x:Key="StatusCancelled">تم الإلغاء</sys:String>
+    <sys:String x:Key="StatusSuccess">تم بنجاح</sys:String>
+    <sys:String x:Key="StatusStarting">جاري بدء التحميل...</sys:String>
+    <sys:String x:Key="StatusNoFormat">⚠ لم يتم اختيار الصيغة</sys:String>
+
+    <!-- لوحة التأكيد -->
+    <sys:String x:Key="ConfirmDuplicateTitle">&#x26A0;  هذا الملف تم تحميله مسبقاً!</sys:String>
+    <sys:String x:Key="ConfirmDuplicateQuestion">هل تريد إعادة تحميله بالجودة/الصيغة الجديدة؟</sys:String>
+    <sys:String x:Key="ConfirmYes">&#x2714;  نعم، أعد التحميل</sys:String>
+    <sys:String x:Key="ConfirmNo">&#x2716;  لا، إلغاء</sys:String>
+
+    <!-- إعدادات النظام -->
+    <sys:String x:Key="SettingsTitle">&#x2699;  الإعدادات</sys:String>
+    <sys:String x:Key="SettingsSubtitle">تخصيص تجربة التحميل الخاصة بك</sys:String>
+    <sys:String x:Key="DownloadLocationLabel">&#x1F4C1;  موقع التحميل</sys:String>
+    <sys:String x:Key="SaveToLabel">حفظ التحميلات في:</sys:String>
+    <sys:String x:Key="BrowseButtonText">تصفح</sys:String>
+    <sys:String x:Key="DownloadPathHintText">اتركه فارغاً للحفظ في مجلد التنزيلات (Downloads) الخاص بالنظام.</sys:String>
+    <sys:String x:Key="AppearanceLabel">&#x1F3A8;  المظهر</sys:String>
+    <sys:String x:Key="AccentThemeLabel">لون المظهر الأساسي:</sys:String>
+    <sys:String x:Key="LanguageLabel">اللغة:</sys:String>
+    <sys:String x:Key="DefaultPrefsLabel">&#x1F39B;  التفضيلات الافتراضية</sys:String>
+    <sys:String x:Key="DefaultQualityLabel">الجودة الافتراضية:</sys:String>
+    <sys:String x:Key="DefaultFormatLabel">الصيغة الافتراضية:</sys:String>
+    <sys:String x:Key="BehaviorLabel">&#x26A1;  السلوك</sys:String>
+    <sys:String x:Key="OpenFolderCheck">افتح مجلد التحميل عند الانتهاء</sys:String>
+    <sys:String x:Key="NotificationCheck">إظهار إشعار عند الاكتمال</sys:String>
+    <sys:String x:Key="ClearLogCheck">مسح السجل قبل كل عملية تحميل</sys:String>
+    <sys:String x:Key="SkipDuplicateCheck">تخطي التحقق من الملفات المكررة (لا ينصح به)</sys:String>
+    <sys:String x:Key="SystemThemeLabel">&#x1F317;  ثيم النظام</sys:String>
+    <sys:String x:Key="SystemThemeSubtitle">اختر وضع مظهر الواجهة:</sys:String>
+    <sys:String x:Key="DarkMode">الوضع الداكن</sys:String>
+    <sys:String x:Key="LightMode">الوضع الفاتح</sys:String>
+    <sys:String x:Key="ModeEyes">مريح للعين</sys:String>
+    <sys:String x:Key="ModeBright">ساطع ونظيف</sys:String>
+    <sys:String x:Key="ThemeRestartHintText">&#x2139; سيتم تطبيق التغييرات بعد الحفظ.</sys:String>
+    <sys:String x:Key="ResetDefaults">&#x21BA; استعادة الافتراضيات</sys:String>
+    <sys:String x:Key="SaveSettings">&#x2714;  حفظ الإعدادات</sys:String>
+
+    <!-- صفحة حول -->
+    <sys:String x:Key="DesignedBy">تم التصميم والتطوير بواسطة </sys:String>
+    <sys:String x:Key="LastUpdated">آخر تحديث  </sys:String>
+    <sys:String x:Key="SystemInfoLabel">&#x1F5A5;  معلومات النظام</sys:String>
+    <sys:String x:Key="RefreshButtonText">&#x27F3;  تحديث</sys:String>
+    <sys:String x:Key="OsLabel">&#x1F4BB;  نظام التشغيل</sys:String>
+    <sys:String x:Key="DotnetLabel">&#x2699;  بيئة .NET</sys:String>
+    <sys:String x:Key="ArchLabel">&#x1F4D0;  المعمارية</sys:String>
+    <sys:String x:Key="CpuLabel">&#x1F9E0;  المعالجات</sys:String>
+    <sys:String x:Key="SettingsPathLabel">&#x1F5C2;  مسار الإعدادات</sys:String>
+    <sys:String x:Key="ExeLocationLabel">&#x1F4C1;  موقع البرنامج</sys:String>
+    <sys:String x:Key="ChangelogLabel">سجل التغييرات</sys:String>
+    <sys:String x:Key="ChangelogSubtitle">تاريخ الإصدارات وما الجديد</sys:String>
+    <sys:String x:Key="ReleasesCount"> إصدارات</sys:String>
+    <sys:String x:Key="LatestBadge">الأحدث</sys:String>
+    <sys:String x:Key="CurrentRelease">الإصدار الحالي</sys:String>
+    <sys:String x:Key="MadeWith">صنع بـ </sys:String>
+    <sys:String x:Key="ByLabel"> بواسطة </sys:String>
+    <sys:String x:Key="AllRightsReserved">  ·  تطوير حمزة السعدي - جميع الحقوق محفوظة </sys:String>
+
+    <!-- صفحة التاريخ -->
+    <sys:String x:Key="HistoryTitle">&#x231A;  تاريخ التحميلات</sys:String>
+    <sys:String x:Key="HistorySubtitle">يتتبع جميع محاولاتك للتحميل ونتائجها</sys:String>
+    <sys:String x:Key="ColDate">التاريخ</sys:String>
+    <sys:String x:Key="ColUrl">الرابط</sys:String>
+    <sys:String x:Key="ColFormat">الصيغة</sys:String>
+    <sys:String x:Key="ColQuality">الجودة</sys:String>
+    <sys:String x:Key="ColStatus">الحالة</sys:String>
+    <sys:String x:Key="StatusOk">ناجح</sys:String>
+    <sys:String x:Key="StatusFail">فشل</sys:String>
+    <sys:String x:Key="ClearHistoryBtn">&#x1F5D1;  مسح السجل بالكامل</sys:String>
+    <sys:String x:Key="NoHistoryMsg">لا يوجد سجل تحميلات بعد.</sys:String>
+
+    <!-- تفاصيل سجل التغييرات -->
+    <sys:String x:Key="v2_1_Date">12 مارس 2026</sys:String>
+    <sys:String x:Key="v2_1_ChangesCount">5 تغييرات</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Title">تبويب "حول النظام"</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Desc">اكتشاف فوري للاعتمادات (Python, yt-dlp, FFmpeg) — مؤشرات حالة حية وتقارير الإصدارات.</sys:String>
+    <sys:String x:Key="v2_1_Theme_Title">مبدل الوضع الفاتح/الداكن</sys:String>
+    <sys:String x:Key="v2_1_Theme_Desc">محرك ثيمات ثنائي الاتجاه بالكامل — كل بطاقة ومدخل وسجل يتكيف فوراً دون الحاجة لإعادة التشغيل.</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Title">كشف الملفات المكررة</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Desc">فحص ما قبل التحميل يقارن الأسماء عبر جميع الصيغ — لوحة تأكيد مدمجة قبل أي إعادة تحميل.</sys:String>
+    <sys:String x:Key="v2_1_Controls_Title">إيقاف / استئناف / إلغاء</sys:String>
+    <sys:String x:Key="v2_1_Controls_Desc">تحكم كامل بدورة حياة التحميل — إيقاف مؤقت والاستئناف من آخر بايت باستخدام خاصية continuedl.</sys:String>
+    <sys:String x:Key="v2_1_Accent_Title">نظام ألوان بـ 6 تدرجات</sys:String>
+    <sys:String x:Key="v2_1_Accent_Desc">تيل، بنفسجي، وردي، أزرق، برتقالي، أخضر — أشرطة تقدم متدرجة وتطبيق فوري للون على الواجهة.</sys:String>
+
+    <sys:String x:Key="v2_0_Title">إعادة تصميم شاملة</sys:String>
+    <sys:String x:Key="v2_0_Date">4 يناير 2026</sys:String>
+    <sys:String x:Key="v2_0_ChangesCount">5 تغييرات</sys:String>
+    <sys:String x:Key="v2_0_UI_Desc">إعادة تصميم كاملة لواجهة WPF بالوضع الداكن</sys:String>
+    <sys:String x:Key="v2_0_Format_Desc">متعدد الصيغ: MP4 · WebM · AVI · WMV · MP3 · M4A · WAV</sys:String>
+    <sys:String x:Key="v2_0_Quality_Desc">خيارات جودة تبدأ من 144p وحتى 4K</sys:String>
+    <sys:String x:Key="v2_0_Engine_Desc">تكامل yt-dlp ليحل محل youtube-dl</sys:String>
+    <sys:String x:Key="v2_0_Anim_Desc">شريط تقدم متحرك مع تأثير الشيمر (Shimmer)</sys:String>
+
+    <sys:String x:Key="v1_0_Title">الإطلاق الأولي</sys:String>
+    <sys:String x:Key="v1_0_Date">18 أكتوبر 2025</sys:String>
+    <sys:String x:Key="v1_0_Desc">+ تحميل يوتيوب أساسي عبر youtube-dl مع واجهة WinForms&#x0a;+ دعم مجلدات الإخراج المخصصة&#x0a;+ مخرجات سجل الكونسول الفورية</sys:String>
+
+    <!-- رسائل السجل (برمجياً) -->
+    <sys:String x:Key="LogSettingsSaved">[⚙] تم حفظ الإعدادات بنجاح.</sys:String>
+    <sys:String x:Key="LogSettingsReset">[⚙] تم استعادة الإعدادات الافتراضية.</sys:String>
+    <sys:String x:Key="LogDuplicateCheck">[INFO] جاري التحقق مما إذا كان الملف قد تم تحميله مسبقاً...</sys:String>
+    <sys:String x:Key="LogDuplicateFound">[⚠ مكرر] تم العثور على ملف موجود:</sys:String>
+    <sys:String x:Key="LogChoicePanel">[?] اختر إجراءً باستخدام اللوحة في الأعلى ↑</sys:String>
+    <sys:String x:Key="StatusWaitingChoice">⚠ الملف موجود بالفعل — في انتظار اختيارك</sys:String>
+    <sys:String x:Key="LogOverwriteConfirmed">[INFO] تم تأكيد إعادة التحميل — سيتم استبدال الملف الحالي.</sys:String>
+    <sys:String x:Key="LogNewConfig">[INFO] الجودة الجديدة: {0}  |  الصيغة: {1}</sys:String>
+    <sys:String x:Key="LogCancelled">[CANCELLED] تم إلغاء التحميل — تم الاحتفاظ بالملف الحالي.</sys:String>
+    <sys:String x:Key="LogPaused">\n[PAUSED] توقف التحميل مؤقتاً — اضغط استئناف للمتابعة.</sys:String>
+    <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
+    <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
+    <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
+    <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
+    <sys:String x:Key="WelcomeDev">تم التطوير بواسطة حمزة السعدي - EagleShadow</sys:String>
+    <sys:String x:Key="WelcomeReady">جاهز للبدء</sys:String>
+    <sys:String x:Key="NotifyTitle">اكتمل التحميل</sys:String>
+    <sys:String x:Key="NotifyMessage">تم حفظ ملف {0} بنجاح!</sys:String>
+    <sys:String x:Key="MsgEnterUrl">يرجى إدخال رابط صحيح.</sys:String>
+    <sys:String x:Key="MsgRestartRequired">سيتم إعادة تشغيل النظام لتطبيق التغييرات الجديدة.</sys:String>
+    <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  يرجى اختيار صيغة التحميل أولاً!      </sys:String>
+    <sys:String x:Key="VideoFormatsLabel">  صيغ الفيديو  ←  MP4 · WebM · AVI · WMV       </sys:String>
+    <sys:String x:Key="AudioFormatsLabel">  صيغ الصوت   ←  MP3 · M4A · WAV              </sys:String>
+
+    <!-- معلومات النظام والتحقق -->
+    <sys:String x:Key="StatusDetecting">جاري الكشف...</sys:String>
+    <sys:String x:Key="StatusCheckingDep">●  جاري التحقق</sys:String>
+    <sys:String x:Key="StatusInstalled">●  مثبت</sys:String>
+    <sys:String x:Key="StatusNotFoundDep">●  غير موجود</sys:String>
+    <sys:String x:Key="LabelLogicalCores">نواة منطقية</sys:String>
+    <sys:String x:Key="LabelLogicalCore">نواة منطقية</sys:String>
+    <sys:String x:Key="LabelLocalBundle">حزمة محلية</sys:String>
+    <sys:String x:Key="LabelFoundInPath">موجود في PATH</sys:String>
+    <sys:String x:Key="LabelFoundAt">موجود في: {0}</sys:String>
+    <sys:String x:Key="LabelInstallFrom">قم بالتثبيت من {0}</sys:String>
+    <sys:String x:Key="LabelExecutable">الملف التنفيذي: {0}</sys:String>
+    <sys:String x:Key="LabelPipInstall">استخدم pip install {0}</sys:String>
+    <sys:String x:Key="LabelPipUpdate">استخدم pip install -U {0} للتحديث</sys:String>
+    <sys:String x:Key="LabelFfmpegDesc">حمله من ffmpeg.org — مطلوب للصوت و AVI/WMV</sys:String>
+    <sys:String x:Key="LabelSelectFolder">اختر مجلد التحميل</sys:String>
+
+    <!-- تأكيد مسح السجل -->
+    <sys:String x:Key="MsgClearHistoryConfirm">هل أنت متأكد من رغبتك في مسح سجل التحميلات بالكامل؟</sys:String>
+    <sys:String x:Key="MsgClearHistoryTitle">مسح السجل</sys:String>
+
+</ResourceDictionary>

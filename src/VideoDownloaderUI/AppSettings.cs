@@ -1,10 +1,21 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Media;
 
 namespace VideoDownloaderUI
 {
+    public class HistoryEntry
+    {
+        public DateTime Timestamp { get; set; }
+        public string Url { get; set; } = "";
+        public string Format { get; set; } = "";
+        public string Quality { get; set; } = "";
+        public bool IsSuccess { get; set; }
+        public string FileName { get; set; } = "";
+    }
+
     public class AppSettings
     {
         public string  DownloadPath          { get; set; } = "";
@@ -16,6 +27,8 @@ namespace VideoDownloaderUI
         public bool    ClearLogEachDownload  { get; set; } = false;
         public bool    SkipDuplicateCheck    { get; set; } = false;
         public string  AppTheme             { get; set; } = "dark";   // dark | light
+        public string  Language             { get; set; } = "en";     // en | ar
+        public List<HistoryEntry> History    { get; set; } = new List<HistoryEntry>();
     }
 
     public static class SettingsManager
@@ -50,13 +63,22 @@ namespace VideoDownloaderUI
             catch { }
         }
 
-        // Returns the resolved download directory (falls back to exe folder)
+        // Returns the resolved download directory (falls back to Windows Downloads folder)
         public static string GetDownloadDirectory(AppSettings settings)
         {
             if (!string.IsNullOrWhiteSpace(settings.DownloadPath) &&
                 Directory.Exists(settings.DownloadPath))
                 return settings.DownloadPath;
 
+            // Default to Windows Downloads folder
+            string downloadsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+
+            if (Directory.Exists(downloadsPath))
+                return downloadsPath;
+
+            // Absolute fallback to exe folder
             return Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
         }

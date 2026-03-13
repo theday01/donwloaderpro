@@ -1,0 +1,176 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Global -->
+    <sys:String x:Key="AppTitle">Video Downloader Pro</sys:String>
+    <sys:String x:Key="AppSubtitle">Fast &amp; High Quality Downloads — Video &amp; Audio</sys:String>
+    <sys:String x:Key="VersionLabel">v2.1 PRO</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="TabDownloader">&#x2B07;  Downloader</sys:String>
+    <sys:String x:Key="TabHistory">&#x231A;  History</sys:String>
+    <sys:String x:Key="TabAbout">&#x2139;  About &amp; System</sys:String>
+
+    <!-- Downloader Page -->
+    <sys:String x:Key="UrlPlaceholder">Enter the video link here ...</sys:String>
+    <sys:String x:Key="QualityLabel">Quality</sys:String>
+    <sys:String x:Key="FormatLabel">Format</sys:String>
+    <sys:String x:Key="AudioBadge">&#x1F3B5; AUDIO</sys:String>
+    <sys:String x:Key="DownloadButtonText">&#x2B07; DOWNLOAD NOW</sys:String>
+    <sys:String x:Key="ExtractAudioButtonText">&#x1F3B5; EXTRACT AUDIO</sys:String>
+    <sys:String x:Key="StopButtonText">&#x23F8; STOP</sys:String>
+    <sys:String x:Key="ResumeButtonText">&#x25B6; RESUME</sys:String>
+    <sys:String x:Key="CancelButtonText">&#x2716; CANCEL</sys:String>
+    <sys:String x:Key="ProgressLabel">Download Progress</sys:String>
+    <sys:String x:Key="ClearLogButtonText">&#x232B;  Clear</sys:String>
+    <sys:String x:Key="OpenFolderButtonText">&#x1F4C1;  Open Folder</sys:String>
+    <sys:String x:Key="StatusReady">Ready</sys:String>
+    <sys:String x:Key="StatusChecking">Checking...</sys:String>
+    <sys:String x:Key="StatusResuming">Resuming...</sys:String>
+    <sys:String x:Key="StatusCancelled">Cancelled</sys:String>
+    <sys:String x:Key="StatusSuccess">Success</sys:String>
+    <sys:String x:Key="StatusStarting">Starting download...</sys:String>
+    <sys:String x:Key="StatusNoFormat">⚠ No format selected</sys:String>
+
+    <!-- Confirmation Panel -->
+    <sys:String x:Key="ConfirmDuplicateTitle">&#x26A0;  This file was already downloaded!</sys:String>
+    <sys:String x:Key="ConfirmDuplicateQuestion">Do you want to re-download it with the new quality/format?</sys:String>
+    <sys:String x:Key="ConfirmYes">&#x2714;  Yes, Re-download</sys:String>
+    <sys:String x:Key="ConfirmNo">&#x2716;  No, Cancel</sys:String>
+
+    <!-- Settings Overlay -->
+    <sys:String x:Key="SettingsTitle">&#x2699;  Settings</sys:String>
+    <sys:String x:Key="SettingsSubtitle">Customize your download experience</sys:String>
+    <sys:String x:Key="DownloadLocationLabel">&#x1F4C1;  DOWNLOAD LOCATION</sys:String>
+    <sys:String x:Key="SaveToLabel">Save downloads to:</sys:String>
+    <sys:String x:Key="BrowseButtonText">Browse</sys:String>
+    <sys:String x:Key="DownloadPathHintText">Leave empty to save to the Windows Downloads folder.</sys:String>
+    <sys:String x:Key="AppearanceLabel">&#x1F3A8;  APPEARANCE</sys:String>
+    <sys:String x:Key="AccentThemeLabel">Accent color theme:</sys:String>
+    <sys:String x:Key="LanguageLabel">Language:</sys:String>
+    <sys:String x:Key="DefaultPrefsLabel">&#x1F39B;  DEFAULT PREFERENCES</sys:String>
+    <sys:String x:Key="DefaultQualityLabel">Default quality:</sys:String>
+    <sys:String x:Key="DefaultFormatLabel">Default format:</sys:String>
+    <sys:String x:Key="BehaviorLabel">&#x26A1;  BEHAVIOR</sys:String>
+    <sys:String x:Key="OpenFolderCheck">Open download folder when done</sys:String>
+    <sys:String x:Key="NotificationCheck">Show notification on completion</sys:String>
+    <sys:String x:Key="ClearLogCheck">Clear log before each download</sys:String>
+    <sys:String x:Key="SkipDuplicateCheck">Skip duplicate file check (not recommended)</sys:String>
+    <sys:String x:Key="SystemThemeLabel">&#x1F317;  SYSTEM THEME</sys:String>
+    <sys:String x:Key="SystemThemeSubtitle">Choose the interface appearance mode:</sys:String>
+    <sys:String x:Key="DarkMode">Dark Mode</sys:String>
+    <sys:String x:Key="LightMode">Light Mode</sys:String>
+    <sys:String x:Key="ModeEyes">Easy on the eyes</sys:String>
+    <sys:String x:Key="ModeBright">Bright &amp; clean</sys:String>
+    <sys:String x:Key="ThemeRestartHintText">&#x2139; Changes will be applied after saving.</sys:String>
+    <sys:String x:Key="ResetDefaults">&#x21BA; Reset defaults</sys:String>
+    <sys:String x:Key="SaveSettings">&#x2714;  Save Settings</sys:String>
+
+    <!-- About Page -->
+    <sys:String x:Key="DesignedBy">Designed &amp; developed by </sys:String>
+    <sys:String x:Key="LastUpdated">Last updated  </sys:String>
+    <sys:String x:Key="SystemInfoLabel">&#x1F5A5;  SYSTEM INFO</sys:String>
+    <sys:String x:Key="RefreshButtonText">&#x27F3;  Refresh</sys:String>
+    <sys:String x:Key="OsLabel">&#x1F4BB;  O-S</sys:String>
+    <sys:String x:Key="DotnetLabel">&#x2699;  .NET Runtime</sys:String>
+    <sys:String x:Key="ArchLabel">&#x1F4D0;  Architecture</sys:String>
+    <sys:String x:Key="CpuLabel">&#x1F9E0;  Processors</sys:String>
+    <sys:String x:Key="SettingsPathLabel">&#x1F5C2;  Settings Path</sys:String>
+    <sys:String x:Key="ExeLocationLabel">&#x1F4C1;  Exe Location</sys:String>
+    <sys:String x:Key="ChangelogLabel">CHANGELOG</sys:String>
+    <sys:String x:Key="ChangelogSubtitle">Release history &amp; what&#x2019;s new</sys:String>
+    <sys:String x:Key="ReleasesCount"> releases</sys:String>
+    <sys:String x:Key="LatestBadge">LATEST</sys:String>
+    <sys:String x:Key="CurrentRelease">Current Release</sys:String>
+    <sys:String x:Key="MadeWith">Made with </sys:String>
+    <sys:String x:Key="ByLabel"> by </sys:String>
+    <sys:String x:Key="AllRightsReserved">  ·  Developed by Hamza Saadi - all rights reserved </sys:String>
+
+    <!-- History Page -->
+    <sys:String x:Key="HistoryTitle">&#x231A;  Download History</sys:String>
+    <sys:String x:Key="HistorySubtitle">Tracks all your download attempts and results</sys:String>
+    <sys:String x:Key="ColDate">Date</sys:String>
+    <sys:String x:Key="ColUrl">URL</sys:String>
+    <sys:String x:Key="ColFormat">Format</sys:String>
+    <sys:String x:Key="ColQuality">Quality</sys:String>
+    <sys:String x:Key="ColStatus">Status</sys:String>
+    <sys:String x:Key="StatusOk">SUCCESS</sys:String>
+    <sys:String x:Key="StatusFail">FAILED</sys:String>
+    <sys:String x:Key="ClearHistoryBtn">&#x1F5D1;  Clear All History</sys:String>
+    <sys:String x:Key="NoHistoryMsg">No download history found yet.</sys:String>
+
+    <!-- Changelog Details -->
+    <sys:String x:Key="v2_1_Date">March 12, 2026</sys:String>
+    <sys:String x:Key="v2_1_ChangesCount">5 changes</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Title">About &amp; System Tab</sys:String>
+    <sys:String x:Key="v2_1_AboutTab_Desc">Live dependency detection for Python, yt-dlp, and FFmpeg &#x2014; real-time status indicators and version reporting.</sys:String>
+    <sys:String x:Key="v2_1_Theme_Title">Light / Dark Mode Switcher</sys:String>
+    <sys:String x:Key="v2_1_Theme_Desc">Full bi-directional theme engine &#x2014; every card, input, log, and surface adapts instantly with no restart required.</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Title">Duplicate File Detection</sys:String>
+    <sys:String x:Key="v2_1_Duplicate_Desc">Pre-download scan compares sanitized filenames across all extensions &#x2014; inline confirm panel before any re-download.</sys:String>
+    <sys:String x:Key="v2_1_Controls_Title">Stop / Resume / Cancel</sys:String>
+    <sys:String x:Key="v2_1_Controls_Desc">Full download lifecycle controls &#x2014; pause mid-stream and resume from the last byte using yt-dlp&#x2019;s continuedl flag.</sys:String>
+    <sys:String x:Key="v2_1_Accent_Title">6-Color Accent System</sys:String>
+    <sys:String x:Key="v2_1_Accent_Desc">Teal, Purple, Pink, Blue, Orange, Green &#x2014; gradient progress bars and live accent propagation across every UI surface.</sys:String>
+
+    <sys:String x:Key="v2_0_Title">Major Redesign</sys:String>
+    <sys:String x:Key="v2_0_Date">January 4, 2026</sys:String>
+    <sys:String x:Key="v2_0_ChangesCount">5 changes</sys:String>
+    <sys:String x:Key="v2_0_UI_Desc">Full WPF dark-mode UI redesign</sys:String>
+    <sys:String x:Key="v2_0_Format_Desc">Multi-format: MP4 · WebM · AVI · WMV · MP3 · M4A · WAV</sys:String>
+    <sys:String x:Key="v2_0_Quality_Desc">Quality presets from 144p to 4K</sys:String>
+    <sys:String x:Key="v2_0_Engine_Desc">yt-dlp integration replacing youtube-dl</sys:String>
+    <sys:String x:Key="v2_0_Anim_Desc">Animated progress bar with shimmer effect</sys:String>
+
+    <sys:String x:Key="v1_0_Title">Initial Launch</sys:String>
+    <sys:String x:Key="v1_0_Date">October 18, 2025</sys:String>
+    <sys:String x:Key="v1_0_Desc">+ Basic YouTube download via youtube-dl with WinForms UI&#x0a;+ Custom output directory support&#x0a;+ Real-time console log output</sys:String>
+
+    <!-- Log Messages (Code Behind) -->
+    <sys:String x:Key="LogSettingsSaved">[⚙] Settings saved successfully.</sys:String>
+    <sys:String x:Key="LogSettingsReset">[⚙] Settings reset to defaults.</sys:String>
+    <sys:String x:Key="LogDuplicateCheck">[INFO] Checking if file was previously downloaded...</sys:String>
+    <sys:String x:Key="LogDuplicateFound">[⚠ DUPLICATE] Found existing file:</sys:String>
+    <sys:String x:Key="LogChoicePanel">[?] Choose an action using the panel above ↑</sys:String>
+    <sys:String x:Key="StatusWaitingChoice">⚠ File already exists — awaiting your choice</sys:String>
+    <sys:String x:Key="LogOverwriteConfirmed">[INFO] Re-download confirmed — existing file will be replaced.</sys:String>
+    <sys:String x:Key="LogNewConfig">[INFO] New quality: {0}  |  Format: {1}</sys:String>
+    <sys:String x:Key="LogCancelled">[CANCELLED] Download cancelled — existing file kept.</sys:String>
+    <sys:String x:Key="LogPaused">\n[PAUSED] Download paused — press ▶ RESUME to continue.</sys:String>
+    <sys:String x:Key="LogResuming">\n[RESUMING] Continuing download from where it stopped...</sys:String>
+    <sys:String x:Key="LogAudioMode">[INFO] Audio mode — video will be downloaded then converted to {0}.</sys:String>
+    <sys:String x:Key="LogAudioQuality">[INFO] Quality selector is disabled for audio (always uses best audio stream).</sys:String>
+    <sys:String x:Key="WelcomeTitle">Welcome to Video Downloader Pro</sys:String>
+    <sys:String x:Key="WelcomeDev">Developed by Hamza Saadi - EagleShadow</sys:String>
+    <sys:String x:Key="WelcomeReady">Ready to start</sys:String>
+    <sys:String x:Key="NotifyTitle">Download Complete</sys:String>
+    <sys:String x:Key="NotifyMessage">{0} file saved successfully!</sys:String>
+    <sys:String x:Key="MsgEnterUrl">Please enter a valid URL.</sys:String>
+    <sys:String x:Key="MsgRestartRequired">The application will restart to apply the new changes.</sys:String>
+    <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  Please select a download format first!      </sys:String>
+    <sys:String x:Key="VideoFormatsLabel">  VIDEO formats  →  MP4 · WebM · AVI · WMV       </sys:String>
+    <sys:String x:Key="AudioFormatsLabel">  AUDIO formats  →  MP3 · M4A · WAV              </sys:String>
+
+    <!-- System Info & Probing -->
+    <sys:String x:Key="StatusDetecting">Detecting...</sys:String>
+    <sys:String x:Key="StatusCheckingDep">●  Checking</sys:String>
+    <sys:String x:Key="StatusInstalled">●  Installed</sys:String>
+    <sys:String x:Key="StatusNotFoundDep">●  Not Found</sys:String>
+    <sys:String x:Key="LabelLogicalCores">logical cores</sys:String>
+    <sys:String x:Key="LabelLogicalCore">logical core</sys:String>
+    <sys:String x:Key="LabelLocalBundle">local bundle</sys:String>
+    <sys:String x:Key="LabelFoundInPath">Found in PATH</sys:String>
+    <sys:String x:Key="LabelFoundAt">Found at: {0}</sys:String>
+    <sys:String x:Key="LabelInstallFrom">Install from {0}</sys:String>
+    <sys:String x:Key="LabelExecutable">Executable: {0}</sys:String>
+    <sys:String x:Key="LabelPipInstall">pip install {0}</sys:String>
+    <sys:String x:Key="LabelPipUpdate">pip install -U {0} to update</sys:String>
+    <sys:String x:Key="LabelFfmpegDesc">Download from ffmpeg.org — needed for audio/AVI/WMV</sys:String>
+    <sys:String x:Key="LabelSelectFolder">Select download folder</sys:String>
+
+    <!-- History Confirmation -->
+    <sys:String x:Key="MsgClearHistoryConfirm">Are you sure you want to clear all history?</sys:String>
+    <sys:String x:Key="MsgClearHistoryTitle">Clear History</sys:String>
+
+</ResourceDictionary>
