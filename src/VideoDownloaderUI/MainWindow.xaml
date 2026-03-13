@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="{DynamicResource AppTitle}" Height="820" Width="1080"
+        ResizeMode="NoResize"
         Background="#0F111A" WindowStartupLocation="CenterScreen"
         Icon="logo.png">
 
