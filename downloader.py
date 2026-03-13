@@ -84,6 +84,14 @@ def progress_hook(d):
         p_str = d.get('_percent_str', '0%')
         p_clean = re.sub(r'\x1b\[[0-9;]*m', '', p_str).replace('%', '').strip()
         print(f"\n[PROGRESS] {p_clean}")
+
+        # Playlist / Batch progress info
+        # yt-dlp provides 'playlist_index' (1-based) and 'n_entries'
+        idx = d.get('playlist_index')
+        total = d.get('n_entries')
+        if idx is not None and total is not None:
+            print(f"[ITEM_PROGRESS] {idx}/{total}")
+
         sys.stdout.flush()
     elif d['status'] == 'finished':
         print("[STATUS] Download finished, now processing...")
@@ -113,7 +121,7 @@ def postprocess_hook(d):
 
 # ── yt-dlp runner with network-aware retry loop ────────────────────────────────
 
-def _run_ydl(url, ydl_opts, max_reconnect_attempts=30):
+def _run_ydl(urls, ydl_opts, max_reconnect_attempts=30):
     """
     Execute yt-dlp with an outer reconnect loop.
 
@@ -121,16 +129,19 @@ def _run_ydl(url, ydl_opts, max_reconnect_attempts=30):
     On other errors    → prints [ERROR] and returns False immediately
     On success         → returns True
     """
+    if isinstance(urls, str):
+        urls = [urls]
+
     for attempt in range(max_reconnect_attempts):
         if attempt == 0:
-            print(f"[STATUS] Starting download for: {url}")
+            print(f"[STATUS] Starting download for {len(urls)} item(s)...")
         else:
             print(f"[STATUS] Retrying download (attempt {attempt + 1}/{max_reconnect_attempts})...")
         sys.stdout.flush()
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
+                ydl.download(urls)
             print("[STATUS] Success")
             sys.stdout.flush()
             return True
@@ -230,7 +241,7 @@ def check_existing(url, output_path, ext):
 
 # ── Main download ───────────────────────────────────────────────────────────────
 
-def download_video(url, output_path, quality="best", ext="mp4", overwrite=False):
+def download_video(urls, output_path, quality="best", ext="mp4", overwrite=False):
     ffmpeg_available = (
         shutil.which('ffmpeg') is not None or
         os.path.exists(os.path.join(os.path.dirname(__file__), 'ffmpeg.exe')) or
@@ -335,13 +346,13 @@ def download_video(url, output_path, quality="best", ext="mp4", overwrite=False)
             ydl_opts['postprocessors'] = postprocessors
 
     # ── Execute with reconnect loop ──────────────────────────────────────────
-    success = _run_ydl(url, ydl_opts)
+    success = _run_ydl(urls, ydl_opts)
     sys.exit(0 if success else 1)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Multi-platform Video Downloader Engine")
-    parser.add_argument("url",             help="URL of the video to download")
+    parser.add_argument("urls",            nargs="+",      help="URL(s) of the video(s) to download")
     parser.add_argument("--output",  "-o", default=".",    help="Output directory")
     parser.add_argument("--quality", "-q", default="best", help="Quality: best/2160/1440/1080/720/480/360/240/144")
     parser.add_argument("--format",  "-f", default="mp4",  help="Format: mp4/webm/avi/wmv/mp3/m4a/wav")
@@ -351,6 +362,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.check_only:
-        check_existing(args.url, args.output, args.format)
+        # Check only first URL if multiple provided for filecheck
+        check_existing(args.urls[0], args.output, args.format)
     else:
-        download_video(args.url, args.output, args.quality, args.format, args.overwrite)
+        download_video(args.urls, args.output, args.quality, args.format, args.overwrite)
