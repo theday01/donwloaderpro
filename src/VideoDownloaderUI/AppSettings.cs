@@ -35,7 +35,7 @@ namespace VideoDownloaderUI
     {
         private static readonly string _settingsPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "ProVideoDownloader",
+            "EagleVStream",
             "settings.json");
 
         public static AppSettings Load()

@@ -792,6 +792,10 @@
                                 <TextBlock Text="{DynamicResource AppSubtitle}"
                                            FontSize="13" Foreground="#555" Margin="0,0,0,16"/>
 
+                                <TextBlock x:Name="AboutDesc1" Text="{DynamicResource AboutDescLine1}" FontSize="12" Foreground="#666" Margin="0,0,0,2" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="AboutDesc2" Text="{DynamicResource AboutDescLine2}" FontSize="12" Foreground="#666" Margin="0,0,0,2" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="AboutDesc3" Text="{DynamicResource AboutDescLine3}" FontSize="12" Foreground="#666" Margin="0,0,0,16" TextWrapping="Wrap"/>
+
                                 <Border Height="1" Background="#1E2040" Margin="0,0,0,14"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">

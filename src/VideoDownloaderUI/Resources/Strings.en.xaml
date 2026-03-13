@@ -3,7 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Global -->
-    <sys:String x:Key="AppTitle">Video Downloader Pro</sys:String>
+    <sys:String x:Key="AppTitle">EagleVStream</sys:String>
     <sys:String x:Key="AppSubtitle">Fast &amp; High Quality Downloads — Video &amp; Audio</sys:String>
     <sys:String x:Key="VersionLabel">v2.1 PRO</sys:String>
 
@@ -70,6 +70,9 @@
     <sys:String x:Key="SaveSettings">&#x2714;  Save Settings</sys:String>
 
     <!-- About Page -->
+    <sys:String x:Key="AboutDescLine1">A powerful tool to download videos and audio from various platforms.</sys:String>
+    <sys:String x:Key="AboutDescLine2">Supports high quality up to 4K, multiple formats, and download resumption.</sys:String>
+    <sys:String x:Key="AboutDescLine3">Designed with a modern interface to provide a smooth and fast user experience.</sys:String>
     <sys:String x:Key="DesignedBy">Designed &amp; developed by </sys:String>
     <sys:String x:Key="LastUpdated">Last updated  </sys:String>
     <sys:String x:Key="SystemInfoLabel">&#x1F5A5;  SYSTEM INFO</sys:String>
@@ -175,7 +178,7 @@
 
     <sys:String x:Key="LogAudioMode">[INFO] Audio mode — video will be downloaded then converted to {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] Quality selector is disabled for audio (always uses best audio stream).</sys:String>
-    <sys:String x:Key="WelcomeTitle">Welcome to Video Downloader Pro</sys:String>
+    <sys:String x:Key="WelcomeTitle">Welcome to EagleVStream</sys:String>
     <sys:String x:Key="WelcomeDev">Developed by Hamza Saadi - EagleShadow</sys:String>
     <sys:String x:Key="WelcomeReady">Ready to start</sys:String>
     <sys:String x:Key="NotifyTitle">Download Complete</sys:String>
