@@ -2,10 +2,12 @@ import os
 import sys
 import argparse
 import shutil
+import socket
+import time
 import yt_dlp
 import re
 
-# Force UTF-8 output on Windows (avoids charmap codec errors with non-ASCII titles)
+# Force UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if sys.stderr.encoding and sys.stderr.encoding.lower() != 'utf-8':
@@ -13,6 +15,68 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() != 'utf-8':
 
 AUDIO_FORMATS = {'mp3', 'm4a', 'wav'}
 VIDEO_FORMATS = {'mp4', 'webm', 'avi', 'wmv'}
+
+# ── Network helpers ────────────────────────────────────────────────────────────
+
+NETWORK_ERROR_KEYWORDS = [
+    'network', 'connection', 'timed out', 'timeout', 'unreachable',
+    'unable to connect', 'connection reset', 'broken pipe', 'name resolution',
+    'temporary failure', 'urlopen error', 'remotedisconnected',
+    'connectionreseterror', 'econnreset', 'etimedout', 'ehostunreach',
+    'no route to host', 'ssl', 'handshake', 'read timeout',
+    'connect timeout', 'socket', 'incomplete read', 'connection aborted',
+    'connection timed', 'network is unreachable', 'failed to connect',
+    'http error 5', 'http error 429', 'getaddrinfo failed',
+]
+
+def is_internet_available(hosts=None, timeout=3):
+    """Quick connectivity check via DNS port — tries 3 well-known servers."""
+    if hosts is None:
+        hosts = [("8.8.8.8", 53), ("1.1.1.1", 53), ("208.67.222.222", 53)]
+    for host, port in hosts:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(timeout)
+            s.connect((host, port))
+            s.close()
+            return True
+        except OSError:
+            continue
+    return False
+
+def is_network_error(exc):
+    """Returns True if the exception is likely a connectivity issue."""
+    msg = str(exc).lower()
+    return any(kw in msg for kw in NETWORK_ERROR_KEYWORDS)
+
+def wait_for_internet(check_interval=5, max_wait=3600):
+    """
+    Block until internet is available.
+    Prints [NETWORK_WAITING] tags every check_interval seconds.
+    Returns True when restored, False on timeout.
+    """
+    print("[NETWORK_LOST] Internet connection lost — download paused.")
+    sys.stdout.flush()
+
+    elapsed = 0
+    while True:
+        if max_wait is not None and elapsed >= max_wait:
+            print(f"[NETWORK_TIMEOUT] Gave up waiting after {elapsed}s — aborting.")
+            sys.stdout.flush()
+            return False
+
+        if is_internet_available():
+            if elapsed > 0:
+                print("[NETWORK_RESTORED] Internet connection restored — resuming download...")
+                sys.stdout.flush()
+            return True
+
+        print(f"[NETWORK_WAITING] No internet — checking again in {check_interval}s... ({elapsed}s elapsed)")
+        sys.stdout.flush()
+        time.sleep(check_interval)
+        elapsed += check_interval
+
+# ── Progress / postprocess hooks ───────────────────────────────────────────────
 
 def progress_hook(d):
     if d['status'] == 'downloading':
@@ -46,16 +110,66 @@ def postprocess_hook(d):
             print("\n[PROGRESS] 100")
             sys.stdout.flush()
 
-# ── Pre-download check ─────────────────────────────────────────────────────────
+# ── yt-dlp runner with network-aware retry loop ────────────────────────────────
+
+def _run_ydl(url, ydl_opts, max_reconnect_attempts=10):
+    """
+    Execute yt-dlp with an outer reconnect loop.
+
+    On network errors  → waits for internet → retries with continuedl=True
+    On other errors    → prints [ERROR] and returns False immediately
+    On success         → returns True
+    """
+    for attempt in range(max_reconnect_attempts):
+        if attempt == 0:
+            print(f"[STATUS] Starting download for: {url}")
+        else:
+            print(f"[STATUS] Retrying download (attempt {attempt + 1}/{max_reconnect_attempts})...")
+        sys.stdout.flush()
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+            print("[STATUS] Success")
+            sys.stdout.flush()
+            return True
+
+        except KeyboardInterrupt:
+            print("\n[STATUS] Download interrupted by user.")
+            sys.stdout.flush()
+            return False
+
+        except Exception as e:
+            err_msg = str(e)
+
+            if is_network_error(e):
+                print(f"[NETWORK_ERROR] {err_msg[:180]}")
+                sys.stdout.flush()
+
+                if not wait_for_internet():
+                    print("[ERROR] Timed out waiting for internet connection.")
+                    sys.stdout.flush()
+                    return False
+
+                # Force resume from partial download on next attempt
+                ydl_opts = dict(ydl_opts)
+                ydl_opts['continuedl'] = True
+                ydl_opts['overwrites'] = False
+                print("[STATUS] Preparing to resume from last position...")
+                sys.stdout.flush()
+
+            else:
+                print(f"[ERROR] {err_msg}")
+                sys.stdout.flush()
+                return False
+
+    print(f"[ERROR] Failed after {max_reconnect_attempts} reconnect attempts.")
+    sys.stdout.flush()
+    return False
+
+# ── Pre-download duplicate check ───────────────────────────────────────────────
+
 def check_existing(url, output_path, ext):
-    """
-    Fetch video title WITHOUT downloading, then scan the output directory
-    for any existing file that shares the same sanitized base-name (any extension).
-    Prints:
-      [FILECHECK] <full_path>   — if a matching file was found
-      [FILECHECK_NONE]          — if nothing was found
-      [FILECHECK_ERROR] <msg>   — if info-fetch itself failed
-    """
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
@@ -64,9 +178,9 @@ def check_existing(url, output_path, ext):
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info     = ydl.extract_info(url, download=False)
-            raw_path = ydl.prepare_filename(info)     # uses source ext — may be wrong
-            base     = os.path.splitext(raw_path)[0]  # strip source ext → sanitized title path
-            dir_path  = os.path.dirname(base)  or "."
+            raw_path = ydl.prepare_filename(info)
+            base     = os.path.splitext(raw_path)[0]
+            dir_path  = os.path.dirname(base) or "."
             base_name = os.path.basename(base)
 
             safe_base = base_name.encode('utf-8', errors='replace').decode('utf-8')
@@ -74,16 +188,12 @@ def check_existing(url, output_path, ext):
             print(f"[FILECHECK_DEBUG] looking for base: {safe_base!r} in dir: {safe_dir!r}")
             sys.stdout.flush()
 
-            # ── Priority 1: exact requested extension ──────────────────────
             exact = os.path.join(dir_path, f"{base_name}.{ext.lower()}")
             if os.path.isfile(exact):
                 print(f"[FILECHECK] {exact}")
                 sys.stdout.flush()
                 return
 
-            # ── Priority 2: any extension with same sanitized base-name ───
-            # This catches cases where the merged file has a different ext
-            # than what prepare_filename predicted.
             if os.path.isdir(dir_path):
                 for fname in sorted(os.listdir(dir_path)):
                     name_no_ext, _ = os.path.splitext(fname)
@@ -93,7 +203,6 @@ def check_existing(url, output_path, ext):
                         sys.stdout.flush()
                         return
 
-            # ── Nothing found ──────────────────────────────────────────────
             print("[FILECHECK_NONE]")
             sys.stdout.flush()
 
@@ -101,15 +210,29 @@ def check_existing(url, output_path, ext):
         print(f"[FILECHECK_ERROR] {str(e)}")
         sys.stdout.flush()
 
-# ── Main download ──────────────────────────────────────────────────────────────
+# ── Main download ───────────────────────────────────────────────────────────────
+
 def download_video(url, output_path, quality="best", ext="mp4", overwrite=False):
-    ffmpeg_available = (shutil.which('ffmpeg') is not None) or \
-                       (os.path.exists(os.path.join(os.path.dirname(__file__), 'ffmpeg.exe'))) or \
-                       (os.path.exists(os.path.join(os.getcwd(), 'ffmpeg.exe')))
+    ffmpeg_available = (
+        shutil.which('ffmpeg') is not None or
+        os.path.exists(os.path.join(os.path.dirname(__file__), 'ffmpeg.exe')) or
+        os.path.exists(os.path.join(os.getcwd(), 'ffmpeg.exe'))
+    )
 
     is_audio = ext.lower() in AUDIO_FORMATS
 
-    # ── AUDIO ─────────────────────────────────────────────────────────────────
+    # ── Common resilience options (added to all downloads) ──────────────────
+    base_resilience = {
+        'socket_timeout': 30,
+        'retries': 3,
+        'fragment_retries': 3,
+        'retry_sleep_functions': {
+            'http':     lambda n: min(2 ** n, 30),
+            'fragment': lambda n: min(2 ** n, 15),
+        },
+    }
+
+    # ── AUDIO ────────────────────────────────────────────────────────────────
     if is_audio:
         if not ffmpeg_available:
             print("[ERROR] Audio conversion requires FFmpeg. Please install FFmpeg and add it to PATH.")
@@ -120,53 +243,54 @@ def download_video(url, output_path, quality="best", ext="mp4", overwrite=False)
         sys.stdout.flush()
 
         ydl_opts = {
+            **base_resilience,
             'format': 'bestaudio/best',
             'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
             'progress_hooks': [progress_hook],
             'postprocessor_hooks': [postprocess_hook],
-            'postprocessors': [
-                {
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': ext.lower(),
-                    'preferredquality': '192' if ext.lower() == 'mp3' else '0',
-                }
-            ],
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': ext.lower(),
+                'preferredquality': '192' if ext.lower() == 'mp3' else '0',
+            }],
             'quiet': True,
             'no_warnings': True,
             'continuedl': not overwrite,
             'overwrites': overwrite,
         }
 
-    # ── VIDEO ─────────────────────────────────────────────────────────────────
+    # ── VIDEO ────────────────────────────────────────────────────────────────
     else:
         if not ffmpeg_available:
-            print("[WARNING] FFmpeg not found. Downloading single-file best quality (no merge/convert).")
+            print("[WARNING] FFmpeg not found. Downloading single-file best quality.")
             sys.stdout.flush()
             format_str = 'best'
             merge_fmt  = None
         else:
             quality_map = {
-                "2160": 2160,  # 4K
-                "1440": 1440,  # 2K
-                "1080": 1080,  # Full HD
-                "720":   720,  # HD
-                "480":   480,  # SD
-                "360":   360,  # Low
-                "240":   240,  # Very low
-                "144":   144,  # Minimum
+                "2160": 2160, "1440": 1440, "1080": 1080,
+                "720":   720, "480":   480, "360":   360,
+                "240":   240, "144":   144,
             }
             if quality in quality_map:
                 h = quality_map[quality]
-                format_str = f'bestvideo[height<={h}]+bestaudio/best[height<={h}]'
-                print(f"[STATUS] Target quality: {h}p (picks closest available if exact height not found)")
+                # Multi-level fallback — prevents "Requested format not available"
+                format_str = (
+                    f'bestvideo[height<={h}][ext=mp4]+bestaudio[ext=m4a]/'
+                    f'bestvideo[height<={h}]+bestaudio/'
+                    f'best[height<={h}]/'
+                    f'bestvideo+bestaudio/'
+                    f'best'
+                )
+                print(f"[STATUS] Target quality: {h}p (picks closest if exact not found)")
                 sys.stdout.flush()
             else:
-                format_str = 'bestvideo+bestaudio/best'
+                format_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'
 
             merge_fmt = ext.lower()
 
             if ext.lower() in ('avi', 'wmv'):
-                print(f"[STATUS] Will convert to {ext.upper()} after download (this may take a while)...")
+                print(f"[STATUS] Will convert to {ext.upper()} after download...")
                 sys.stdout.flush()
 
         postprocessors = []
@@ -177,39 +301,33 @@ def download_video(url, output_path, quality="best", ext="mp4", overwrite=False)
             })
 
         ydl_opts = {
+            **base_resilience,
             'format': format_str,
-            'merge_output_format': merge_fmt if ffmpeg_available else None,
             'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
             'progress_hooks': [progress_hook],
             'postprocessor_hooks': [postprocess_hook],
-            'postprocessors': postprocessors if postprocessors else None,
             'quiet': True,
             'no_warnings': True,
             'continuedl': not overwrite,
             'overwrites': overwrite,
         }
-        ydl_opts = {k: v for k, v in ydl_opts.items() if v is not None}
+        if ffmpeg_available:
+            ydl_opts['merge_output_format'] = merge_fmt
+        if postprocessors:
+            ydl_opts['postprocessors'] = postprocessors
 
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            print(f"[STATUS] Starting download for: {url}")
-            sys.stdout.flush()
-            ydl.download([url])
-            print("[STATUS] Success")
-            sys.stdout.flush()
-    except Exception as e:
-        print(f"[ERROR] {str(e)}")
-        sys.stdout.flush()
-        sys.exit(1)
+    # ── Execute with reconnect loop ──────────────────────────────────────────
+    success = _run_ydl(url, ydl_opts)
+    sys.exit(0 if success else 1)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Multi-platform Video Downloader Engine")
-    parser.add_argument("url",          help="URL of the video to download")
+    parser.add_argument("url",             help="URL of the video to download")
     parser.add_argument("--output",  "-o", default=".",    help="Output directory")
     parser.add_argument("--quality", "-q", default="best", help="Quality: best/2160/1440/1080/720/480/360/240/144")
     parser.add_argument("--format",  "-f", default="mp4",  help="Format: mp4/webm/avi/wmv/mp3/m4a/wav")
-    parser.add_argument("--check-only",    action="store_true", help="Only check expected filename, do not download")
+    parser.add_argument("--check-only",    action="store_true", help="Only check filename, do not download")
     parser.add_argument("--overwrite",     action="store_true", help="Overwrite existing file")
 
     args = parser.parse_args()
