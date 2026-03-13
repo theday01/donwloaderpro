@@ -4,9 +4,14 @@
              xmlns:local="clr-namespace:VideoDownloaderUI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         <Style TargetType="Window">
-            <Setter Property="Background" Value="#1E1E1E"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Strings.en.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Window">
+                <Setter Property="Background" Value="#1E1E1E"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
