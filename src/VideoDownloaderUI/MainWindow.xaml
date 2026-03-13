@@ -561,41 +561,74 @@
                                        Foreground="{StaticResource SecondaryColor}"
                                        Padding="15" FontFamily="Consolas" FontSize="12"/>
                         </ScrollViewer>
-                        <Button x:Name="ClearLogButton" Content="{DynamicResource ClearLogButtonText}" Click="ClearLog_Click"
-                                HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                Margin="0,0,10,10" Width="78" Height="28" Cursor="Hand">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Background" Value="#22FFFFFF"/><Setter Property="Foreground" Value="#888888"/>
-                                    <Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#33FFFFFF"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Bd" Property="Background" Value="#44F44336"/>
-                                                        <Setter TargetName="Bd" Property="BorderBrush" Value="#88F44336"/>
-                                                        <Setter Property="Foreground" Value="#F44336"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="Bd" Property="Background" Value="#88F44336"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter Property="Opacity" Value="0.25"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+                            <Button x:Name="OpenFolderBtn" Content="{DynamicResource OpenFolderButtonText}" Click="OpenFolder_Click"
+                                    Width="120" Height="28" Cursor="Hand" Margin="0,0,8,0">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="#22FFFFFF"/><Setter Property="Foreground" Value="#888888"/>
+                                        <Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#33FFFFFF"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#44BB86FC"/>
+                                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#88BB86FC"/>
+                                                            <Setter Property="Foreground" Value="#BB86FC"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#88BB86FC"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="ClearLogButton" Content="{DynamicResource ClearLogButtonText}" Click="ClearLog_Click"
+                                    Width="78" Height="28" Cursor="Hand">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="#22FFFFFF"/><Setter Property="Foreground" Value="#888888"/>
+                                        <Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#33FFFFFF"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#44F44336"/>
+                                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#88F44336"/>
+                                                            <Setter Property="Foreground" Value="#F44336"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#88F44336"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" Value="0.25"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
                     </Grid>
                 </Grid>
             </Border>

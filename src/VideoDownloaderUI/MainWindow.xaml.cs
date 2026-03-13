@@ -554,6 +554,9 @@ namespace VideoDownloaderUI
             }
             if (LogTextBlock != null)
                 LogTextBlock.Foreground = new SolidColorBrush(logFg);
+            if (OpenFolderBtn != null)
+                OpenFolderBtn.Foreground = new SolidColorBrush(
+                    isLight ? Color.FromRgb(0x44, 0x44, 0x88) : Color.FromRgb(0x88, 0x88, 0x88));
             if (ClearLogButton != null)
                 ClearLogButton.Foreground = new SolidColorBrush(
                     isLight ? Color.FromRgb(0x99, 0x44, 0x44) : Color.FromRgb(0x88, 0x88, 0x88));
@@ -983,6 +986,20 @@ namespace VideoDownloaderUI
             PercentageTextBlock.Text = "0%";
             _savedUrl = ""; _savedFormat = ""; _overwrite = false;
             ApplyState(DownloadState.Idle);
+        }
+
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string dir = SettingsManager.GetDownloadDirectory(_settings);
+                if (Directory.Exists(dir))
+                    Process.Start("explorer.exe", dir);
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"[ERR] Could not open folder: {ex.Message}");
+            }
         }
 
         private void ClearLog_Click(object sender, RoutedEventArgs e)

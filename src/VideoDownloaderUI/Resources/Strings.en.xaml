@@ -23,6 +23,7 @@
     <sys:String x:Key="CancelButtonText">&#x2716; CANCEL</sys:String>
     <sys:String x:Key="ProgressLabel">Download Progress</sys:String>
     <sys:String x:Key="ClearLogButtonText">&#x232B;  Clear</sys:String>
+    <sys:String x:Key="OpenFolderButtonText">&#x1F4C1;  Open Folder</sys:String>
     <sys:String x:Key="StatusReady">Ready</sys:String>
     <sys:String x:Key="StatusChecking">Checking...</sys:String>
     <sys:String x:Key="StatusResuming">Resuming...</sys:String>

@@ -23,6 +23,7 @@
     <sys:String x:Key="CancelButtonText">&#x2716; إلغاء</sys:String>
     <sys:String x:Key="ProgressLabel">تقدم التحميل</sys:String>
     <sys:String x:Key="ClearLogButtonText">&#x232B;  مسح</sys:String>
+    <sys:String x:Key="OpenFolderButtonText">&#x1F4C1;  فتح المجلد</sys:String>
     <sys:String x:Key="StatusReady">جاهز</sys:String>
     <sys:String x:Key="StatusChecking">جاري التحقق...</sys:String>
     <sys:String x:Key="StatusResuming">جاري الاستئناف...</sys:String>
