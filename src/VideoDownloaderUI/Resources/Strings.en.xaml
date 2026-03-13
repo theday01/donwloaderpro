@@ -14,6 +14,7 @@
 
     <!-- Downloader Page -->
     <sys:String x:Key="UrlPlaceholder">Enter the video link here ...</sys:String>
+    <sys:String x:Key="UrlPlaceholderBatch">Enter video links (one per line) or playlist URL here ...</sys:String>
     <sys:String x:Key="QualityLabel">Quality</sys:String>
     <sys:String x:Key="FormatLabel">Format</sys:String>
     <sys:String x:Key="AudioBadge">&#x1F3B5; AUDIO</sys:String>
@@ -32,6 +33,7 @@
     <sys:String x:Key="StatusSuccess">Success</sys:String>
     <sys:String x:Key="StatusStarting">Starting download...</sys:String>
     <sys:String x:Key="StatusNoFormat">⚠ No format selected</sys:String>
+    <sys:String x:Key="BatchProgressLabel">Downloading</sys:String>
 
     <!-- Confirmation Panel -->
     <sys:String x:Key="ConfirmDuplicateTitle">&#x26A0;  This file was already downloaded!</sys:String>

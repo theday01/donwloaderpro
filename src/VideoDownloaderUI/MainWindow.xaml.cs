@@ -23,7 +23,7 @@ namespace VideoDownloaderUI
         private double        _currentProgress = 0;
         private DownloadState _state           = DownloadState.Idle;
 
-        private string _savedUrl      = "";
+        private string[] _savedUrls    = Array.Empty<string>();
         private string _savedQuality  = "best";
         private string _savedFormat   = "mp4";
         private bool   _overwrite     = false;
@@ -972,8 +972,12 @@ namespace VideoDownloaderUI
 
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
-            string url = UrlTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(url)) { System.Windows.MessageBox.Show(FindResource("MsgEnterUrl").ToString()); return; }
+            var urls = UrlTextBox.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Select(u => u.Trim())
+                                     .Where(u => !string.IsNullOrEmpty(u))
+                                     .ToArray();
+
+            if (urls.Length == 0) { System.Windows.MessageBox.Show(FindResource("MsgEnterUrl").ToString()); return; }
 
             string chosenFormat = GetSelectedFormat();
             if (string.IsNullOrEmpty(chosenFormat))
@@ -989,7 +993,7 @@ namespace VideoDownloaderUI
                 return;
             }
 
-            _savedUrl     = url;
+            _savedUrls    = urls;
             _savedQuality = (QualityComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
             _savedFormat  = chosenFormat;
             _overwrite    = false;
@@ -998,10 +1002,10 @@ namespace VideoDownloaderUI
             StatusTextBlock.Text = FindResource("StatusChecking").ToString();
             SetProgressFillWidth(0, animate: false);
 
-            if (!_settings.SkipDuplicateCheck)
+            if (!_settings.SkipDuplicateCheck && urls.Length == 1)
             {
                 AppendLog(FindResource("LogDuplicateCheck").ToString()!);
-                string checkResult = await Task.Run(() => RunCheckOnly(_savedUrl, _savedFormat));
+                string checkResult = await Task.Run(() => RunCheckOnly(_savedUrls[0], _savedFormat));
                 
                 if (!string.IsNullOrEmpty(checkResult))
                 {
@@ -1045,7 +1049,7 @@ namespace VideoDownloaderUI
         {
             AppendLog(""); AppendLog(FindResource("LogCancelled").ToString()!);
             StatusTextBlock.Text = FindResource("StatusCancelled").ToString();
-            _savedUrl = ""; _detectedFile = "";
+            _savedUrls = Array.Empty<string>(); _detectedFile = "";
             ApplyState(DownloadState.Idle);
         }
 
@@ -1062,7 +1066,7 @@ namespace VideoDownloaderUI
 
         private async void ResumeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(_savedUrl)) return;
+            if (_savedUrls.Length == 0) return;
             AppendLog(SafeResource("LogResuming", "▶  Resuming download from last position…"));
             StatusTextBlock.Text = SafeResource("StatusResuming", "Resuming download…");
             _overwrite = false;
@@ -1077,7 +1081,7 @@ namespace VideoDownloaderUI
             StatusTextBlock.Text     = FindResource("StatusCancelled").ToString();
             SetProgressFillWidth(0, animate: false);
             PercentageTextBlock.Text = "0%";
-            _savedUrl = ""; _savedFormat = ""; _overwrite = false;
+            _savedUrls = Array.Empty<string>(); _savedFormat = ""; _overwrite = false;
             ApplyState(DownloadState.Idle);
         }
 
@@ -1098,19 +1102,22 @@ namespace VideoDownloaderUI
         //  HISTORY
         // ════════════════════════════════════════════════════════════════
 
-        private void AddToHistory(string url, string format, string quality, bool success)
+        private void AddToHistory(string[] urls, string format, string quality, bool success)
         {
-            if (string.IsNullOrEmpty(url)) return;
-            var entry = new HistoryEntry
+            if (urls == null || urls.Length == 0) return;
+            foreach (var url in urls)
             {
-                Timestamp = DateTime.Now,
-                Url       = url,
-                Format    = format.ToUpper(),
-                Quality   = quality,
-                IsSuccess = success
-            };
-            _settings.History.Insert(0, entry);
-            if (_settings.History.Count > 100) _settings.History.RemoveAt(100);
+                var entry = new HistoryEntry
+                {
+                    Timestamp = DateTime.Now,
+                    Url       = url,
+                    Format    = format.ToUpper(),
+                    Quality   = quality,
+                    IsSuccess = success
+                };
+                _settings.History.Insert(0, entry);
+            }
+            while (_settings.History.Count > 100) _settings.History.RemoveAt(_settings.History.Count - 1);
             SettingsManager.Save(_settings);
         }
 
@@ -1167,7 +1174,7 @@ namespace VideoDownloaderUI
             bool success = false;
             try
             {
-                await Task.Run(() => RunDownloader(_savedUrl, _savedQuality, _savedFormat, _overwrite, _cts.Token));
+                await Task.Run(() => RunDownloader(_savedUrls, _savedQuality, _savedFormat, _overwrite, _cts.Token));
                 if (_state == DownloadState.Downloading)
                 {
                     success = true;
@@ -1187,7 +1194,7 @@ namespace VideoDownloaderUI
             {
                 _cts?.Dispose();
                 _cts = null;
-                AddToHistory(_savedUrl, _savedFormat, _savedQuality, success);
+                AddToHistory(_savedUrls, _savedFormat, _savedQuality, success);
                 if (_state == DownloadState.Downloading) ApplyState(DownloadState.Idle);
             }
         }
@@ -1287,7 +1294,7 @@ namespace VideoDownloaderUI
             return "";
         }
 
-        private void RunDownloader(string url, string quality, string format, bool overwrite, CancellationToken ct)
+        private void RunDownloader(string[] urls, string quality, string format, bool overwrite, CancellationToken ct)
         {
             string python    = GetPythonExecutable();
             string outputDir = SettingsManager.GetDownloadDirectory(_settings);
@@ -1304,7 +1311,7 @@ namespace VideoDownloaderUI
             si.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
             si.EnvironmentVariables["PYTHONUTF8"]       = "1";
             si.ArgumentList.Add("downloader.py");
-            si.ArgumentList.Add(url);
+            foreach (var url in urls) si.ArgumentList.Add(url);
             si.ArgumentList.Add("--output");  si.ArgumentList.Add(outputDir);
             si.ArgumentList.Add("--quality"); si.ArgumentList.Add(quality);
             si.ArgumentList.Add("--format");  si.ArgumentList.Add(format);
@@ -1411,6 +1418,14 @@ namespace VideoDownloaderUI
             if (data.StartsWith("[NETWORK_ERROR]"))
             {
                 AppendLog("[⚠ NETWORK] " + data.Substring("[NETWORK_ERROR]".Length).Trim());
+                return;
+            }
+
+            // ── [ITEM_PROGRESS] ───────────────────────────────────────────────────
+            if (data.StartsWith("[ITEM_PROGRESS]"))
+            {
+                string progress = data.Substring("[ITEM_PROGRESS]".Length).Trim();
+                StatusTextBlock.Text = $"{SafeResource("BatchProgressLabel", "Downloading")} {progress}";
                 return;
             }
 
