@@ -132,6 +132,7 @@
     <sys:String x:Key="NotifyTitle">اكتمل التحميل</sys:String>
     <sys:String x:Key="NotifyMessage">تم حفظ ملف {0} بنجاح!</sys:String>
     <sys:String x:Key="MsgEnterUrl">يرجى إدخال رابط صحيح.</sys:String>
+    <sys:String x:Key="MsgRestartRequired">سيتم إعادة تشغيل النظام لتطبيق التغييرات الجديدة.</sys:String>
     <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  يرجى اختيار صيغة التحميل أولاً!      </sys:String>
     <sys:String x:Key="VideoFormatsLabel">  صيغ الفيديو  ←  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  صيغ الصوت   ←  MP3 · M4A · WAV              </sys:String>

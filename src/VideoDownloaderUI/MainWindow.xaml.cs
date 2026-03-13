@@ -358,6 +358,10 @@ namespace VideoDownloaderUI
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
         {
+            string newLang  = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "en";
+            bool langChanged = newLang != _settings.Language;
+            bool themeChanged = _selectedAppTheme != _settings.AppTheme;
+
             _settings.DownloadPath         = DownloadPathBox.Text.Trim();
             _settings.AutoOpenFolder       = AutoOpenFolderCheck.IsChecked == true;
             _settings.ShowCompletionNotify = ShowNotificationCheck.IsChecked == true;
@@ -365,12 +369,25 @@ namespace VideoDownloaderUI
             _settings.SkipDuplicateCheck   = SkipDuplicateCheck.IsChecked == true;
             _settings.AccentTheme          = _selectedTheme;
             _settings.AppTheme             = _selectedAppTheme;
-            _settings.Language             = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "en";
+            _settings.Language             = newLang;
 
             _settings.DefaultQuality = (DefaultQualityBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "best";
             _settings.DefaultFormat  = (DefaultFormatBox.SelectedItem  as ComboBoxItem)?.Tag?.ToString() ?? "mp4";
 
             SettingsManager.Save(_settings);
+
+            if (langChanged || themeChanged)
+            {
+                System.Windows.MessageBox.Show(FindResource("MsgRestartRequired").ToString()!,
+                    FindResource("SettingsTitle").ToString()!.Replace("⚙", "").Trim());
+
+                // Perform restart
+                string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
+                if (!string.IsNullOrEmpty(exePath)) Process.Start(exePath);
+                Application.Current.Shutdown();
+                return;
+            }
+
             ApplyLanguage(_settings.Language);
             ApplyThemeColors(_selectedTheme);
             ApplyAppTheme(_selectedAppTheme);
