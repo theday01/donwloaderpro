@@ -387,16 +387,17 @@
                     CornerRadius="15" Padding="20" Margin="0,0,0,20">
                 <StackPanel>
                     <Grid Margin="0,0,0,15">
-                        <TextBox x:Name="UrlTextBox" Height="45" Padding="15,5" FontSize="15"
+                        <TextBox x:Name="UrlTextBox" Height="120" Padding="15,10" FontSize="15"
                                  Background="#2C2E3E" Foreground="White" BorderThickness="0"
-                                 VerticalContentAlignment="Center" CaretBrush="White">
+                                 VerticalContentAlignment="Top" CaretBrush="White"
+                                 AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap">
                             <TextBox.Resources>
                                 <Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBlock IsHitTestVisible="False" Text="{DynamicResource UrlPlaceholder}"
-                                   VerticalAlignment="Center" HorizontalAlignment="Left"
-                                   Margin="20,0,0,0" Foreground="Gray" FontSize="15">
+                        <TextBlock IsHitTestVisible="False" Text="{DynamicResource UrlPlaceholderBatch}"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left"
+                                   Margin="20,10,0,0" Foreground="Gray" FontSize="15">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed"/>

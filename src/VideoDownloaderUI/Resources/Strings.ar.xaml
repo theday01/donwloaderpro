@@ -14,6 +14,7 @@
 
     <!-- صفحة المحمل -->
     <sys:String x:Key="UrlPlaceholder">أدخل رابط الفيديو هنا ...</sys:String>
+    <sys:String x:Key="UrlPlaceholderBatch">أدخل روابط الفيديو (واحد في كل سطر) أو رابط قائمة التشغيل هنا ...</sys:String>
     <sys:String x:Key="QualityLabel">الجودة</sys:String>
     <sys:String x:Key="FormatLabel">الصيغة</sys:String>
     <sys:String x:Key="AudioBadge">&#x1F3B5; صوت</sys:String>
@@ -32,6 +33,7 @@
     <sys:String x:Key="StatusSuccess">تم بنجاح</sys:String>
     <sys:String x:Key="StatusStarting">جاري بدء التحميل...</sys:String>
     <sys:String x:Key="StatusNoFormat">⚠ لم يتم اختيار الصيغة</sys:String>
+    <sys:String x:Key="BatchProgressLabel">جاري تحميل</sys:String>
 
     <!-- لوحة التأكيد -->
     <sys:String x:Key="ConfirmDuplicateTitle">&#x26A0;  هذا الملف تم تحميله مسبقاً!</sys:String>
