@@ -19,7 +19,7 @@
     <sys:String x:Key="AudioBadge">&#x1F3B5; صوت</sys:String>
     <sys:String x:Key="DownloadButtonText">&#x2B07; تحميل الآن</sys:String>
     <sys:String x:Key="ExtractAudioButtonText">&#x1F3B5; استخراج الصوت</sys:String>
-    <sys:String x:Key="StopButtonText">&#x23F8; إيقاف</sys:String>
+    <sys:String x:Key="StopButtonText">&#x23F8; إيقاف مؤقت</sys:String>
     <sys:String x:Key="ResumeButtonText">&#x25B6; استئناف</sys:String>
     <sys:String x:Key="CancelButtonText">&#x2716; إلغاء</sys:String>
     <sys:String x:Key="ProgressLabel">تقدم التحميل</sys:String>
@@ -139,6 +139,8 @@
     <sys:String x:Key="LogCancelled">[CANCELLED] تم إلغاء التحميل — تم الاحتفاظ بالملف الحالي.</sys:String>
     <sys:String x:Key="LogPaused">\n[PAUSED] توقف التحميل مؤقتاً — اضغط استئناف للمتابعة.</sys:String>
     <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
+    <sys:String x:Key="LogPartialFound">تم العثور على تحميل غير مكتمل، جاري الاستئناف من آخر نقطة…</sys:String>
+    <sys:String x:Key="LogAutoResuming">عادت الشبكة — جاري استئناف التحميل تلقائياً…</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
     <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
