@@ -9,6 +9,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="TabDownloader">&#x2B07;  Downloader</sys:String>
+    <sys:String x:Key="TabHistory">&#x231A;  History</sys:String>
     <sys:String x:Key="TabAbout">&#x2139;  About &amp; System</sys:String>
 
     <!-- Downloader Page -->
@@ -85,6 +86,19 @@
     <sys:String x:Key="MadeWith">Made with </sys:String>
     <sys:String x:Key="ByLabel"> by </sys:String>
     <sys:String x:Key="AllRightsReserved">  ·  Developed by Hamza Saadi - all rights reserved </sys:String>
+
+    <!-- History Page -->
+    <sys:String x:Key="HistoryTitle">&#x231A;  Download History</sys:String>
+    <sys:String x:Key="HistorySubtitle">Tracks all your download attempts and results</sys:String>
+    <sys:String x:Key="ColDate">Date</sys:String>
+    <sys:String x:Key="ColUrl">URL</sys:String>
+    <sys:String x:Key="ColFormat">Format</sys:String>
+    <sys:String x:Key="ColQuality">Quality</sys:String>
+    <sys:String x:Key="ColStatus">Status</sys:String>
+    <sys:String x:Key="StatusOk">SUCCESS</sys:String>
+    <sys:String x:Key="StatusFail">FAILED</sys:String>
+    <sys:String x:Key="ClearHistoryBtn">&#x1F5D1;  Clear All History</sys:String>
+    <sys:String x:Key="NoHistoryMsg">No download history found yet.</sys:String>
 
     <!-- Changelog Details -->
     <sys:String x:Key="v2_1_Date">March 12, 2026</sys:String>

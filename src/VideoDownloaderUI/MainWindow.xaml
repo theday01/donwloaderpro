@@ -345,6 +345,8 @@
                 <StackPanel Orientation="Horizontal" Margin="14,0">
                     <Button x:Name="TabDownloaderBtn" Content="{DynamicResource TabDownloader}" Tag="active"
                             Style="{StaticResource TabButtonStyle}" Click="Tab_Downloader_Click"/>
+                    <Button x:Name="TabHistoryBtn" Content="{DynamicResource TabHistory}" Tag="inactive"
+                            Style="{StaticResource TabButtonStyle}" Click="Tab_History_Click"/>
                     <Button x:Name="TabAboutBtn" Content="{DynamicResource TabAbout}" Tag="inactive"
                             Style="{StaticResource TabButtonStyle}" Click="Tab_About_Click"/>
                 </StackPanel>
@@ -648,7 +650,113 @@
             </StatusBar>
         </Grid>
 
-        <!-- PAGE 2 — ABOUT -->
+        <!-- PAGE 2 — HISTORY -->
+        <Grid x:Name="HistoryContentGrid" Grid.Row="1" Visibility="Collapsed" Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock x:Name="HistoryTitleText" Text="{DynamicResource HistoryTitle}" FontSize="28" FontWeight="ExtraBold" Foreground="#BB86FC"/>
+                <TextBlock x:Name="HistorySubtitleText" Text="{DynamicResource HistorySubtitle}" FontSize="13" Foreground="Gray" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <Border Grid.Row="1" x:Name="HistoryCard" Background="{StaticResource CardColor}" CornerRadius="15" Padding="10">
+                <Grid>
+                    <ListView x:Name="HistoryListView" Background="Transparent" BorderThickness="0" Foreground="White"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#BB86FC"/>
+                                <Setter Property="FontWeight" Value="Bold"/><Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/><Setter Property="BorderBrush" Value="#2A2D45"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            </Style>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush" Value="#1A1C2E"/><Setter Property="Padding" Value="0,4"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                                <GridViewRowPresenter VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#0CFFFFFF"/></Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="{DynamicResource ColDate}" Width="150" DisplayMemberBinding="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"/>
+                                <GridViewColumn Header="{DynamicResource ColUrl}" Width="400">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Url}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Url}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="{DynamicResource ColFormat}" Width="80" DisplayMemberBinding="{Binding Format}"/>
+                                <GridViewColumn Header="{DynamicResource ColQuality}" Width="100" DisplayMemberBinding="{Binding Quality}"/>
+                                <GridViewColumn Header="{DynamicResource ColStatus}" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4" Padding="6,2" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#1C0808"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSuccess}" Value="True">
+                                                                <Setter Property="Background" Value="#0B1C0B"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock FontWeight="Bold" FontSize="10">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{DynamicResource StatusFail}"/>
+                                                            <Setter Property="Foreground" Value="#F44336"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSuccess}" Value="True">
+                                                                    <Setter Property="Text" Value="{DynamicResource StatusOk}"/>
+                                                                    <Setter Property="Foreground" Value="#4CAF50"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                    <StackPanel x:Name="NoHistoryPanel" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <TextBlock Text="&#x1F4DC;" FontSize="48" HorizontalAlignment="Center" Opacity="0.2"/>
+                        <TextBlock Text="{DynamicResource NoHistoryMsg}" Foreground="Gray" FontSize="14" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Button Grid.Row="2" x:Name="ClearHistoryBtn" Content="{DynamicResource ClearHistoryBtn}"
+                    HorizontalAlignment="Right" Margin="0,20,0,0" Padding="20,10"
+                    Style="{StaticResource ModernButtonStyle}" Background="#33F44336" Foreground="#F44336"
+                    Click="ClearHistory_Click">
+                <Button.Resources>
+                    <Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+
+        <!-- PAGE 3 — ABOUT -->
         <Grid x:Name="AboutContentGrid" Grid.Row="1" Visibility="Collapsed" Margin="30,10,30,30">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>

@@ -1,10 +1,21 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Media;
 
 namespace VideoDownloaderUI
 {
+    public class HistoryEntry
+    {
+        public DateTime Timestamp { get; set; }
+        public string Url { get; set; } = "";
+        public string Format { get; set; } = "";
+        public string Quality { get; set; } = "";
+        public bool IsSuccess { get; set; }
+        public string FileName { get; set; } = "";
+    }
+
     public class AppSettings
     {
         public string  DownloadPath          { get; set; } = "";
@@ -17,6 +28,7 @@ namespace VideoDownloaderUI
         public bool    SkipDuplicateCheck    { get; set; } = false;
         public string  AppTheme             { get; set; } = "dark";   // dark | light
         public string  Language             { get; set; } = "en";     // en | ar
+        public List<HistoryEntry> History    { get; set; } = new List<HistoryEntry>();
     }
 
     public static class SettingsManager

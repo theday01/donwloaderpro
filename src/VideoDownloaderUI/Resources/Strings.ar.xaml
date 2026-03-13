@@ -9,6 +9,7 @@
 
     <!-- التبويبات -->
     <sys:String x:Key="TabDownloader">&#x2B07;  المحمل</sys:String>
+    <sys:String x:Key="TabHistory">&#x231A;  التاريخ</sys:String>
     <sys:String x:Key="TabAbout">&#x2139;  حول النظام</sys:String>
 
     <!-- صفحة المحمل -->
@@ -85,6 +86,19 @@
     <sys:String x:Key="MadeWith">صنع بـ </sys:String>
     <sys:String x:Key="ByLabel"> بواسطة </sys:String>
     <sys:String x:Key="AllRightsReserved">  ·  تطوير حمزة السعدي - جميع الحقوق محفوظة </sys:String>
+
+    <!-- صفحة التاريخ -->
+    <sys:String x:Key="HistoryTitle">&#x231A;  تاريخ التحميلات</sys:String>
+    <sys:String x:Key="HistorySubtitle">يتتبع جميع محاولاتك للتحميل ونتائجها</sys:String>
+    <sys:String x:Key="ColDate">التاريخ</sys:String>
+    <sys:String x:Key="ColUrl">الرابط</sys:String>
+    <sys:String x:Key="ColFormat">الصيغة</sys:String>
+    <sys:String x:Key="ColQuality">الجودة</sys:String>
+    <sys:String x:Key="ColStatus">الحالة</sys:String>
+    <sys:String x:Key="StatusOk">ناجح</sys:String>
+    <sys:String x:Key="StatusFail">فشل</sys:String>
+    <sys:String x:Key="ClearHistoryBtn">&#x1F5D1;  مسح السجل بالكامل</sys:String>
+    <sys:String x:Key="NoHistoryMsg">لا يوجد سجل تحميلات بعد.</sys:String>
 
     <!-- تفاصيل سجل التغييرات -->
     <sys:String x:Key="v2_1_Date">12 مارس 2026</sys:String>
