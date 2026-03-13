@@ -172,5 +172,16 @@
     <!-- History Confirmation -->
     <sys:String x:Key="MsgClearHistoryConfirm">Are you sure you want to clear all history?</sys:String>
     <sys:String x:Key="MsgClearHistoryTitle">Clear History</sys:String>
+<!-- Contact Section -->
+    <sys:String x:Key="ContactSectionTitle">Contact the Developer -HAMZASAADI</sys:String>
+    <sys:String x:Key="ContactSectionSubtitle">Reach out for support, feedback, or collaboration</sys:String>
+    <sys:String x:Key="ContactUsTitle">GET IN TOUCH</sys:String>
+    <sys:String x:Key="ContactUsSubtitle">All channels are monitored — expect a reply within 24 h</sys:String>
+    <sys:String x:Key="LabelWhatsApp">WhatsApp</sys:String>
+    <sys:String x:Key="LabelFacebook">Facebook</sys:String>
+    <sys:String x:Key="LabelTelegram">Telegram</sys:String>
+    <sys:String x:Key="LabelInstagram">Instagram</sys:String>
+    <sys:String x:Key="LabelEmail">Email</sys:String>
+    <sys:String x:Key="LabelWebsite">Website</sys:String>
 
 </ResourceDictionary>

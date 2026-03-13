@@ -173,4 +173,15 @@
     <sys:String x:Key="MsgClearHistoryConfirm">هل أنت متأكد من رغبتك في مسح سجل التحميلات بالكامل؟</sys:String>
     <sys:String x:Key="MsgClearHistoryTitle">مسح السجل</sys:String>
 
+<!-- قسم التواصل -->
+    <sys:String x:Key="ContactSectionTitle">التواصل مع المطور - حمزة سعدي</sys:String>
+    <sys:String x:Key="ContactSectionSubtitle">للدعم الفني أو الاقتراحات أو التعاون</sys:String>
+    <sys:String x:Key="ContactUsTitle">تواصل معنا</sys:String>
+    <sys:String x:Key="ContactUsSubtitle">جميع القنوات تحت المراقبة — الرد خلال 24 ساعة</sys:String>
+    <sys:String x:Key="LabelWhatsApp">واتساب</sys:String>
+    <sys:String x:Key="LabelFacebook">فيسبوك</sys:String>
+    <sys:String x:Key="LabelTelegram">تيليغرام</sys:String>
+    <sys:String x:Key="LabelInstagram">إنستغرام</sys:String>
+    <sys:String x:Key="LabelEmail">البريد الإلكتروني</sys:String>
+    <sys:String x:Key="LabelWebsite">الموقع الإلكتروني</sys:String>
 </ResourceDictionary>
