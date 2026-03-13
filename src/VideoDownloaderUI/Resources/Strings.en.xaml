@@ -152,4 +152,25 @@
     <sys:String x:Key="VideoFormatsLabel">  VIDEO formats  →  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  AUDIO formats  →  MP3 · M4A · WAV              </sys:String>
 
+    <!-- System Info & Probing -->
+    <sys:String x:Key="StatusDetecting">Detecting...</sys:String>
+    <sys:String x:Key="StatusCheckingDep">●  Checking</sys:String>
+    <sys:String x:Key="StatusInstalled">●  Installed</sys:String>
+    <sys:String x:Key="StatusNotFoundDep">●  Not Found</sys:String>
+    <sys:String x:Key="LabelLogicalCores">logical cores</sys:String>
+    <sys:String x:Key="LabelLogicalCore">logical core</sys:String>
+    <sys:String x:Key="LabelLocalBundle">local bundle</sys:String>
+    <sys:String x:Key="LabelFoundInPath">Found in PATH</sys:String>
+    <sys:String x:Key="LabelFoundAt">Found at: {0}</sys:String>
+    <sys:String x:Key="LabelInstallFrom">Install from {0}</sys:String>
+    <sys:String x:Key="LabelExecutable">Executable: {0}</sys:String>
+    <sys:String x:Key="LabelPipInstall">pip install {0}</sys:String>
+    <sys:String x:Key="LabelPipUpdate">pip install -U {0} to update</sys:String>
+    <sys:String x:Key="LabelFfmpegDesc">Download from ffmpeg.org — needed for audio/AVI/WMV</sys:String>
+    <sys:String x:Key="LabelSelectFolder">Select download folder</sys:String>
+
+    <!-- History Confirmation -->
+    <sys:String x:Key="MsgClearHistoryConfirm">Are you sure you want to clear all history?</sys:String>
+    <sys:String x:Key="MsgClearHistoryTitle">Clear History</sys:String>
+
 </ResourceDictionary>

@@ -191,7 +191,12 @@ namespace VideoDownloaderUI
             SysOsText.Text      = GetFriendlyOsName();
             SysDotnetText.Text  = $".NET {Environment.Version}";
             SysArchText.Text    = RuntimeInformation.OSArchitecture.ToString();
-            SysCpuText.Text     = $"{Environment.ProcessorCount} logical core{(Environment.ProcessorCount > 1 ? "s" : "")}";
+
+            string coreLabel = (Environment.ProcessorCount > 1)
+                ? FindResource("LabelLogicalCores").ToString()!
+                : FindResource("LabelLogicalCore").ToString()!;
+            SysCpuText.Text = $"{Environment.ProcessorCount} {coreLabel}";
+
             SysAppDataText.Text = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "ProVideoDownloader");
@@ -207,20 +212,22 @@ namespace VideoDownloaderUI
         {
             string py  = GetPythonExecutable();
             string? raw = RunSysCommand(py, "--version", timeoutMs: 5000);
-            if (raw == null) return (false, "Not found", "Install from python.org");
+            if (raw == null) return (false, FindResource("StatusNotFoundDep").ToString()!.Replace("●", "").Trim(),
+                                           string.Format(FindResource("LabelInstallFrom").ToString()!, "python.org"));
 
             string ver = raw.Trim();
             if (!ver.StartsWith("Python", StringComparison.OrdinalIgnoreCase))
                 ver = "Python " + ver;
-            return (true, ver, $"Executable: {py}");
+            return (true, ver, string.Format(FindResource("LabelExecutable").ToString()!, py));
         }
 
         private (bool found, string version, string desc) ProbeYtDlp()
         {
             string? raw = RunSysCommand("yt-dlp", "--version", timeoutMs: 8000);
-            if (raw == null) return (false, "Not found", "pip install yt-dlp");
+            if (raw == null) return (false, FindResource("StatusNotFoundDep").ToString()!.Replace("●", "").Trim(),
+                                           string.Format(FindResource("LabelPipInstall").ToString()!, "yt-dlp"));
             string ver = raw.Trim().Split('\n')[0];
-            return (true, $"yt-dlp  {ver}", "pip install -U yt-dlp  to update");
+            return (true, $"yt-dlp  {ver}", string.Format(FindResource("LabelPipUpdate").ToString()!, "yt-dlp"));
         }
 
         private (bool found, string version, string desc) ProbeFfmpeg()
@@ -232,13 +239,15 @@ namespace VideoDownloaderUI
                     Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".",
                     "ffmpeg.exe");
                 if (File.Exists(local))
-                    return (true, "ffmpeg  (local bundle)", $"Found at: {local}");
+                    return (true, $"ffmpeg  ({FindResource("LabelLocalBundle")})",
+                                   string.Format(FindResource("LabelFoundAt").ToString()!, local));
 
-                return (false, "Not found", "Download from ffmpeg.org — needed for audio/AVI/WMV");
+                return (false, FindResource("StatusNotFoundDep").ToString()!.Replace("●", "").Trim(),
+                               FindResource("LabelFfmpegDesc").ToString()!);
             }
             string firstLine = raw.Trim().Split('\n')[0];
             string shortVer  = firstLine.Replace("ffmpeg version ", "").Split(' ')[0];
-            return (true, $"ffmpeg  {shortVer}", "Found in PATH");
+            return (true, $"ffmpeg  {shortVer}", FindResource("LabelFoundInPath").ToString()!);
         }
 
         // ── Command runner ────────────────────────────────────────────────
@@ -271,16 +280,16 @@ namespace VideoDownloaderUI
 
         // ── UI helpers ────────────────────────────────────────────────────
 
-        private static void SetDepChecking(TextBlock statusTb, Border badge, TextBlock versionTb)
+        private void SetDepChecking(TextBlock statusTb, Border badge, TextBlock versionTb)
         {
-            versionTb.Text       = "Detecting...";
+            versionTb.Text       = FindResource("StatusDetecting").ToString();
             versionTb.Foreground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x44));
-            statusTb.Text        = "●  Checking";
+            statusTb.Text        = FindResource("StatusCheckingDep").ToString();
             statusTb.Foreground  = new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x55));
             badge.Background     = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x18));
         }
 
-        private static void UpdateDepRow(TextBlock versionTb, TextBlock statusTb, Border badge,
+        private void UpdateDepRow(TextBlock versionTb, TextBlock statusTb, Border badge,
                                           bool found, string version, string desc)
         {
             var okGreen = Color.FromRgb(0x4C, 0xAF, 0x50);
@@ -293,7 +302,7 @@ namespace VideoDownloaderUI
                 ? Color.FromRgb(0x66, 0x88, 0x66)
                 : Color.FromRgb(0x66, 0x33, 0x33));
 
-            statusTb.Text       = found ? "●  Installed" : "●  Not Found";
+            statusTb.Text       = found ? FindResource("StatusInstalled").ToString() : FindResource("StatusNotFoundDep").ToString();
             statusTb.Foreground = new SolidColorBrush(found ? okGreen : errRed);
             badge.Background    = new SolidColorBrush(found ? okBg    : errBg);
 
@@ -436,7 +445,7 @@ namespace VideoDownloaderUI
         {
             using var dlg = new WinForms.FolderBrowserDialog
             {
-                Description            = "Select download folder",
+                Description            = FindResource("LabelSelectFolder").ToString()!,
                 UseDescriptionForTitle = true,
                 ShowNewFolderButton    = true,
                 SelectedPath           = string.IsNullOrWhiteSpace(DownloadPathBox.Text)
@@ -632,10 +641,37 @@ namespace VideoDownloaderUI
         private void ApplyAboutTabTheme(bool isLight, Color cardBg)
         {
             var cardBrush = new SolidColorBrush(cardBg);
-            if (FindName("AboutIdentityCard")  is Border ic)  ic.Background  = cardBrush;
+
+            if (FindName("AboutIdentityCard") is Border ic)
+            {
+                if (isLight) ic.Background = cardBrush;
+                else ic.Background = new LinearGradientBrush(new GradientStopCollection {
+                    new GradientStop(Color.FromRgb(0x12, 0x14, 0x2A), 0.0),
+                    new GradientStop(Color.FromRgb(0x1A, 0x0E, 0x2E), 0.5),
+                    new GradientStop(Color.FromRgb(0x0A, 0x1F, 0x22), 1.0)
+                }, new Point(0, 0), new Point(1, 1));
+            }
+
             if (FindName("AboutLogoCard")      is Border lc)  lc.Background  = cardBrush;
             if (FindName("AboutSysCard")       is Border sc)  sc.Background  = cardBrush;
             if (FindName("AboutChangelogCard") is Border clc) clc.Background = cardBrush;
+
+            if (FindName("AboutContactCard") is Border contactCard)
+            {
+                if (isLight) contactCard.Background = cardBrush;
+                else contactCard.Background = cardBrush; // Keep default CardColor in Dark mode, or use gradient if desired
+
+                // Handle the Header bar specifically if we want it to stay pretty
+                var header = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(contactCard, 0), 0) as Border;
+                if (header != null)
+                {
+                    if (isLight) header.Background = new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xFB));
+                    else header.Background = new LinearGradientBrush(new GradientStopCollection {
+                        new GradientStop(Color.FromRgb(0x12, 0x14, 0x2A), 0),
+                        new GradientStop(Color.FromRgb(0x0A, 0x1F, 0x22), 1)
+                    }, new Point(0, 0), new Point(1, 0));
+                }
+            }
         }
 
         // ✅ FIX 3: دالة جديدة — تزامن ألوان أيقونات التبويبات مع الثيم والحالة النشطة
@@ -1081,7 +1117,8 @@ namespace VideoDownloaderUI
         private void ClearHistory_Click(object sender, RoutedEventArgs e)
         {
             if (System.Windows.MessageBox.Show(
-                "Are you sure you want to clear all history?", "Clear History",
+                FindResource("MsgClearHistoryConfirm").ToString()!,
+                FindResource("MsgClearHistoryTitle").ToString()!,
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 _settings.History.Clear();

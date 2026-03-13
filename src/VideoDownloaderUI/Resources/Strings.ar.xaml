@@ -152,4 +152,25 @@
     <sys:String x:Key="VideoFormatsLabel">  صيغ الفيديو  ←  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  صيغ الصوت   ←  MP3 · M4A · WAV              </sys:String>
 
+    <!-- معلومات النظام والتحقق -->
+    <sys:String x:Key="StatusDetecting">جاري الكشف...</sys:String>
+    <sys:String x:Key="StatusCheckingDep">●  جاري التحقق</sys:String>
+    <sys:String x:Key="StatusInstalled">●  مثبت</sys:String>
+    <sys:String x:Key="StatusNotFoundDep">●  غير موجود</sys:String>
+    <sys:String x:Key="LabelLogicalCores">نواة منطقية</sys:String>
+    <sys:String x:Key="LabelLogicalCore">نواة منطقية</sys:String>
+    <sys:String x:Key="LabelLocalBundle">حزمة محلية</sys:String>
+    <sys:String x:Key="LabelFoundInPath">موجود في PATH</sys:String>
+    <sys:String x:Key="LabelFoundAt">موجود في: {0}</sys:String>
+    <sys:String x:Key="LabelInstallFrom">قم بالتثبيت من {0}</sys:String>
+    <sys:String x:Key="LabelExecutable">الملف التنفيذي: {0}</sys:String>
+    <sys:String x:Key="LabelPipInstall">استخدم pip install {0}</sys:String>
+    <sys:String x:Key="LabelPipUpdate">استخدم pip install -U {0} للتحديث</sys:String>
+    <sys:String x:Key="LabelFfmpegDesc">حمله من ffmpeg.org — مطلوب للصوت و AVI/WMV</sys:String>
+    <sys:String x:Key="LabelSelectFolder">اختر مجلد التحميل</sys:String>
+
+    <!-- تأكيد مسح السجل -->
+    <sys:String x:Key="MsgClearHistoryConfirm">هل أنت متأكد من رغبتك في مسح سجل التحميلات بالكامل؟</sys:String>
+    <sys:String x:Key="MsgClearHistoryTitle">مسح السجل</sys:String>
+
 </ResourceDictionary>

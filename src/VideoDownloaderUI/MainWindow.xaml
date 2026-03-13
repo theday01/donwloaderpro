@@ -1244,6 +1244,103 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- CONTACT US -->
+                    <Border x:Name="AboutContactCard" Background="{StaticResource CardColor}"
+                            CornerRadius="14" Padding="0" Margin="0,0,0,18" ClipToBounds="True">
+                        <StackPanel>
+                            <!-- Header bar -->
+                            <Border CornerRadius="14,14,0,0" Padding="24,18,24,16">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#12142A" Offset="0"/>
+                                        <GradientStop Color="#0A1F22" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Background="#1B2A4A" CornerRadius="5" Padding="8,4" Margin="0,0,12,0">
+                                        <TextBlock Text="&#x1F4AC;" FontSize="14" Foreground="White" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource ContactUsTitle}" FontFamily="Consolas" FontSize="10"
+                                                   FontWeight="Bold" Foreground="#03DAC6" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{DynamicResource ContactUsSubtitle}" FontSize="12" Foreground="#444"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Height="1" Background="#14162A"/>
+
+                            <UniformGrid Columns="3" Margin="24,20">
+                                <!-- WhatsApp -->
+                                <StackPanel Margin="0,0,0,15" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x1F4AC;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelWhatsApp}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://wa.me/123456789" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            +123456789
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <!-- Facebook -->
+                                <StackPanel Margin="0,0,0,15" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x1F4D9;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelFacebook}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://facebook.com/eagleshadow" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            EagleShadow
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <!-- Telegram -->
+                                <StackPanel Margin="0,0,0,15" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x2708;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelTelegram}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://t.me/eagleshadow" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            @eagleshadow
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <!-- Instagram -->
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x1F4F8;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelInstagram}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://instagram.com/eagleshadow" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            @eagleshadow
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <!-- Email -->
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x2709;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelEmail}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="mailto:support@eagleshadow.tech" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            support@eagleshadow.tech
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <!-- Website -->
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#x1F310;" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource LabelWebsite}" FontSize="12" FontWeight="Bold" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                    <TextBlock FontSize="11" HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="https://eagleshadow.technology" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <Hyperlink.Style><Style TargetType="Hyperlink"><Setter Property="Foreground" Value="#03DAC6"/><Setter Property="TextDecorations" Value="None"/></Style></Hyperlink.Style>
+                                            eagleshadow.technology
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Footer -->
                     <Border Background="#08090F" CornerRadius="12" Padding="20,14" Margin="0,0,0,4">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
