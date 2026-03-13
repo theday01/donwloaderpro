@@ -43,7 +43,7 @@
     <sys:String x:Key="DownloadLocationLabel">&#x1F4C1;  موقع التحميل</sys:String>
     <sys:String x:Key="SaveToLabel">حفظ التحميلات في:</sys:String>
     <sys:String x:Key="BrowseButtonText">تصفح</sys:String>
-    <sys:String x:Key="DownloadPathHintText">اتركه فارغاً للحفظ بجانب التطبيق.</sys:String>
+    <sys:String x:Key="DownloadPathHintText">اتركه فارغاً للحفظ في مجلد التنزيلات (Downloads) الخاص بالنظام.</sys:String>
     <sys:String x:Key="AppearanceLabel">&#x1F3A8;  المظهر</sys:String>
     <sys:String x:Key="AccentThemeLabel">لون المظهر الأساسي:</sys:String>
     <sys:String x:Key="LanguageLabel">اللغة:</sys:String>

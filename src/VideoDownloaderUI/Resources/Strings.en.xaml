@@ -43,7 +43,7 @@
     <sys:String x:Key="DownloadLocationLabel">&#x1F4C1;  DOWNLOAD LOCATION</sys:String>
     <sys:String x:Key="SaveToLabel">Save downloads to:</sys:String>
     <sys:String x:Key="BrowseButtonText">Browse</sys:String>
-    <sys:String x:Key="DownloadPathHintText">Leave empty to save next to the application.</sys:String>
+    <sys:String x:Key="DownloadPathHintText">Leave empty to save to the Windows Downloads folder.</sys:String>
     <sys:String x:Key="AppearanceLabel">&#x1F3A8;  APPEARANCE</sys:String>
     <sys:String x:Key="AccentThemeLabel">Accent color theme:</sys:String>
     <sys:String x:Key="LanguageLabel">Language:</sys:String>

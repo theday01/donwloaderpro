@@ -51,13 +51,22 @@ namespace VideoDownloaderUI
             catch { }
         }
 
-        // Returns the resolved download directory (falls back to exe folder)
+        // Returns the resolved download directory (falls back to Windows Downloads folder)
         public static string GetDownloadDirectory(AppSettings settings)
         {
             if (!string.IsNullOrWhiteSpace(settings.DownloadPath) &&
                 Directory.Exists(settings.DownloadPath))
                 return settings.DownloadPath;
 
+            // Default to Windows Downloads folder
+            string downloadsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+
+            if (Directory.Exists(downloadsPath))
+                return downloadsPath;
+
+            // Absolute fallback to exe folder
             return Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
         }
