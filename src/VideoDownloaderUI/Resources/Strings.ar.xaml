@@ -70,6 +70,9 @@
     <sys:String x:Key="SaveSettings">&#x2714;  حفظ الإعدادات</sys:String>
 
     <!-- صفحة حول -->
+    <sys:String x:Key="AboutDescLine1">أداة قوية لتحميل مقاطع الفيديو والصوت من مختلف المنصات.</sys:String>
+    <sys:String x:Key="AboutDescLine2">يدعم الجودة العالية حتى 4K، وصيغاً متعددة، واستئناف التحميل.</sys:String>
+    <sys:String x:Key="AboutDescLine3">مصمم بواجهة حديثة لتوفير تجربة مستخدم سلسة وسريعة.</sys:String>
     <sys:String x:Key="DesignedBy">تم التصميم والتطوير بواسطة </sys:String>
     <sys:String x:Key="LastUpdated">آخر تحديث  </sys:String>
     <sys:String x:Key="SystemInfoLabel">&#x1F5A5;  معلومات النظام</sys:String>
