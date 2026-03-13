@@ -141,6 +141,8 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] Continuing download from where it stopped...</sys:String>
     <sys:String x:Key="LogPartialFound">Partial download found, resuming from last position…</sys:String>
     <sys:String x:Key="LogAutoResuming">Network restored — automatically resuming download…</sys:String>
+    <sys:String x:Key="LogNetworkLost">Internet connection lost. The download has been paused and will automatically resume once the connection is restored.</sys:String>
+    <sys:String x:Key="LogNetworkRestored">Connection restored. Resuming download from the last byte…</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] Audio mode — video will be downloaded then converted to {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] Quality selector is disabled for audio (always uses best audio stream).</sys:String>
     <sys:String x:Key="WelcomeTitle">Welcome to Video Downloader Pro</sys:String>

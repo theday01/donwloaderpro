@@ -141,6 +141,8 @@
     <sys:String x:Key="LogResuming">\n[RESUMING] جاري استئناف التحميل من حيث توقف...</sys:String>
     <sys:String x:Key="LogPartialFound">تم العثور على تحميل غير مكتمل، جاري الاستئناف من آخر نقطة…</sys:String>
     <sys:String x:Key="LogAutoResuming">عادت الشبكة — جاري استئناف التحميل تلقائياً…</sys:String>
+    <sys:String x:Key="LogNetworkLost">انقطع الاتصال بالإنترنت. تم إيقاف التحميل مؤقتاً، وسيتم استئنافه تلقائياً فور استعادة الاتصال.</sys:String>
+    <sys:String x:Key="LogNetworkRestored">تم استعادة الاتصال. جاري استئناف التحميل من آخر نقطة توقف…</sys:String>
     <sys:String x:Key="LogAudioMode">[INFO] وضع الصوت — سيتم تحميل الفيديو ثم تحويله إلى {0}.</sys:String>
     <sys:String x:Key="LogAudioQuality">[INFO] تم تعطيل اختيار الجودة للصوت (يستخدم دائماً أفضل بث صوتي).</sys:String>
     <sys:String x:Key="WelcomeTitle">مرحباً بك في برنامج محمل الفيديو برو</sys:String>
