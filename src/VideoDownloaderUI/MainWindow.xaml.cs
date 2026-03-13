@@ -34,7 +34,8 @@ namespace VideoDownloaderUI
         private readonly object          _processLock   = new object();
 
         // Network state
-        private bool _networkWasLost = false;
+        private bool _networkWasLost     = false;
+        private bool _autoResumePending  = false;
 
         // Settings
         private AppSettings _settings         = new AppSettings();
@@ -82,11 +83,21 @@ namespace VideoDownloaderUI
                     StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
                     StatusTextBlock.Text = SafeResource("StatusNetworkLost", "Connection lost — waiting…");
                 }
-                else if (e.IsAvailable && _networkWasLost)
+                else if (e.IsAvailable)
                 {
-                    _networkWasLost = false;
-                    StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
-                    StatusTextBlock.Text = SafeResource("StatusNetworkRestored", "Connection restored — resuming…");
+                    if (_networkWasLost)
+                    {
+                        _networkWasLost = false;
+                        StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
+                        StatusTextBlock.Text = SafeResource("StatusNetworkRestored", "Connection restored — resuming…");
+                    }
+                    
+                    if (_autoResumePending)
+                    {
+                        _autoResumePending = false;
+                        AppendLog("[✔] " + SafeResource("LogAutoResuming", "Network restored — automatically resuming download…"));
+                        ResumeButton_Click(null, null);
+                    }
                 }
             });
         }
@@ -992,17 +1003,32 @@ namespace VideoDownloaderUI
             if (!_settings.SkipDuplicateCheck)
             {
                 AppendLog(FindResource("LogDuplicateCheck").ToString()!);
-                string existingFile = await Task.Run(() => RunCheckOnly(_savedUrl, _savedFormat));
-                if (!string.IsNullOrEmpty(existingFile) && File.Exists(existingFile))
+                string checkResult = await Task.Run(() => RunCheckOnly(_savedUrl, _savedFormat));
+                
+                if (!string.IsNullOrEmpty(checkResult))
                 {
-                    _detectedFile = existingFile;
-                    ConfirmFileNameText.Text = $"📄  {Path.GetFileName(existingFile)}";
-                    AppendLog(""); AppendLog(FindResource("LogDuplicateFound").ToString()!);
-                    AppendLog($"    {existingFile}"); AppendLog("");
-                    AppendLog(FindResource("LogChoicePanel").ToString()!);
-                    StatusTextBlock.Text = FindResource("StatusWaitingChoice").ToString();
-                    ApplyState(DownloadState.WaitingConfirm);
-                    return;
+                    if (checkResult.StartsWith("PARTIAL:"))
+                    {
+                        string partialPath = checkResult.Substring("PARTIAL:".Length);
+                        AppendLog("");
+                        AppendLog("[i] " + SafeResource("LogPartialFound", "Partial download found, resuming from last position…"));
+                        AppendLog($"    {partialPath}");
+                        AppendLog("");
+                        await BeginDownload();
+                        return;
+                    }
+
+                    if (File.Exists(checkResult))
+                    {
+                        _detectedFile = checkResult;
+                        ConfirmFileNameText.Text = $"📄  {Path.GetFileName(checkResult)}";
+                        AppendLog(""); AppendLog(FindResource("LogDuplicateFound").ToString()!);
+                        AppendLog($"    {checkResult}"); AppendLog("");
+                        AppendLog(FindResource("LogChoicePanel").ToString()!);
+                        StatusTextBlock.Text = FindResource("StatusWaitingChoice").ToString();
+                        ApplyState(DownloadState.WaitingConfirm);
+                        return;
+                    }
                 }
             }
             await BeginDownload();
@@ -1028,6 +1054,7 @@ namespace VideoDownloaderUI
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             KillActiveProcess();
+            _autoResumePending = false;
             ApplyState(DownloadState.Paused);
             AppendLog("");
             AppendLog(SafeResource("LogPaused",     "⏸  Download paused by user."));
@@ -1047,6 +1074,7 @@ namespace VideoDownloaderUI
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             KillActiveProcess();
+            _autoResumePending = false;
             LogTextBlock.Text        = "";
             StatusTextBlock.Text     = FindResource("StatusCancelled").ToString();
             SetProgressFillWidth(0, animate: false);
@@ -1249,8 +1277,13 @@ namespace VideoDownloaderUI
                     else if (trimmed.StartsWith("[FILECHECK_ERROR]")) Dispatcher.Invoke(() => AppendLog($"[WARN] Check failed: {trimmed}"));
                 }
                 foreach (var line in stdout.Split('\n'))
-                    if (line.TrimStart().StartsWith("[FILECHECK] "))
-                        return line.Trim().Substring("[FILECHECK] ".Length).Trim();
+                {
+                    string l = line.TrimStart();
+                    if (l.StartsWith("[FILECHECK] "))
+                        return l.Substring("[FILECHECK] ".Length).Trim();
+                    if (l.StartsWith("[FILECHECK_PARTIAL] "))
+                        return "PARTIAL:" + l.Substring("[FILECHECK_PARTIAL] ".Length).Trim();
+                }
             }
             catch (Exception ex) { Dispatcher.Invoke(() => AppendLog($"[WARN] RunCheckOnly exception: {ex.Message}")); }
             return "";
@@ -1312,6 +1345,7 @@ namespace VideoDownloaderUI
             if (data.StartsWith("[NETWORK_LOST]"))
             {
                 _networkWasLost = true;
+                _autoResumePending = true;
                 StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
                 StatusTextBlock.Text = SafeResource("StatusNetworkLost", "Connection lost — waiting…");
                 AppendLog("");
@@ -1320,6 +1354,7 @@ namespace VideoDownloaderUI
             }
             if (data.StartsWith("[NETWORK_WAITING]"))
             {
+                _autoResumePending = true;
                 StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
                 var m = System.Text.RegularExpressions.Regex.Match(data, @"\((\d+)s elapsed\)");
                 string elapsed = m.Success ? $" ({m.Groups[1].Value}s)" : "";
@@ -1329,6 +1364,7 @@ namespace VideoDownloaderUI
             if (data.StartsWith("[NETWORK_RESTORED]"))
             {
                 _networkWasLost = false;
+                _autoResumePending = false;
                 StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00));
                 StatusTextBlock.Text = SafeResource("StatusNetworkRestored", "Connection restored — resuming…");
                 AppendLog("[✔ NETWORK] " + SafeResource("LogNetworkRestored", "Internet restored — resuming from last position."));
@@ -1342,6 +1378,7 @@ namespace VideoDownloaderUI
             }
             if (data.StartsWith("[NETWORK_TIMEOUT]"))
             {
+                _autoResumePending = true;
                 StatusDot.Fill = (SolidColorBrush)FindResource("SecondaryColor");
                 AppendLog("[⚠ NETWORK] " + data.Substring("[NETWORK_TIMEOUT]".Length).Trim());
                 return;

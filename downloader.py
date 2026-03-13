@@ -26,7 +26,8 @@ NETWORK_ERROR_KEYWORDS = [
     'no route to host', 'ssl', 'handshake', 'read timeout',
     'connect timeout', 'socket', 'incomplete read', 'connection aborted',
     'connection timed', 'network is unreachable', 'failed to connect',
-    'http error 5', 'http error 429', 'getaddrinfo failed',
+    'http error 5', 'http error 429', 'http error 403', 'getaddrinfo failed',
+    'connection reset by peer', 'remote end closed connection',
 ]
 
 def is_internet_available(hosts=None, timeout=3):
@@ -49,7 +50,7 @@ def is_network_error(exc):
     msg = str(exc).lower()
     return any(kw in msg for kw in NETWORK_ERROR_KEYWORDS)
 
-def wait_for_internet(check_interval=5, max_wait=3600):
+def wait_for_internet(check_interval=5, max_wait=86400):
     """
     Block until internet is available.
     Prints [NETWORK_WAITING] tags every check_interval seconds.
@@ -112,7 +113,7 @@ def postprocess_hook(d):
 
 # ── yt-dlp runner with network-aware retry loop ────────────────────────────────
 
-def _run_ydl(url, ydl_opts, max_reconnect_attempts=10):
+def _run_ydl(url, ydl_opts, max_reconnect_attempts=30):
     """
     Execute yt-dlp with an outer reconnect loop.
 
@@ -195,7 +196,24 @@ def check_existing(url, output_path, ext):
                 return
 
             if os.path.isdir(dir_path):
+                # First check for exact/complete matches
                 for fname in sorted(os.listdir(dir_path)):
+                    name_no_ext, fext = os.path.splitext(fname)
+                    if name_no_ext == base_name and fext.lower() == f".{ext.lower()}":
+                        found = os.path.join(dir_path, fname)
+                        print(f"[FILECHECK] {found}")
+                        sys.stdout.flush()
+                        return
+
+                # Then check for same-name matches (different extension or partials)
+                for fname in sorted(os.listdir(dir_path)):
+                    # Check for partial files: title.ext.part or title.ext.ytdl
+                    if fname.startswith(base_name) and (fname.endswith(".part") or fname.endswith(".ytdl")):
+                        found = os.path.join(dir_path, fname)
+                        print(f"[FILECHECK_PARTIAL] {found}")
+                        sys.stdout.flush()
+                        return
+
                     name_no_ext, _ = os.path.splitext(fname)
                     if name_no_ext == base_name:
                         found = os.path.join(dir_path, fname)
