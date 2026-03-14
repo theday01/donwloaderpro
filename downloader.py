@@ -8,7 +8,7 @@ import yt_dlp
 import re
 
 # Set to True to restrict downloads to YouTube URLs only
-YOUTUBE_ONLY = False
+YOUTUBE_ONLY = True
 
 # Force UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
