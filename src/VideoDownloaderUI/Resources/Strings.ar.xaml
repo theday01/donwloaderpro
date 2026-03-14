@@ -188,6 +188,8 @@
     <sys:String x:Key="MsgAppAlreadyRunning">برنامج EagleVStream مفتوح مسبقاً.</sys:String>
     <sys:String x:Key="MsgAppAlreadyRunningTitle">البرنامج قيد التشغيل</sys:String>
     <sys:String x:Key="MsgRestricted">يجب عليك شراء النسخة الكاملة من البرنامج لتستفيد من جميع مميزات نظام باكمله</sys:String>
+    <sys:String x:Key="MsgBuyProTitle">مطلوب نسخة PRO الكاملة</sys:String>
+    <sys:String x:Key="MsgBuyProDesc">افتح جميع المنصات، تحميل دفعات غير محدود، ودعم فني متميز.</sys:String>
     <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  يرجى اختيار صيغة التحميل أولاً!      </sys:String>
     <sys:String x:Key="VideoFormatsLabel">  صيغ الفيديو  ←  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  صيغ الصوت   ←  MP3 · M4A · WAV              </sys:String>

@@ -920,6 +920,7 @@ namespace VideoDownloaderUI
         private void ApplyState(DownloadState s)
         {
             _state = s;
+            if (s != DownloadState.Idle) RestrictedPanel.Visibility = Visibility.Collapsed;
             DownloadButton.Visibility = s == DownloadState.Idle            ? Visibility.Visible : Visibility.Collapsed;
             StopButton.Visibility     = s == DownloadState.Downloading     ? Visibility.Visible : Visibility.Collapsed;
             ResumeButton.Visibility   = s == DownloadState.Paused          ? Visibility.Visible : Visibility.Collapsed;
@@ -984,6 +985,8 @@ namespace VideoDownloaderUI
                                      .ToArray();
 
             if (urls.Length == 0) { System.Windows.MessageBox.Show(FindResource("MsgEnterUrl").ToString()); return; }
+
+            RestrictedPanel.Visibility = Visibility.Collapsed;
 
             string chosenFormat = GetSelectedFormat();
             if (string.IsNullOrEmpty(chosenFormat))
@@ -1088,6 +1091,7 @@ namespace VideoDownloaderUI
             SetProgressFillWidth(0, animate: false);
             PercentageTextBlock.Text = "0%";
             _savedUrls = Array.Empty<string>(); _savedFormat = ""; _overwrite = false;
+            RestrictedPanel.Visibility = Visibility.Collapsed;
             ApplyState(DownloadState.Idle);
         }
 
@@ -1230,6 +1234,18 @@ namespace VideoDownloaderUI
                 icon.ShowBalloonTip(4000);
                 Thread.Sleep(4500);
             }
+            catch { }
+        }
+
+        private void BuyWhatsApp_Click(object sender, RoutedEventArgs e)
+        {
+            try { Process.Start(new ProcessStartInfo("https://wa.me/212700979284") { UseShellExecute = true }); }
+            catch { }
+        }
+
+        private void BuyTelegram_Click(object sender, RoutedEventArgs e)
+        {
+            try { Process.Start(new ProcessStartInfo("https://t.me/eagleshadow019") { UseShellExecute = true }); }
             catch { }
         }
 
@@ -1427,6 +1443,7 @@ namespace VideoDownloaderUI
                 AppendLog($"\n[⚠] {msg}");
                 StatusTextBlock.Text = msg;
                 StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
+                RestrictedPanel.Visibility = Visibility.Visible;
                 return;
             }
 
