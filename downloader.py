@@ -191,7 +191,16 @@ def _run_ydl(urls, ydl_opts, max_reconnect_attempts=30):
                 sys.stdout.flush()
 
             else:
-                print(f"[ERROR] {err_msg}")
+                # Clean up yt-dlp internal error prefix to avoid double tags
+                clean_msg = err_msg.replace("ERROR: ", "").strip()
+
+                # Check if it's a parsing/extractor error (often requires update)
+                if "cannot parse data" in clean_msg.lower() or "extractor" in clean_msg.lower():
+                    print(f"[ERROR] {clean_msg}")
+                    print("[WARNING] This might be due to a platform update. Try updating 'yt-dlp' using: pip install -U yt-dlp")
+                else:
+                    print(f"[ERROR] {clean_msg}")
+
                 sys.stdout.flush()
                 return False
 

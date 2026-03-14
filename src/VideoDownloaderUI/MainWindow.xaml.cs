@@ -1339,7 +1339,12 @@ namespace VideoDownloaderUI
             };
             process.ErrorDataReceived += (_, e) =>
             {
-                if (!string.IsNullOrEmpty(e.Data)) Dispatcher.Invoke(() => AppendLog("[ERR] " + e.Data));
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    string clean = e.Data.Replace("ERROR:", "").Trim();
+                    if (!string.IsNullOrEmpty(clean))
+                        Dispatcher.Invoke(() => AppendLog("[ERR] " + clean));
+                }
             };
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
