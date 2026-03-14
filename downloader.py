@@ -7,6 +7,9 @@ import time
 import yt_dlp
 import re
 
+# --- Configuration ---
+YOUTUBE_ONLY = True
+
 # Force UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -15,6 +18,23 @@ if sys.stderr.encoding and sys.stderr.encoding.lower() != 'utf-8':
 
 AUDIO_FORMATS = {'mp3', 'm4a', 'wav'}
 VIDEO_FORMATS = {'mp4', 'webm', 'avi', 'wmv'}
+
+# ── Restrictions ───────────────────────────────────────────────────────────────
+
+def validate_url_restrictions(urls):
+    """
+    If YOUTUBE_ONLY is enabled, ensures all URLs are from YouTube.
+    If a non-YouTube URL is found, prints an error message and exits.
+    """
+    if not YOUTUBE_ONLY:
+        return
+
+    for url in urls:
+        url_lower = url.lower()
+        if not ("youtube.com" in url_lower or "youtu.be" in url_lower):
+            print("\n[ERROR] يجب عليك شراء النسخة الكاملة من البرنامج لتستفيد من جميع مميزات نظام باكمله")
+            sys.stdout.flush()
+            sys.exit(1)
 
 # ── Network helpers ────────────────────────────────────────────────────────────
 
@@ -360,6 +380,9 @@ if __name__ == "__main__":
     parser.add_argument("--overwrite",     action="store_true", help="Overwrite existing file")
 
     args = parser.parse_args()
+
+    # Apply restrictions
+    validate_url_restrictions(args.urls)
 
     if args.check_only:
         # Check only first URL if multiple provided for filecheck
