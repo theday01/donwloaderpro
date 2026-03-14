@@ -18,6 +18,7 @@ namespace VideoDownloaderUI
 
     public partial class MainWindow : Window
     {
+        private const bool _isRestrictedVersion = true;
         private static readonly string[] AudioFormats = { "mp3", "m4a", "wav" };
 
         private double        _currentProgress = 0;
@@ -440,6 +441,17 @@ namespace VideoDownloaderUI
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
         {
+            if (_isRestrictedVersion)
+            {
+                CloseSettingsPanel();
+                string msg = SafeResource("MsgRestricted", "You must purchase the full version of the program to benefit from all features of the entire system.");
+                AppendLog($"\n[⚠] {msg}");
+                StatusTextBlock.Text = msg;
+                StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
+                RestrictedPanel.Visibility = Visibility.Visible;
+                return;
+            }
+
             string newLang    = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "en";
             bool langChanged  = newLang != _settings.Language;
             bool themeChanged = _selectedAppTheme != _settings.AppTheme;
@@ -480,6 +492,17 @@ namespace VideoDownloaderUI
 
         private void ResetSettings_Click(object sender, RoutedEventArgs e)
         {
+            if (_isRestrictedVersion)
+            {
+                CloseSettingsPanel();
+                string msg = SafeResource("MsgRestricted", "You must purchase the full version of the program to benefit from all features of the entire system.");
+                AppendLog($"\n[⚠] {msg}");
+                StatusTextBlock.Text = msg;
+                StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
+                RestrictedPanel.Visibility = Visibility.Visible;
+                return;
+            }
+
             _settings         = new AppSettings();
             _selectedTheme    = "teal";
             _selectedAppTheme = "dark";
