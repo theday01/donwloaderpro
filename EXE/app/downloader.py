@@ -7,6 +7,9 @@ import time
 import yt_dlp
 import re
 
+# Set to True to restrict downloads to YouTube URLs only
+YOUTUBE_ONLY = False
+
 # Force UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -360,6 +363,13 @@ if __name__ == "__main__":
     parser.add_argument("--overwrite",     action="store_true", help="Overwrite existing file")
 
     args = parser.parse_args()
+
+    # YouTube-only restriction check
+    if YOUTUBE_ONLY:
+        for url in args.urls:
+            if 'youtube.com' not in url.lower() and 'youtu.be' not in url.lower():
+                print("يجب عليك شراء النسخة الكاملة من البرنامج لتستفيد من جميع مميزات نظام باكمله")
+                sys.exit(1)
 
     if args.check_only:
         # Check only first URL if multiple provided for filecheck
