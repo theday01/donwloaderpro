@@ -185,6 +185,8 @@
     <sys:String x:Key="NotifyMessage">{0} file saved successfully!</sys:String>
     <sys:String x:Key="MsgEnterUrl">Please enter a valid URL.</sys:String>
     <sys:String x:Key="MsgRestartRequired">The application will restart to apply the new changes.</sys:String>
+    <sys:String x:Key="MsgAppAlreadyRunning">EagleVStream is already running.</sys:String>
+    <sys:String x:Key="MsgAppAlreadyRunningTitle">Already Running</sys:String>
     <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  Please select a download format first!      </sys:String>
     <sys:String x:Key="VideoFormatsLabel">  VIDEO formats  →  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  AUDIO formats  →  MP3 · M4A · WAV              </sys:String>
