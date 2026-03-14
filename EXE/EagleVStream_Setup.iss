@@ -194,13 +194,12 @@ Type: filesandordirs; Name: "{app}"
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
     ValueType: expandsz; ValueName: "Path"; \
     ValueData: "{olddata};{app}"; \
-    Check: IsAdminInstallMode and (not RegValueExists(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'Path') or (Pos(ExpandConstant('{app}'), GetEnv('PATH')) = 0))
+    Check: ShouldAddToSystemPath
 
 Root: HKCU; Subkey: "Environment"; \
     ValueType: expandsz; ValueName: "Path"; \
     ValueData: "{olddata};{app}"; \
-    Check: (not IsAdminInstallMode) and (Pos(ExpandConstant('{app}'), GetEnv('PATH')) = 0)
-
+    Check: ShouldAddToUserPath
 ; ════════════════════════════════════════════════════════════
 ;  PASCAL SCRIPT — Custom dependency checks & installs
 ; ════════════════════════════════════════════════════════════
@@ -324,6 +323,18 @@ begin
   if not Result then
     Result := Exec('python3', '-m pip install --upgrade yt-dlp --quiet', '',
                    SW_HIDE, ewWaitUntilTerminated, ResultCode);
+end;
+
+function ShouldAddToSystemPath: Boolean;
+begin
+  Result := IsAdminInstallMode and
+            (Pos(ExpandConstant('{app}'), GetEnv('PATH')) = 0);
+end;
+
+function ShouldAddToUserPath: Boolean;
+begin
+  Result := (not IsAdminInstallMode) and
+            (Pos(ExpandConstant('{app}'), GetEnv('PATH')) = 0);
 end;
 
 // ─── MAIN: InitializeSetup — called before wizard appears ────────────────────
