@@ -8,7 +8,7 @@ import yt_dlp
 import re
 
 # --- Configuration ---
-YOUTUBE_ONLY = True
+YOUTUBE_ONLY = False
 
 # Force UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
