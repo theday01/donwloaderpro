@@ -1420,6 +1420,16 @@ namespace VideoDownloaderUI
                 return;
             }
 
+            // ── [RESTRICTED] ──────────────────────────────────────────────────────
+            if (data.StartsWith("[RESTRICTED]"))
+            {
+                string msg = SafeResource("MsgRestricted", data.Substring("[RESTRICTED]".Length).Trim());
+                AppendLog($"\n[⚠] {msg}");
+                StatusTextBlock.Text = msg;
+                StatusDot.Fill = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));
+                return;
+            }
+
             // ── [NETWORK_ERROR] ───────────────────────────────────────────────────
             if (data.StartsWith("[NETWORK_ERROR]"))
             {

@@ -368,7 +368,7 @@ if __name__ == "__main__":
     if YOUTUBE_ONLY:
         for url in args.urls:
             if 'youtube.com' not in url.lower() and 'youtu.be' not in url.lower():
-                print("يجب عليك شراء النسخة الكاملة من البرنامج لتستفيد من جميع مميزات نظام باكمله")
+                print("[RESTRICTED] يجب عليك شراء النسخة الكاملة من البرنامج لتستفيد من جميع مميزات نظام باكمله / You must purchase the full version of the program to benefit from all features of the entire system.")
                 sys.exit(1)
 
     if args.check_only:
