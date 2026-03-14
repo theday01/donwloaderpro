@@ -187,6 +187,9 @@
     <sys:String x:Key="MsgRestartRequired">The application will restart to apply the new changes.</sys:String>
     <sys:String x:Key="MsgAppAlreadyRunning">EagleVStream is already running.</sys:String>
     <sys:String x:Key="MsgAppAlreadyRunningTitle">Already Running</sys:String>
+    <sys:String x:Key="MsgRestricted">You must purchase the full version of the program to benefit from all features of the entire system.</sys:String>
+    <sys:String x:Key="MsgBuyProTitle">PRO Version Required</sys:String>
+    <sys:String x:Key="MsgBuyProDesc">Unlock all platforms, unlimited batch downloads, and priority support.</sys:String>
     <sys:String x:Key="FormatSelectionWarningTitle">  ⚠  Please select a download format first!      </sys:String>
     <sys:String x:Key="VideoFormatsLabel">  VIDEO formats  →  MP4 · WebM · AVI · WMV       </sys:String>
     <sys:String x:Key="AudioFormatsLabel">  AUDIO formats  →  MP3 · M4A · WAV              </sys:String>
